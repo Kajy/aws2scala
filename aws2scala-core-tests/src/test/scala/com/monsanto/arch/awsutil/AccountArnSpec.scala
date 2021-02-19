@@ -1,11 +1,11 @@
 package com.monsanto.arch.awsutil
 
 import com.monsanto.arch.awsutil.testkit.CoreScalaCheckImplicits._
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class AccountArnSpec extends FreeSpec {
+class AccountArnSpec extends AnyFreeSpec {
   "an account ARN should" - {
     "have the correct resource" in {
       forAll { arn: AccountArn ⇒

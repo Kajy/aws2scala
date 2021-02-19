@@ -13,8 +13,8 @@ import com.monsanto.arch.awsutil.sns.SNS
 import com.monsanto.arch.awsutil.test_support.AwsScalaFutures._
 import com.monsanto.arch.awsutil.test_support.{AwsIntegrationSpec, IntegrationCleanup, IntegrationTest}
 import com.typesafe.scalalogging.StrictLogging
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 import org.scalatest.concurrent.Eventually
 import org.scalatest.concurrent.Eventually.eventually
 
@@ -22,7 +22,7 @@ import scala.concurrent.duration.DurationInt
 import scala.concurrent.{Await, Promise}
 
 @IntegrationTest
-class SecurityTokenServiceIntegrationSpec extends FreeSpec with AwsIntegrationSpec with StrictLogging with IntegrationCleanup {
+class SecurityTokenServiceIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with StrictLogging with IntegrationCleanup {
   private val iam = awsClient.streaming(IdentityManagement)
   private val async = awsClient.async(SecurityTokenService)
 

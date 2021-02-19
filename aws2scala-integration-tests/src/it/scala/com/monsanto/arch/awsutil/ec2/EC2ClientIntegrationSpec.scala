@@ -14,14 +14,14 @@ import com.monsanto.arch.cloudformation.model.resource._
 import com.typesafe.scalalogging.StrictLogging
 import org.scalactic.Equality
 import org.scalactic.source.Position
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 
 import scala.collection.JavaConverters._
 import scala.concurrent.duration.DurationInt
 
 @IntegrationTest
-class EC2ClientIntegrationSpec extends FreeSpec with AwsIntegrationSpec with StrictLogging with IntegrationCleanup {
+class EC2ClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with StrictLogging with IntegrationCleanup {
   val streamingEC2 = awsClient.streaming(EC2)
   val asyncEC2 = awsClient.async(EC2)
 

@@ -7,10 +7,11 @@ import com.amazonaws.{AmazonWebServiceClient, ClientConfiguration}
 import com.monsanto.arch.awsutil.DefaultAwsClientSpec.{Client, TestClientProvider}
 import com.monsanto.arch.awsutil.impl.ShutdownHook
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.Matchers._
-import org.scalatest.{Outcome, fixture}
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.freespec.FixtureAnyFreeSpec
+import org.scalatest.Outcome
 
-class DefaultAwsClientSpec extends fixture.FreeSpec with MockFactory {
+class DefaultAwsClientSpec extends FixtureAnyFreeSpec with MockFactory {
   def clientCreationBehaviours[T <: Client: Manifest](createClient: (AwsClient) ⇒ T): Unit = {
     "creating client instances" in { f ⇒
       val result = createClient(f.awsClient)

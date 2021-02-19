@@ -3,10 +3,10 @@ package com.monsanto.arch.awsutil.auth.policy
 import com.amazonaws.auth.{policy ⇒ aws}
 import com.monsanto.arch.awsutil.converters.CoreConverters._
 import com.monsanto.arch.awsutil.test_support.ActionBehaviours
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ActionSpec extends FreeSpec with ActionBehaviours {
+class ActionSpec extends AnyFreeSpec with ActionBehaviours {
   "there is an AllActions that" - {
     behave like anAction(
       Array(Action.AllActions),

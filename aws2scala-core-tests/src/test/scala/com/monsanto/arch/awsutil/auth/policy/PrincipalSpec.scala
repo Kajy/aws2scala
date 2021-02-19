@@ -8,12 +8,12 @@ import com.monsanto.arch.awsutil.partitions.Partition
 import com.monsanto.arch.awsutil.securitytoken.model.AssumedRoleArn
 import com.monsanto.arch.awsutil.test_support.AwsEnumerationBehaviours
 import com.monsanto.arch.awsutil.testkit.CoreScalaCheckImplicits._
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 import org.scalatest.prop.TableDrivenPropertyChecks.{Table, forAll ⇒ forAllIn}
 
-class PrincipalSpec extends FreeSpec with AwsEnumerationBehaviours {
+class PrincipalSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
   /** Contains all of the services. */
   private val services = Table("service", Principal.Service.values: _*)
   /** Contains all of the services with a matching AWS enumeration value. */

@@ -3,11 +3,11 @@ package com.monsanto.arch.awsutil.securitytoken.model
 import com.amazonaws.services.securitytoken.{model ⇒ aws}
 import com.monsanto.arch.awsutil.securitytoken.model.AwsConverters._
 import com.monsanto.arch.awsutil.testkit.StsScalaCheckImplicits._
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class CredentialsSpec extends FreeSpec {
+class CredentialsSpec extends AnyFreeSpec {
   "Credentials" - {
     "can be round-tripped" - {
       "from its AWS equivalent" in {

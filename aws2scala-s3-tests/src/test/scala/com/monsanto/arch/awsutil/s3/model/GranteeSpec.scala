@@ -3,11 +3,11 @@ package com.monsanto.arch.awsutil.s3.model
 import com.monsanto.arch.awsutil.s3.model.AwsConverters._
 import com.monsanto.arch.awsutil.testkit.S3ScalaCheckImplicits._
 import com.monsanto.arch.awsutil.testkit.{S3Gen, UtilGen}
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class GranteeSpec extends FreeSpec {
+class GranteeSpec extends AnyFreeSpec {
   "the Grantee object provides" - {
     "a method for creating" - {
       "canonical grantees" in {

@@ -7,15 +7,15 @@ import com.monsanto.arch.awsutil.test_support.AwsScalaFutures._
 import com.monsanto.arch.awsutil.test_support.{AwsIntegrationSpec, IntegrationTest}
 import com.typesafe.scalalogging.StrictLogging
 import org.scalactic.source.Position
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 import org.scalatest.concurrent.Eventually
 import org.scalatest.concurrent.Eventually._
 
 import scala.concurrent.duration.DurationInt
 
 @IntegrationTest
-class KMSClientIntegrationSpec extends FreeSpec with AwsIntegrationSpec with StrictLogging {
+class KMSClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with StrictLogging {
   val streamingClient = awsClient.streaming(KMS)
   val asyncClient = awsClient.async(KMS)
   val testPrefix = "aws2scala-it-kms"

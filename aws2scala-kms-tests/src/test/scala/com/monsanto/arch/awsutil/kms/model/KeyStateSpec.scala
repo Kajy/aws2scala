@@ -3,11 +3,11 @@ package com.monsanto.arch.awsutil.kms.model
 import com.amazonaws.services.kms.{model ⇒ aws}
 import com.monsanto.arch.awsutil.converters.KmsConverters._
 import com.monsanto.arch.awsutil.test_support.AwsEnumerationBehaviours
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 import org.scalatest.prop.TableDrivenPropertyChecks.{Table, forAll}
 
-class KeyStateSpec extends FreeSpec with AwsEnumerationBehaviours {
+class KeyStateSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
   "a KeyState should" - {
     val keyStates = Table("key state", KeyState.values: _*)
 

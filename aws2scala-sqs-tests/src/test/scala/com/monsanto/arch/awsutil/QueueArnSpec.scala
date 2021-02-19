@@ -3,11 +3,11 @@ package com.monsanto.arch.awsutil
 import com.monsanto.arch.awsutil.sqs.SQS
 import com.monsanto.arch.awsutil.sqs.model.QueueArn
 import com.monsanto.arch.awsutil.testkit.SqsScalaCheckImplicits._
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class QueueArnSpec extends FreeSpec {
+class QueueArnSpec extends AnyFreeSpec {
   SQS.init()
 
   "a queue ARN should" - {

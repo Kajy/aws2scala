@@ -11,11 +11,11 @@ import com.monsanto.arch.awsutil.test_support.AwsScalaFutures._
 import com.monsanto.arch.awsutil.test_support.{AwsIntegrationSpec, IntegrationCleanup, IntegrationTest}
 import com.typesafe.scalalogging.StrictLogging
 import org.scalactic.Equality
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 
 @IntegrationTest
-class IdentityManagementIntegrationSpec extends FreeSpec with AwsIntegrationSpec with StrictLogging with IntegrationCleanup {
+class IdentityManagementIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with StrictLogging with IntegrationCleanup {
   private val async = awsClient.async(IdentityManagement)
 
   private val testPathPrefix = Path.empty / "aws2scala-it-iam"

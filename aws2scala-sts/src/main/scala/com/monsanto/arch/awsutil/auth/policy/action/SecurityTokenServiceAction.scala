@@ -18,6 +18,8 @@ object SecurityTokenServiceAction {
   case object AssumeRoleWithWebIdentity extends SecurityTokenServiceAction("AssumeRoleWithWebIdentity")
   /** Action for the DecodeAuthorizationMessage operation. */
   case object DecodeAuthorizationMessage extends SecurityTokenServiceAction("DecodeAuthorizationMessage")
+  /** Action for the GetAccessKeyInfo operation. */
+  case object GetAccessKeyInfo extends SecurityTokenServiceAction("GetAccessKeyInfo")
   /** Action for the GetCallerIdentity operation. */
   case object GetCallerIdentity extends SecurityTokenServiceAction("GetCallerIdentity")
   /** Action for the GetFederationToken operation. */
@@ -27,7 +29,7 @@ object SecurityTokenServiceAction {
 
   val values: Seq[SecurityTokenServiceAction] = Seq(
     AllSecurityTokenServiceActions, AssumeRole, AssumeRoleWithSAML, AssumeRoleWithWebIdentity,
-    DecodeAuthorizationMessage, GetCallerIdentity, GetFederationToken, GetSessionToken)
+    DecodeAuthorizationMessage, GetAccessKeyInfo, GetCallerIdentity, GetFederationToken, GetSessionToken)
 
   private[awsutil] def registerActions(): Unit =
     Action.registerActions(
@@ -36,6 +38,7 @@ object SecurityTokenServiceAction {
       SecurityTokenServiceActions.AssumeRoleWithSAML → AssumeRoleWithSAML,
       SecurityTokenServiceActions.AssumeRoleWithWebIdentity → AssumeRoleWithWebIdentity,
       SecurityTokenServiceActions.DecodeAuthorizationMessage → DecodeAuthorizationMessage,
+      SecurityTokenServiceActions.GetAccessKeyInfo → GetAccessKeyInfo,
       SecurityTokenServiceActions.GetCallerIdentity → GetCallerIdentity,
       SecurityTokenServiceActions.GetFederationToken → GetFederationToken,
       SecurityTokenServiceActions.GetSessionToken → GetSessionToken

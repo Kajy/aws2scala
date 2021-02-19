@@ -4,9 +4,10 @@ import com.amazonaws.AmazonWebServiceRequest
 import com.amazonaws.handlers.AsyncHandler
 import java.util.concurrent.{Future => JFuture, TimeUnit}
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FreeSpec, Matchers}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers
 
-class AWSFlowAdapterSpec extends FreeSpec with MockFactory {
+class AWSFlowAdapterSpec extends AnyFreeSpec with MockFactory {
   import AWSFlowAdapterSpec._
   import Matchers._
 

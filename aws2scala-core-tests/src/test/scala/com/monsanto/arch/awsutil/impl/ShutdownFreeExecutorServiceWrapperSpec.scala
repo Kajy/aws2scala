@@ -7,14 +7,14 @@ import akka.Done
 import com.monsanto.arch.awsutil.impl.ShutdownFreeExecutorServiceWrapperSpec._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
 import scala.collection.JavaConverters._
 import scala.concurrent.Promise
 
-class ShutdownFreeExecutorServiceWrapperSpec extends FreeSpec {
+class ShutdownFreeExecutorServiceWrapperSpec extends AnyFreeSpec {
   val wrapper = new ShutdownFreeExecutorServiceWrapper(FakeExecutorService)
 
   "a ShutdownFreeExecutorServiceWrapper" - {

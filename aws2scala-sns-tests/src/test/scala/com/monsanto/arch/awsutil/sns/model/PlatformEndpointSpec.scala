@@ -11,11 +11,11 @@ import com.monsanto.arch.awsutil.testkit.{SnsGen, UtilGen}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class PlatformEndpointSpec extends FreeSpec with MockFactory with Materialised with FlowMockUtils with AwsMockUtils {
+class PlatformEndpointSpec extends AnyFreeSpec with MockFactory with Materialised with FlowMockUtils with AwsMockUtils {
   "a PlatformEndpoint" - {
     "can round-trip through its AWS equivalent" in {
       forAll { endpoint: PlatformEndpoint ⇒

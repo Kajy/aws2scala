@@ -4,12 +4,12 @@ import com.amazonaws.auth.{policy ⇒ aws}
 import com.monsanto.arch.awsutil.converters.CoreConverters._
 import com.monsanto.arch.awsutil.test_support.AwsEnumerationBehaviours
 import com.monsanto.arch.awsutil.testkit.CoreScalaCheckImplicits._
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 import org.scalatest.prop.TableDrivenPropertyChecks.{Table, forAll ⇒ forAllIn}
 
-class StatementSpec extends FreeSpec with AwsEnumerationBehaviours {
+class StatementSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
   "Statement object should" - {
     // register some actions first
     TestAction.registerActions()

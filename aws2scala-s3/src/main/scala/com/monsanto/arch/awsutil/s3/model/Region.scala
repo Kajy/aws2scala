@@ -43,6 +43,8 @@ object Region extends AwsEnumerationCompanion[Region,aws.Region] {
     */
   case object US_GovCloud extends Region(aws.Region.US_GovCloud)
 
+  case object US_Gov_East_1 extends Region(aws.Region.US_Gov_East_1)
+
   /** The EU (Ireland) Amazon S3 Region. This region uses Amazon S3 servers located in Ireland. */
   case object EU_Ireland extends Region(aws.Region.EU_Ireland)
 
@@ -55,12 +57,25 @@ object Region extends AwsEnumerationCompanion[Region,aws.Region] {
   /** The EU (Paris) Amazon S3 Region. This region uses Amazon S3 servers located in Paris. */
   case object EU_Paris extends Region(aws.Region.EU_Paris)
 
+  /** The EU (Stockholm) Amazon S3 Region. This region uses Amazon S3 servers located in Stockholm. */
+  case object EU_North_1 extends Region(aws.Region.EU_North_1)
+
+  /** The EU (Milan) Amazon S3 Region. This region uses Amazon S3 servers located in Milan. */
+  case object EU_South_1 extends Region(aws.Region.EU_South_1)
+
   /** The Asia Pacific (Singapore) Region. This region uses Amazon S3 servers located in Singapore.
     *
     * When using buckets in this region, set the client endpoint to `s3-ap-southeast-1.amazonaws.com` on all requests
     * to these buckets to reduce any latency experienced after the first hour of creating a bucket in this region.
     */
   case object AP_Singapore extends Region(aws.Region.AP_Singapore)
+
+  /** The Asia Pacific (HongKong) Region. This region uses Amazon S3 servers located in Singapore.
+    *
+    * When using buckets in this region, set the client endpoint to `s3-ap-east-1.amazonaws.com` on all requests
+    * to these buckets to reduce any latency experienced after the first hour of creating a bucket in this region.
+    */
+  case object AP_HongKong extends Region(aws.Region.AP_HongKong)
 
   /** The Asia Pacific (Sydney) Region. This region uses Amazon S3 servers located in Sydney, Australia.
     *
@@ -114,9 +129,34 @@ object Region extends AwsEnumerationCompanion[Region,aws.Region] {
     */
   case object CA_Central extends Region(aws.Region.CA_Central)
 
+  /** The Africa South (Cape Town) Region. This region uses Amazon S3 servers located in Cape Town.
+    *
+    */
+  case object AF_CapeTown extends Region(aws.Region.AF_CapeTown)
+
+  /**
+    * The Middle East (Bahrain) Region. This region uses Amazon S3 servers located in Bahrain.
+    */
+  case object ME_Bahrain extends Region(aws.Region.ME_Bahrain)
+
+  /**
+    * The US ISO East Region. This region uses Amazon S3 servers located in Virginia.
+    */
+  case object US_ISO_EAST_1 extends Region(aws.Region.US_ISO_EAST_1)
+
+  /**
+    * The US ISOB East (Ohio) Region. This region uses Amazon S3 servers located in Ohio.
+    */
+  case object US_ISOB_EAST_1 extends Region(aws.Region.US_ISOB_EAST_1)
+
+  /**
+    * The US ISO West Region. This region uses Amazon S3 servers located in Colorado.
+    */
+  case object US_ISO_WEST_1 extends Region(aws.Region.US_ISO_WEST_1)
+
   /** All valid values for the enumeration. */
   override def values: Seq[Region] =
-    Seq(US_Standard, US_West, US_West_2, US_East_2, US_GovCloud, AP_Seoul, AP_Singapore, AP_Singapore, AP_Sydney,
-      AP_Tokyo, AP_Mumbai, EU_Ireland, EU_Frankfurt, EU_London, EU_Paris, CN_Beijing, CN_Northwest_1, SA_SaoPaulo,
-      CA_Central)
+    Seq(US_Standard, US_West, US_West_2, US_East_2, US_GovCloud, US_Gov_East_1, AP_HongKong, AP_Seoul, AP_Singapore, AP_Singapore, AP_Sydney,
+      AP_Tokyo, AP_Mumbai, EU_Ireland, EU_Frankfurt, EU_London, EU_North_1,EU_South_1, EU_Paris, CN_Beijing, CN_Northwest_1, SA_SaoPaulo,
+      CA_Central, AF_CapeTown, ME_Bahrain, US_ISO_EAST_1, US_ISO_WEST_1, US_ISOB_EAST_1)
 }

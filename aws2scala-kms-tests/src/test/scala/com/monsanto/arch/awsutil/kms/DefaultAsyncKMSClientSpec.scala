@@ -7,11 +7,11 @@ import com.monsanto.arch.awsutil.testkit.KmsGen
 import com.monsanto.arch.awsutil.testkit.KmsScalaCheckImplicits._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class DefaultAsyncKMSClientSpec extends FreeSpec with MockFactory with Materialised with FlowMockUtils {
+class DefaultAsyncKMSClientSpec extends AnyFreeSpec with MockFactory with Materialised with FlowMockUtils {
   "the default asynchronous KMS client should" - {
     "create keys with aliases when" - {
       "only the alias is specified" in {

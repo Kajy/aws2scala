@@ -9,11 +9,11 @@ import com.monsanto.arch.awsutil.test_support.AdaptableScalaFutures._
 import com.monsanto.arch.awsutil.test_support.{AwsMockUtils, Materialised}
 import com.monsanto.arch.awsutil.testkit.KmsScalaCheckImplicits._
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class DefaultStreamingKMSClientSpec extends FreeSpec with MockFactory with Materialised with AwsMockUtils {
+class DefaultStreamingKMSClientSpec extends AnyFreeSpec with MockFactory with Materialised with AwsMockUtils {
   "the DefaultStreamingKMSClient should provide" - {
     "a key+alias creation flow" in {
       forAll { (request: CreateKeyWithAliasRequest, metadata: KeyMetadata) ⇒

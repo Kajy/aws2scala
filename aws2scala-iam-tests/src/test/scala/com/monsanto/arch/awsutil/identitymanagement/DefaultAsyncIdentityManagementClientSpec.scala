@@ -12,11 +12,11 @@ import com.monsanto.arch.awsutil.testkit.{CoreGen, IamGen}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class DefaultAsyncIdentityManagementClientSpec extends FreeSpec with MockFactory with Materialised with FlowMockUtils {
+class DefaultAsyncIdentityManagementClientSpec extends AnyFreeSpec with MockFactory with Materialised with FlowMockUtils {
   "the default async identity management client should" - {
     "create roles" - {
       "without paths" in {

@@ -4,11 +4,11 @@ import com.monsanto.arch.awsutil.converters.CoreConverters._
 import com.monsanto.arch.awsutil.test_support.AwsEnumerationBehaviours
 import com.monsanto.arch.awsutil.testkit.CoreScalaCheckImplicits._
 import org.scalactic.Equality
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class PolicySpec extends FreeSpec with AwsEnumerationBehaviours {
+class PolicySpec extends AnyFreeSpec with AwsEnumerationBehaviours {
   TestAction.registerActions()
 
   "a Policy can" - {

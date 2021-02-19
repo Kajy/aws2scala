@@ -8,11 +8,11 @@ import com.monsanto.arch.awsutil.testkit.SnsScalaCheckImplicits._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class SubscriptionSummarySpec extends FreeSpec with MockFactory with Materialised {
+class SubscriptionSummarySpec extends AnyFreeSpec with MockFactory with Materialised {
   private implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 50, sizeRange = 50)
 
   "a SubscriptionSummary should" - {

@@ -1,11 +1,11 @@
 package com.monsanto.arch.awsutil.sns.model
 
 import com.monsanto.arch.awsutil.testkit.SnsScalaCheckImplicits._
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class PlatformEndpointArnSpec extends FreeSpec {
+class PlatformEndpointArnSpec extends AnyFreeSpec {
   "a PlatformEndpointArn should" - {
     "provide the correct resource" in {
       forAll { arn: PlatformEndpointArn ⇒

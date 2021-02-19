@@ -5,12 +5,12 @@ import com.monsanto.arch.awsutil.testkit.SnsScalaCheckImplicits._
 import com.monsanto.arch.awsutil.testkit.{SnsGen, UtilGen}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalactic.Equality
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 import spray.json._
 
-class PublishRequestSpec extends FreeSpec {
+class PublishRequestSpec extends AnyFreeSpec {
   "a PublishRequest should" - {
     "convert to the correct AWS object" in {
       forAll { request: PublishRequest ⇒

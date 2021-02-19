@@ -3,12 +3,12 @@ package com.monsanto.arch.awsutil.kms.model
 import java.util.UUID
 
 import com.amazonaws.services.kms.model.{GenerateDataKeyRequest ⇒ AWSGenerateDataKeyRequest, GenerateDataKeyWithoutPlaintextRequest}
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 
 import scala.collection.JavaConverters._
 
-class GenerateDataKeyRequestSpec extends FreeSpec {
+class GenerateDataKeyRequestSpec extends AnyFreeSpec {
   val keyId = UUID.randomUUID().toString
 
   trait AWSRequestLike[T] {

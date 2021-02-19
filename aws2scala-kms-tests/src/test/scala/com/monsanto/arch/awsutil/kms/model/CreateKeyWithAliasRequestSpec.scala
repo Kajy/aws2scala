@@ -2,11 +2,11 @@ package com.monsanto.arch.awsutil.kms.model
 
 import com.monsanto.arch.awsutil.converters.KmsConverters._
 import com.monsanto.arch.awsutil.testkit.KmsScalaCheckImplicits._
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class CreateKeyWithAliasRequestSpec extends FreeSpec {
+class CreateKeyWithAliasRequestSpec extends AnyFreeSpec {
   "a CreateKeyWithAliasRequest should" - {
     "convert to a correct AWS CreateKeyRequest object" in {
       forAll { request: CreateKeyWithAliasRequest ⇒

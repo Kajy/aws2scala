@@ -10,12 +10,12 @@ import com.monsanto.arch.awsutil.testkit.CoreScalaCheckImplicits._
 import com.monsanto.arch.awsutil.testkit.UtilGen
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 import spray.json._
 
-class PolicyJsonSupportSpec extends FreeSpec {
+class PolicyJsonSupportSpec extends AnyFreeSpec {
   TestAction.registerActions()
 
   private val factory = new JsonFactory()

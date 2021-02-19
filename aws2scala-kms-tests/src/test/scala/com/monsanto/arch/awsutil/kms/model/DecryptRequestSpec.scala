@@ -1,12 +1,12 @@
 package com.monsanto.arch.awsutil.kms.model
 
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 
 import scala.collection.JavaConverters._
 
 
-class DecryptRequestSpec extends FreeSpec {
+class DecryptRequestSpec extends AnyFreeSpec {
   val ciphertext = Array.fill(32)(0.toByte)
 
   "an EncryptRequest" - {

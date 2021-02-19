@@ -6,12 +6,12 @@ import com.monsanto.arch.awsutil.test_support.AdaptableScalaFutures._
 import com.monsanto.arch.awsutil.test_support.{FlowMockUtils, Materialised}
 import com.monsanto.arch.awsutil.testkit.SnsScalaCheckImplicits._
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 import spray.json._
 
-class SubscriptionSpec extends FreeSpec with Materialised with MockFactory with FlowMockUtils {
+class SubscriptionSpec extends AnyFreeSpec with Materialised with MockFactory with FlowMockUtils {
   private implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 50, sizeRange = 50)
 
   "the Subscription companion object" - {

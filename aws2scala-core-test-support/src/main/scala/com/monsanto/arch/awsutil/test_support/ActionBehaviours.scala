@@ -1,12 +1,12 @@
 package com.monsanto.arch.awsutil.test_support
 
-import com.amazonaws.auth.{policy ⇒ aws}
+import com.amazonaws.auth.{policy => aws}
 import com.monsanto.arch.awsutil.auth.policy.Action
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 import org.scalatest.prop.TableDrivenPropertyChecks._
 
-trait ActionBehaviours extends AwsEnumerationBehaviours { this: FreeSpec ⇒
+trait ActionBehaviours extends AwsEnumerationBehaviours { this: AnyFreeSpec ⇒
   def anAction[ScalaAction <: Action, AwsAction <: aws.Action](awsActions: Array[AwsAction],
                                                                scalaActions: Seq[ScalaAction],
                                                                asAws: ScalaAction ⇒ AwsAction,

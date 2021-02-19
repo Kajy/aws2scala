@@ -6,22 +6,13 @@ import sbt.{Credentials, Path, Resolver}
 import sbt.{Credentials, Path, Resolver}
 
 // dependency versions
-val akka = "2.5.13"
-val aws = "1.11.343"
-val scalaCheck = "org.scalacheck"     %% "scalacheck"                          % "1.14.0"
-val scalaTest  = "org.scalatest"      %% "scalatest"                           % "3.0.5" % "test"
-val sprayJson  = "io.spray"           %% "spray-json"                          % "1.3.4"
-val cftg       = "com.monsanto.arch"  %% "cloud-formation-template-generator"  % "3.9.1"
-
-def crossVersionScalaOptions(scalaVersion: String) = {
-  CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, 11)) => Seq(
-      "-Yclosure-elim",
-      "-Yinline"
-    )
-    case _ => Nil
-  }
-}
+val akka = "2.6.12"
+val aws = "1.11.958"
+val scalaCheck = "org.scalacheck"     %% "scalacheck"                          % "1.15.3"
+val scalaTest  = "org.scalatest"      %% "scalatest"                           % "3.2.4"
+val scalaTestPlus  = "org.scalatestplus"  %% "scalacheck-1-15"                 % "3.2.4.0"
+val sprayJson  = "io.spray"           %% "spray-json"                          % "1.3.6"
+val cftg       = "com.monsanto.arch"  %% "cloud-formation-template-generator"  % "3.10.1"
 
 val compileOnlyOptions = Seq(
   "-deprecation",
@@ -39,15 +30,15 @@ lazy val commonSettings = Seq(
   licenses := Seq("BSD New" → url("http://opensource.org/licenses/BSD-3-Clause")),
 
   // scala compilation
-  scalaVersion := "2.12.3",
-  crossScalaVersions := Seq("2.11.8", "2.12.3"),
+  scalaVersion := "2.12.13",
+ // crossScalaVersions := Seq("2.11.8", "2.12.3"),
   releaseCrossBuild := true,
   scalacOptions ++= Seq(
     "-encoding", "UTF-8",
     "-unchecked",
     "-feature"
   ),
-  (scalacOptions in Compile) ++= compileOnlyOptions ++ crossVersionScalaOptions(scalaVersion.value),
+  (scalacOptions in Compile) ++= compileOnlyOptions,// ++ crossVersionScalaOptions(scalaVersion.value),
   (scalacOptions in Test) --= compileOnlyOptions,
 
   // Needed to avoid OOM errors
@@ -100,7 +91,7 @@ lazy val noPublishingSettings = Seq(
 
 val commonDependencies = Seq(
   "com.typesafe.akka"           %% "akka-stream"    % akka,
-  "com.typesafe.scala-logging"  %% "scala-logging"  % "3.9.0",
+  "com.typesafe.scala-logging"  %% "scala-logging"  % "3.9.2",
   awsDependency("core")
 )
 
@@ -118,6 +109,7 @@ lazy val testSupport = Project("aws2scala-test-support", file("aws2scala-test-su
       scalaCheck,
       "org.scalamock"      %% "scalamock-scalatest-support"  % "3.6.0",
       scalaTest,
+      scalaTestPlus,
       "ch.qos.logback"      % "logback-classic"              % "1.2.3"
     ) ++ commonDependencies
   )
@@ -140,7 +132,7 @@ lazy val core = Project("aws2scala-core", file("aws2scala-core"))
     commonSettings,
     bintrayPublishingSettings,
     description := "Core library for aws2scala",
-    libraryDependencies += "com.typesafe" % "config" % "1.3.3"
+    libraryDependencies += "com.typesafe" % "config" % "1.4.1"
   )
 
 lazy val coreTestSupport = Project("aws2scala-core-test-support", file("aws2scala-core-test-support"))
@@ -148,7 +140,10 @@ lazy val coreTestSupport = Project("aws2scala-core-test-support", file("aws2scal
   .settings(
     commonSettings,
     noPublishingSettings,
-    description := "Additional aws2scala test support that depends on the core library"
+    description := "Additional aws2scala test support that depends on the core library",
+    libraryDependencies ++= Seq(
+      scalaTestPlus
+    )
   )
 
 lazy val coreTestkit = Project("aws2scala-core-testkit", file("aws2scala-core-testkit"))
@@ -207,8 +202,8 @@ lazy val ec2Testkit = Project("aws2scala-ec2-testkit", file("aws2scala-ec2-testk
     description := "Test utility library for aws2scala-ec2",
     libraryDependencies ++= Seq(
       scalaCheck,
-      "org.bouncycastle" % "bcprov-jdk15on" % "1.59",
-      "org.bouncycastle" % "bcpkix-jdk15on" % "1.59"
+      "org.bouncycastle" % "bcprov-jdk15on" % "1.68",
+      "org.bouncycastle" % "bcpkix-jdk15on" % "1.68"
     )
   )
 

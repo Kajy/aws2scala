@@ -3,11 +3,11 @@ package com.monsanto.arch.awsutil.ec2.model
 import com.monsanto.arch.awsutil.ec2.model.AwsConverters._
 import com.monsanto.arch.awsutil.test_support.AwsEnumerationBehaviours
 import com.monsanto.arch.awsutil.testkit.Ec2ScalaCheckImplicits._
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class InstanceSpec extends FreeSpec with AwsEnumerationBehaviours {
+class InstanceSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
   "an Instance should" - {
     "be constructible from its AWS equivalent" in {
       forAll { instance: Instance ⇒

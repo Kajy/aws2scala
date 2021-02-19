@@ -6,12 +6,12 @@ import com.monsanto.arch.awsutil.sns.model.Protocol._
 import com.monsanto.arch.awsutil.sns.model.SubscriptionEndpoint._
 import com.monsanto.arch.awsutil.testkit.SnsScalaCheckImplicits._
 import org.scalacheck.{Arbitrary, Shrink}
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks.forAll
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks.forAll
 import org.scalatest.prop.TableDrivenPropertyChecks.{Table, forAll ⇒ forAllIn}
 
-class SubscriptionEndpointSpec extends FreeSpec {
+class SubscriptionEndpointSpec extends AnyFreeSpec {
   "an HttpEndpoint" - {
     "cannot be built from a non-HTTP URI" in {
       val badUris = Table(

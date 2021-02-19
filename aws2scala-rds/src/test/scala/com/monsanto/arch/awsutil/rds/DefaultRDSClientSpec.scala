@@ -6,12 +6,12 @@ import com.amazonaws.services.rds.model._
 import com.monsanto.arch.awsutil.test_support.AdaptableScalaFutures._
 import com.monsanto.arch.awsutil.test_support.{AwsMockUtils, Materialised}
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 
 import scala.collection.JavaConverters._
 
-class DefaultRDSClientSpec  extends FreeSpec with MockFactory with Materialised with AwsMockUtils {
+class DefaultRDSClientSpec  extends AnyFreeSpec with MockFactory with Materialised with AwsMockUtils {
   "The RDS client" - {
     "can create a DB instance" in withFixture { f ⇒
       val dbInstance = new DBInstance()

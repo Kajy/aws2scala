@@ -1,15 +1,14 @@
 package com.monsanto.arch.awsutil.test_support
 
 import java.util.concurrent.ExecutorService
-
 import com.amazonaws.auth.AWSCredentialsProvider
 import com.monsanto.arch.awsutil.impl.ShutdownHook
 import com.monsanto.arch.awsutil.{AsyncAwsClient, AwsClientProvider, AwsSettings, StreamingAwsClient}
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 
-trait AwsClientProviderBehaviours { this: FreeSpec with MockFactory ⇒
+trait AwsClientProviderBehaviours { this: AnyFreeSpec with MockFactory ⇒
   def anAwsClientProvider[StreamingClient <: StreamingAwsClient: Manifest, AsyncClient <: AsyncAwsClient: Manifest](provider: AwsClientProvider[StreamingClient,AsyncClient]): Unit = {
     val executorService = mock[ExecutorService]("executorService")
     var streamingClient: Option[StreamingClient] = None

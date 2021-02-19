@@ -109,6 +109,9 @@ object IdentityManagementAction {
   /** Action for the DeleteRole operation. */
   case object DeleteRole extends IdentityManagementAction("DeleteRole")
 
+  /** Action for the DeleteRolePermissionsBoundary operation. */
+  case object DeleteRolePermissionsBoundary extends IdentityManagementAction("DeleteRolePermissionsBoundary")
+
   /** Action for the DeleteRolePolicy operation. */
   case object DeleteRolePolicy extends IdentityManagementAction("DeleteRolePolicy")
 
@@ -133,6 +136,9 @@ object IdentityManagementAction {
   /** Action for the DeleteUser operation. */
   case object DeleteUser extends IdentityManagementAction("DeleteUser")
 
+  /** Action for the DeleteUserPermissionsBoundary operation. */
+  case object DeleteUserPermissionsBoundary extends IdentityManagementAction("DeleteUserPermissionsBoundary")
+
   /** Action for the DeleteUserPolicy operation. */
   case object DeleteUserPolicy extends IdentityManagementAction("DeleteUserPolicy")
 
@@ -154,8 +160,17 @@ object IdentityManagementAction {
   /** Action for the GenerateCredentialReport operation. */
   case object GenerateCredentialReport extends IdentityManagementAction("GenerateCredentialReport")
 
+  /** Action for the GenerateCredentialReport operation. */
+  case object GenerateOrganizationsAccessReport extends IdentityManagementAction("GenerateOrganizationsAccessReport")
+
+  /** Action for the GenerateServiceLastAccessedDetails operation. */
+  case object GenerateServiceLastAccessedDetails extends IdentityManagementAction("GenerateServiceLastAccessedDetails")
+
   /** Action for the GetAccessKeyLastUsed operation. */
   case object GetAccessKeyLastUsed extends IdentityManagementAction("GetAccessKeyLastUsed")
+
+  /** Action for the GetOrganizationsAccessReport operation. */
+  case object GetOrganizationsAccessReport extends IdentityManagementAction("GetOrganizationsAccessReport")
 
   /** Action for the GetAccountAuthorizationDetails operation. */
   case object GetAccountAuthorizationDetails extends IdentityManagementAction("GetAccountAuthorizationDetails")
@@ -211,6 +226,12 @@ object IdentityManagementAction {
   /** Action for the GetServerCertificate operation. */
   case object GetServerCertificate extends IdentityManagementAction("GetServerCertificate")
 
+  /** Action for the GetServiceLastAccessedDetails operation. */
+  case object GetServiceLastAccessedDetails extends IdentityManagementAction("GetServiceLastAccessedDetails")
+
+  /** Action for the GetServiceLastAccessedDetailsWithEntities operation. */
+  case object GetServiceLastAccessedDetailsWithEntities extends IdentityManagementAction("GetServiceLastAccessedDetailsWithEntities")
+
   /** Action for the GetServiceLinkedRoleDeletionStatus operation. */
   case object GetServiceLinkedRoleDeletionStatus extends IdentityManagementAction("GetServiceLinkedRoleDeletionStatus")
 
@@ -253,17 +274,32 @@ object IdentityManagementAction {
   /** Action for the ListInstanceProfilesForRole operation. */
   case object ListInstanceProfilesForRole extends IdentityManagementAction("ListInstanceProfilesForRole")
 
+  /** Action for the ListInstanceProfileTags operation. */
+  case object ListInstanceProfileTags extends IdentityManagementAction("ListInstanceProfileTags")
+
   /** Action for the ListMFADevices operation. */
   case object ListMFADevices extends IdentityManagementAction("ListMFADevices")
+
+  /** Action for the ListMFADeviceTags operation. */
+  case object ListMFADeviceTags extends IdentityManagementAction("ListMFADeviceTags")
 
   /** Action for the ListOpenIDConnectProviders operation. */
   case object ListOpenIDConnectProviders extends IdentityManagementAction("ListOpenIDConnectProviders")
 
+  /** Action for the ListOpenIDConnectProviderTags operation. */
+  case object ListOpenIDConnectProviderTags extends IdentityManagementAction("ListOpenIDConnectProviderTags")
+
   /** Action for the ListPolicies operation. */
   case object ListPolicies extends IdentityManagementAction("ListPolicies")
 
+  /** Action for the ListPoliciesGrantingServiceAccess operation. */
+  case object ListPoliciesGrantingServiceAccess extends IdentityManagementAction("ListPoliciesGrantingServiceAccess")
+
   /** Action for the ListPolicyVersions operation. */
   case object ListPolicyVersions extends IdentityManagementAction("ListPolicyVersions")
+
+  /** Action for the ListPolicyTags operation. */
+  case object ListPolicyTags extends IdentityManagementAction("ListPolicyTags")
 
   /** Action for the ListRolePolicies operation. */
   case object ListRolePolicies extends IdentityManagementAction("ListRolePolicies")
@@ -271,14 +307,23 @@ object IdentityManagementAction {
   /** Action for the ListRoles operation. */
   case object ListRoles extends IdentityManagementAction("ListRoles")
 
+  /** Action for the ListRoleTags operation. */
+  case object ListRoleTags extends IdentityManagementAction("ListRoleTags")
+
   /** Action for the ListSAMLProviders operation. */
   case object ListSAMLProviders extends IdentityManagementAction("ListSAMLProviders")
+
+  /** Action for the ListSAMLProviderTags operation. */
+  case object ListSAMLProviderTags extends IdentityManagementAction("ListSAMLProviderTags")
 
   /** Action for the ListSSHPublicKeys operation. */
   case object ListSSHPublicKeys extends IdentityManagementAction("ListSSHPublicKeys")
 
   /** Action for the ListServerCertificates operation. */
   case object ListServerCertificates extends IdentityManagementAction("ListServerCertificates")
+
+  /** Action for the ListServerCertificateTags operation. */
+  case object ListServerCertificateTags extends IdentityManagementAction("ListServerCertificateTags")
 
   /** Action for the ListServiceSpecificCredentials operation. */
   case object ListServiceSpecificCredentials extends IdentityManagementAction("ListServiceSpecificCredentials")
@@ -292,6 +337,9 @@ object IdentityManagementAction {
   /** Action for the ListUsers operation. */
   case object ListUsers extends IdentityManagementAction("ListUsers")
 
+  /** Action for the ListUserTags operation. */
+  case object ListUserTags extends IdentityManagementAction("ListUserTags")
+
   /** Action for the ListVirtualMFADevices operation. */
   case object ListVirtualMFADevices extends IdentityManagementAction("ListVirtualMFADevices")
 
@@ -301,8 +349,14 @@ object IdentityManagementAction {
   /** Action for the PutGroupPolicy operation. */
   case object PutGroupPolicy extends IdentityManagementAction("PutGroupPolicy")
 
+  /** Action for the PutRolePermissionsBoundary operation. */
+  case object PutRolePermissionsBoundary extends IdentityManagementAction("PutRolePermissionsBoundary")
+
   /** Action for the PutRolePolicy operation. */
   case object PutRolePolicy extends IdentityManagementAction("PutRolePolicy")
+
+  /** Action for the PutUserPermissionsBoundary operation. */
+  case object PutUserPermissionsBoundary extends IdentityManagementAction("PutUserPermissionsBoundary")
 
   /** Action for the PutUserPolicy operation. */
   case object PutUserPolicy extends IdentityManagementAction("PutUserPolicy")
@@ -325,11 +379,62 @@ object IdentityManagementAction {
   /** Action for the SetDefaultPolicyVersion operation. */
   case object SetDefaultPolicyVersion extends IdentityManagementAction("SetDefaultPolicyVersion")
 
+  /** Action for the SetSecurityTokenServicePreferences operation. */
+  case object SetSecurityTokenServicePreferences extends IdentityManagementAction("SetSecurityTokenServicePreferences")
+
   /** Action for the SimulateCustomPolicy operation. */
   case object SimulateCustomPolicy extends IdentityManagementAction("SimulateCustomPolicy")
 
   /** Action for the SimulatePrincipalPolicy operation. */
   case object SimulatePrincipalPolicy extends IdentityManagementAction("SimulatePrincipalPolicy")
+
+  /** Action for the TagInstanceProfile operation. */
+  case object TagInstanceProfile extends IdentityManagementAction("TagInstanceProfile")
+
+  /** Action for the TagMFADevice operation. */
+  case object TagMFADevice extends IdentityManagementAction("TagMFADevice")
+
+  /** Action for the TagOpenIDConnectProvider operation. */
+  case object TagOpenIDConnectProvider extends IdentityManagementAction("TagOpenIDConnectProvider")
+
+  /** Action for the TagPolicy operation. */
+  case object TagPolicy extends IdentityManagementAction("TagPolicy")
+
+  /** Action for the TagRole operation. */
+  case object TagRole extends IdentityManagementAction("TagRole")
+
+  /** Action for the TagSAMLProvider operation. */
+  case object TagSAMLProvider extends IdentityManagementAction("TagSAMLProvider")
+
+  /** Action for the TagServerCertificate operation. */
+  case object TagServerCertificate extends IdentityManagementAction("TagServerCertificate")
+
+  /** Action for the TagUser operation. */
+  case object TagUser extends IdentityManagementAction("TagUser")
+
+  /** Action for the UntagInstanceProfile operation. */
+  case object UntagInstanceProfile extends IdentityManagementAction("UntagInstanceProfile")
+
+  /** Action for the UntagMFADevice operation. */
+  case object UntagMFADevice extends IdentityManagementAction("UntagMFADevice")
+
+  /** Action for the UntagOpenIDConnectProvider operation. */
+  case object UntagOpenIDConnectProvider extends IdentityManagementAction("UntagOpenIDConnectProvider")
+
+  /** Action for the UntagPolicy operation. */
+  case object UntagPolicy extends IdentityManagementAction("UntagPolicy")
+
+  /** Action for the UntagRole operation. */
+  case object UntagRole extends IdentityManagementAction("UntagRole")
+
+  /** Action for the UntagSAMLProvider operation. */
+  case object UntagSAMLProvider extends IdentityManagementAction("UntagSAMLProvider")
+
+  /** Action for the UntagServerCertificate operation. */
+  case object UntagServerCertificate extends IdentityManagementAction("UntagServerCertificate")
+
+  /** Action for the UntagUser operation. */
+  case object UntagUser extends IdentityManagementAction("UntagUser")
 
   /** Action for the UpdateAccessKey operation. */
   case object UpdateAccessKey extends IdentityManagementAction("UpdateAccessKey")
@@ -389,24 +494,32 @@ object IdentityManagementAction {
     CreateRole, CreateUser, CreatePolicy, CreatePolicyVersion, CreateSAMLProvider, CreateServiceLinkedRole,
     CreateServiceSpecificCredential, DeleteOpenIDConnectProvider, DeleteSAMLProvider, DeleteSSHPublicKey,
     CreateVirtualMFADevice, DeactivateMFADevice, DeleteAccessKey, DeleteAccountAlias, DeleteAccountPasswordPolicy,
-    DeleteGroup, DeleteGroupPolicy, DeleteInstanceProfile, DeleteLoginProfile, DeleteRole, DeleteRolePolicy,
-    DeletePolicy, DeletePolicyVersion,
+    DeleteGroup, DeleteGroupPolicy, DeleteInstanceProfile, DeleteLoginProfile, DeleteRole, DeleteRolePermissionsBoundary,
+    DeleteRolePolicy, DeletePolicy, DeletePolicyVersion,
     DeleteServiceLinkedRole, DeleteServiceSpecificCredential, DetachGroupPolicy, DetachRolePolicy, DetachUserPolicy,
-    DeleteServerCertificate, DeleteSigningCertificate, DeleteUser, DeleteUserPolicy, DeleteVirtualMFADevice,
-    GenerateCredentialReport, GetAccessKeyLastUsed, GetAccountAuthorizationDetails,
+    DeleteServerCertificate, DeleteSigningCertificate, DeleteUser, DeleteUserPermissionsBoundary, DeleteUserPolicy, DeleteVirtualMFADevice,
+    GenerateCredentialReport, GenerateOrganizationsAccessReport, GenerateServiceLastAccessedDetails,
+    GetAccessKeyLastUsed, GetOrganizationsAccessReport, GetAccountAuthorizationDetails,
     GetContextKeysForCustomPolicy, GetContextKeysForPrincipalPolicy, GetCredentialReport,
     EnableMFADevice, GetAccountPasswordPolicy, GetAccountSummary, GetGroup, GetGroupPolicy, GetInstanceProfile,
     GetOpenIDConnectProvider, GetPolicy, GetPolicyVersion, GetSAMLProvider, GetSSHPublicKey, GetServiceLinkedRoleDeletionStatus,
-    GetLoginProfile, GetRole, GetRolePolicy, GetServerCertificate, GetUser, GetUserPolicy, ListAccessKeys,
+    GetLoginProfile, GetRole, GetRolePolicy, GetServerCertificate, GetServiceLastAccessedDetails,
+    GetServiceLastAccessedDetailsWithEntities, GetUser, GetUserPolicy, ListAccessKeys, ListPoliciesGrantingServiceAccess,
+    ListPolicyTags, ListRoleTags, ListSAMLProviderTags, ListServerCertificateTags, ListUserTags,
     ListAccountAliases, ListGroupPolicies, ListGroups, ListGroupsForUser, ListInstanceProfiles,
-    ListInstanceProfilesForRole, ListMFADevices, ListRolePolicies, ListRoles, ListServerCertificates,
+    ListInstanceProfilesForRole, ListMFADevices, ListMFADeviceTags, ListRolePolicies, ListRoles, ListServerCertificates,
     ListAttachedGroupPolicies, ListAttachedRolePolicies, ListAttachedUserPolicies, ListEntitiesForPolicy,
     ListOpenIDConnectProviders, ListPolicies, ListPolicyVersions, ListSAMLProviders, ListSSHPublicKeys,
-    ListServiceSpecificCredentials,
+    ListServiceSpecificCredentials, ListInstanceProfileTags, ListOpenIDConnectProviderTags,
     ListSigningCertificates, ListUserPolicies, ListUsers, ListVirtualMFADevices, PassRole, PutGroupPolicy,
+    PutRolePermissionsBoundary, PutUserPermissionsBoundary,
     PutRolePolicy, PutUserPolicy, RemoveRoleFromInstanceProfile, RemoveUserFromGroup, ResyncMFADevice,
     RemoveClientIDFromOpenIDConnectProvider, ResetServiceSpecificCredential, SetDefaultPolicyVersion,
-    SimulateCustomPolicy, SimulatePrincipalPolicy, UpdateOpenIDConnectProviderThumbprint, UpdateRole, UpdateRoleDescription,
+    SetSecurityTokenServicePreferences, SimulateCustomPolicy, SimulatePrincipalPolicy,
+    TagInstanceProfile, TagMFADevice, TagOpenIDConnectProvider, TagPolicy, TagRole, TagSAMLProvider,
+    TagServerCertificate, TagUser, UntagInstanceProfile, UntagMFADevice, UntagOpenIDConnectProvider,
+    UntagPolicy, UntagRole, UntagSAMLProvider, UntagServerCertificate, UntagUser,
+    UpdateOpenIDConnectProviderThumbprint, UpdateRole, UpdateRoleDescription,
     UpdateSAMLProvider, UpdateSSHPublicKey, UpdateServiceSpecificCredential, UploadSSHPublicKey,
     UpdateAccessKey, UpdateAccountPasswordPolicy, UpdateAssumeRolePolicy, UpdateGroup, UpdateLoginProfile,
     UpdateServerCertificate, UpdateSigningCertificate, UpdateUser, UploadServerCertificate, UploadSigningCertificate
@@ -448,6 +561,7 @@ object IdentityManagementAction {
       IdentityManagementActions.DeletePolicy → DeletePolicy,
       IdentityManagementActions.DeletePolicyVersion → DeletePolicyVersion,
       IdentityManagementActions.DeleteRole → DeleteRole,
+      IdentityManagementActions.DeleteRolePermissionsBoundary → DeleteRolePermissionsBoundary,
       IdentityManagementActions.DeleteRolePolicy → DeleteRolePolicy,
       IdentityManagementActions.DeleteSAMLProvider → DeleteSAMLProvider,
       IdentityManagementActions.DeleteSSHPublicKey → DeleteSSHPublicKey,
@@ -456,6 +570,7 @@ object IdentityManagementAction {
       IdentityManagementActions.DeleteServiceSpecificCredential → DeleteServiceSpecificCredential,
       IdentityManagementActions.DeleteSigningCertificate → DeleteSigningCertificate,
       IdentityManagementActions.DeleteUser → DeleteUser,
+      IdentityManagementActions.DeleteUserPermissionsBoundary → DeleteUserPermissionsBoundary,
       IdentityManagementActions.DeleteUserPolicy → DeleteUserPolicy,
       IdentityManagementActions.DeleteVirtualMFADevice → DeleteVirtualMFADevice,
       IdentityManagementActions.DetachGroupPolicy → DetachGroupPolicy,
@@ -463,7 +578,10 @@ object IdentityManagementAction {
       IdentityManagementActions.DetachUserPolicy → DetachUserPolicy,
       IdentityManagementActions.EnableMFADevice → EnableMFADevice,
       IdentityManagementActions.GenerateCredentialReport → GenerateCredentialReport,
+      IdentityManagementActions.GenerateOrganizationsAccessReport → GenerateOrganizationsAccessReport,
+      IdentityManagementActions.GenerateServiceLastAccessedDetails → GenerateServiceLastAccessedDetails,
       IdentityManagementActions.GetAccessKeyLastUsed → GetAccessKeyLastUsed,
+      IdentityManagementActions.GetOrganizationsAccessReport → GetOrganizationsAccessReport,
       IdentityManagementActions.GetAccountAuthorizationDetails → GetAccountAuthorizationDetails,
       IdentityManagementActions.GetAccountPasswordPolicy → GetAccountPasswordPolicy,
       IdentityManagementActions.GetAccountSummary → GetAccountSummary,
@@ -481,6 +599,8 @@ object IdentityManagementAction {
       IdentityManagementActions.GetRolePolicy → GetRolePolicy,
       IdentityManagementActions.GetSAMLProvider → GetSAMLProvider,
       IdentityManagementActions.GetServerCertificate → GetServerCertificate,
+      IdentityManagementActions.GetServiceLastAccessedDetails → GetServiceLastAccessedDetails,
+      IdentityManagementActions.GetServiceLastAccessedDetailsWithEntities → GetServiceLastAccessedDetailsWithEntities,
       IdentityManagementActions.GetSSHPublicKey → GetSSHPublicKey,
       IdentityManagementActions.GetServiceLinkedRoleDeletionStatus → GetServiceLinkedRoleDeletionStatus,
       IdentityManagementActions.GetUser → GetUser,
@@ -496,23 +616,34 @@ object IdentityManagementAction {
       IdentityManagementActions.ListGroupsForUser → ListGroupsForUser,
       IdentityManagementActions.ListInstanceProfiles → ListInstanceProfiles,
       IdentityManagementActions.ListInstanceProfilesForRole → ListInstanceProfilesForRole,
+      IdentityManagementActions.ListInstanceProfileTags → ListInstanceProfileTags,
       IdentityManagementActions.ListMFADevices → ListMFADevices,
+      IdentityManagementActions.ListMFADeviceTags → ListMFADeviceTags,
       IdentityManagementActions.ListOpenIDConnectProviders → ListOpenIDConnectProviders,
+      IdentityManagementActions.ListOpenIDConnectProviderTags → ListOpenIDConnectProviderTags,
       IdentityManagementActions.ListPolicies → ListPolicies,
+      IdentityManagementActions.ListPoliciesGrantingServiceAccess → ListPoliciesGrantingServiceAccess,
       IdentityManagementActions.ListPolicyVersions → ListPolicyVersions,
+      IdentityManagementActions.ListPolicyTags → ListPolicyTags,
       IdentityManagementActions.ListRolePolicies → ListRolePolicies,
       IdentityManagementActions.ListRoles → ListRoles,
+      IdentityManagementActions.ListRoleTags → ListRoleTags,
       IdentityManagementActions.ListSAMLProviders → ListSAMLProviders,
+      IdentityManagementActions.ListSAMLProviderTags → ListSAMLProviderTags,
       IdentityManagementActions.ListSSHPublicKeys → ListSSHPublicKeys,
       IdentityManagementActions.ListServerCertificates → ListServerCertificates,
+      IdentityManagementActions.ListServerCertificateTags → ListServerCertificateTags,
       IdentityManagementActions.ListServiceSpecificCredentials → ListServiceSpecificCredentials,
       IdentityManagementActions.ListSigningCertificates → ListSigningCertificates,
       IdentityManagementActions.ListUserPolicies → ListUserPolicies,
       IdentityManagementActions.ListUsers → ListUsers,
+      IdentityManagementActions.ListUserTags → ListUserTags,
       IdentityManagementActions.ListVirtualMFADevices → ListVirtualMFADevices,
       IdentityManagementActions.PassRole → PassRole,
       IdentityManagementActions.PutGroupPolicy → PutGroupPolicy,
+      IdentityManagementActions.PutRolePermissionsBoundary → PutRolePermissionsBoundary,
       IdentityManagementActions.PutRolePolicy → PutRolePolicy,
+      IdentityManagementActions.PutUserPermissionsBoundary → PutUserPermissionsBoundary,
       IdentityManagementActions.PutUserPolicy → PutUserPolicy,
       IdentityManagementActions.RemoveClientIDFromOpenIDConnectProvider → RemoveClientIDFromOpenIDConnectProvider,
       IdentityManagementActions.RemoveRoleFromInstanceProfile → RemoveRoleFromInstanceProfile,
@@ -520,8 +651,25 @@ object IdentityManagementAction {
       IdentityManagementActions.ResetServiceSpecificCredential → ResetServiceSpecificCredential,
       IdentityManagementActions.ResyncMFADevice → ResyncMFADevice,
       IdentityManagementActions.SetDefaultPolicyVersion → SetDefaultPolicyVersion,
+      IdentityManagementActions.SetSecurityTokenServicePreferences → SetSecurityTokenServicePreferences,
       IdentityManagementActions.SimulateCustomPolicy → SimulateCustomPolicy,
       IdentityManagementActions.SimulatePrincipalPolicy → SimulatePrincipalPolicy,
+      IdentityManagementActions.TagInstanceProfile → TagInstanceProfile,
+      IdentityManagementActions.TagMFADevice → TagMFADevice,
+      IdentityManagementActions.TagOpenIDConnectProvider → TagOpenIDConnectProvider,
+      IdentityManagementActions.TagPolicy → TagPolicy,
+      IdentityManagementActions.TagRole → TagRole,
+      IdentityManagementActions.TagSAMLProvider → TagSAMLProvider,
+      IdentityManagementActions.TagServerCertificate → TagServerCertificate,
+      IdentityManagementActions.TagUser → TagUser,
+      IdentityManagementActions.UntagInstanceProfile → UntagInstanceProfile,
+      IdentityManagementActions.UntagMFADevice → UntagMFADevice,
+      IdentityManagementActions.UntagOpenIDConnectProvider → UntagOpenIDConnectProvider,
+      IdentityManagementActions.UntagPolicy → UntagPolicy,
+      IdentityManagementActions.UntagRole → UntagRole,
+      IdentityManagementActions.UntagSAMLProvider → UntagSAMLProvider,
+      IdentityManagementActions.UntagServerCertificate → UntagServerCertificate,
+      IdentityManagementActions.UntagUser → UntagUser,
       IdentityManagementActions.UpdateAccessKey → UpdateAccessKey,
       IdentityManagementActions.UpdateAccountPasswordPolicy → UpdateAccountPasswordPolicy,
       IdentityManagementActions.UpdateAssumeRolePolicy → UpdateAssumeRolePolicy,

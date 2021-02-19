@@ -7,3 +7,5 @@ addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.4.1")
 addSbtPlugin("org.foundweekends" % "sbt-bintray" % "0.5.4")
 
 addSbtPlugin("org.scoverage" % "sbt-coveralls" % "1.2.5")
+
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.5.1")

@@ -2,7 +2,6 @@ package com.monsanto.arch.awsutil.cloudformation
 
 import java.net.URL
 import java.util.{Date, UUID}
-
 import akka.Done
 import com.amazonaws.handlers.AsyncHandler
 import com.amazonaws.services.cloudformation.AmazonCloudFormationAsync
@@ -15,13 +14,14 @@ import com.monsanto.arch.awsutil.test_support.{AwsMockUtils, Materialised}
 import com.monsanto.arch.cloudformation.model.resource.{`AWS::IAM::Group`, `AWS::SNS::Topic`}
 import com.monsanto.arch.cloudformation.model.{ParameterRef, StringParameter, Template}
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import org.scalatest._
+import org.scalatest.freespec.AnyFreeSpec
 import spray.json.JsonWriter
 
 import scala.collection.JavaConverters._
 
-class DefaultCloudFormationClientSpec extends FreeSpec with MockFactory with Materialised with AwsMockUtils {
+class DefaultCloudFormationClientSpec extends AnyFreeSpec with MockFactory with Materialised with AwsMockUtils {
   val stackName = s"aws2scala-it-cf-${UUID.randomUUID()}"
   val stackId = "some:stack:id"
 

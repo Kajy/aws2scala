@@ -4,9 +4,8 @@ import com.amazonaws.auth.policy.actions.IdentityManagementActions
 import com.monsanto.arch.awsutil.converters.CoreConverters._
 import com.monsanto.arch.awsutil.identitymanagement.IdentityManagement
 import com.monsanto.arch.awsutil.test_support.ActionBehaviours
-import org.scalatest.FreeSpec
-
-class IdentityManagementActionSpec extends FreeSpec with ActionBehaviours {
+import org.scalatest.freespec.AnyFreeSpec
+class IdentityManagementActionSpec extends AnyFreeSpec with ActionBehaviours {
   "an IdentityManagementAction object" - {
     // ensure that actions are registered
     IdentityManagement.init()

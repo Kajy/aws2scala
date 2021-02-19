@@ -3,11 +3,11 @@ package com.monsanto.arch.awsutil.kms.model
 import com.monsanto.arch.awsutil.converters.KmsConverters._
 import com.monsanto.arch.awsutil.kms.KMS
 import com.monsanto.arch.awsutil.testkit.KmsScalaCheckImplicits._
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class KeyMetadataSpec extends FreeSpec {
+class KeyMetadataSpec extends AnyFreeSpec {
   // ensure that key ARNs will parse
   KMS.init()
 

@@ -2,13 +2,13 @@ package com.monsanto.arch.awsutil.sns.model
 
 import com.monsanto.arch.awsutil.sns.model.Platform._
 import org.scalacheck.Gen
-import org.scalatest.FreeSpec
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.Inside._
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 import org.scalatest.prop.TableDrivenPropertyChecks.{Table, forAll ⇒ forAllIn}
 
-class PlatformSpec extends FreeSpec {
+class PlatformSpec extends AnyFreeSpec {
   private val namesAndPlatforms = Table(
     ("name", "platform"),
     ("ADM", ADM),

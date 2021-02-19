@@ -3,11 +3,11 @@ package com.monsanto.arch.awsutil.kms.model
 import com.amazonaws.services.kms.model.KeyUsageType
 import com.monsanto.arch.awsutil.converters.KmsConverters._
 import com.monsanto.arch.awsutil.test_support.AwsEnumerationBehaviours
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 import org.scalatest.prop.TableDrivenPropertyChecks.{Table, forAll}
 
-class KeyUsageSpec extends FreeSpec with AwsEnumerationBehaviours {
+class KeyUsageSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
   "a KeyUsage should" - {
     val keyUsages = Table("key usage", KeyUsage.values: _*)
 

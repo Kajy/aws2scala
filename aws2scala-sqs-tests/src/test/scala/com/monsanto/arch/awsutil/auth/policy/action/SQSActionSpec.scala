@@ -4,9 +4,8 @@ import com.amazonaws.auth.policy.actions.SQSActions
 import com.monsanto.arch.awsutil.converters.CoreConverters._
 import com.monsanto.arch.awsutil.sqs.SQS
 import com.monsanto.arch.awsutil.test_support.ActionBehaviours
-import org.scalatest.FreeSpec
-
-class SQSActionSpec extends FreeSpec with ActionBehaviours {
+import org.scalatest.freespec.AnyFreeSpec
+class SQSActionSpec extends AnyFreeSpec with ActionBehaviours {
   "an SNSAction object" - {
     // ensure that actions are registered
     SQS.init()

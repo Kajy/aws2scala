@@ -6,12 +6,12 @@ import com.monsanto.arch.awsutil.testkit.CoreScalaCheckImplicits._
 import com.monsanto.arch.awsutil.testkit.{CoreGen, UtilGen}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen, Shrink}
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks.{whenever ⇒ _, _}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks.{whenever ⇒ _, _}
 import org.scalatest.prop.TableDrivenPropertyChecks.{forAll ⇒ forAllIn, _}
 
-class ArnSpec extends FreeSpec {
+class ArnSpec extends AnyFreeSpec {
   "an Arn should" - {
     case class TestArn(testPartition: Partition,
                        testNamespace: Arn.Namespace,

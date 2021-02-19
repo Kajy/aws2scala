@@ -16,12 +16,12 @@ import com.monsanto.arch.awsutil.test_support.Samplers.arbitrarySample
 import com.monsanto.arch.awsutil.test_support.{AwsMockUtils, Materialised}
 import com.monsanto.arch.awsutil.testkit.KmsScalaCheckImplicits._
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 
 import scala.collection.JavaConverters._
 
-class DefaultKMSClientSpec extends FreeSpec with Materialised with MockFactory with AwsMockUtils {
+class DefaultKMSClientSpec extends AnyFreeSpec with Materialised with MockFactory with AwsMockUtils {
   private val keyIdentifier = "arn:test-key:0"
 
   case class Fixture(awsClient: AWSKMSAsync, asyncClient: AsyncKMSClient, streamingClient: StreamingKMSClient)

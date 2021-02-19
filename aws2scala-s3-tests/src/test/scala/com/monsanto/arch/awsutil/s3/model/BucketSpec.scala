@@ -12,14 +12,14 @@ import com.monsanto.arch.awsutil.test_support.Materialised
 import com.monsanto.arch.awsutil.testkit.UtilGen
 import org.scalacheck.Gen
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
 import scala.concurrent.Future
 import scala.util.Try
 
-class BucketSpec extends FreeSpec with MockFactory with Materialised {
+class BucketSpec extends AnyFreeSpec with MockFactory with Materialised {
   private val who = System.getProperty("user.name")
   private val bucketName = "some-bucket"
   private val bucket = Bucket(bucketName, Owner(who,who), new Date())

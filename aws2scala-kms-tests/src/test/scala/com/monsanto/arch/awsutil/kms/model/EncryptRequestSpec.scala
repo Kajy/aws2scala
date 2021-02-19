@@ -2,12 +2,12 @@ package com.monsanto.arch.awsutil.kms.model
 
 import java.util.UUID
 
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 
 import scala.collection.JavaConverters._
 
-class EncryptRequestSpec extends FreeSpec {
+class EncryptRequestSpec extends AnyFreeSpec {
 
   val keyId = "arn:key"
   val plaintext = Array.fill(32)(0.toByte)

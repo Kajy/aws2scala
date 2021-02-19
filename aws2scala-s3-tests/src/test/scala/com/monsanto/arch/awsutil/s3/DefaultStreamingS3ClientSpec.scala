@@ -11,14 +11,14 @@ import com.monsanto.arch.awsutil.test_support.Materialised
 import com.monsanto.arch.awsutil.testkit.S3Gen
 import com.monsanto.arch.awsutil.testkit.S3ScalaCheckImplicits._
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 import org.scalacheck.Arbitrary.arbitrary
 
 import scala.collection.JavaConverters._
 
-class DefaultStreamingS3ClientSpec extends FreeSpec with MockFactory with Materialised {
+class DefaultStreamingS3ClientSpec extends AnyFreeSpec with MockFactory with Materialised {
   "the default streaming S3 client can" - {
     "create buckets" in {
       forAll { (request: CreateBucketRequest, bucket: Bucket) ⇒

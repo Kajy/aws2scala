@@ -8,20 +8,21 @@ import com.amazonaws.AmazonWebServiceRequest
 import com.amazonaws.handlers.AsyncHandler
 import com.monsanto.arch.awsutil._
 import org.scalacheck.Gen
-import org.scalactic.source.Position
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.concurrent.{Eventually, ScalaFutures}
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
-import org.scalatest.{BeforeAndAfterAll, FreeSpec, Matchers}
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.BeforeAndAfterAll
 
 import scala.concurrent.duration.{Duration, DurationInt, FiniteDuration}
 import scala.concurrent.{Await, Future}
 
 /** Mid-level integration tests of the AWSGraphStage using streams. */
-class AWSGraphStageStreamSpec extends FreeSpec with MockFactory with BeforeAndAfterAll {
+class AWSGraphStageStreamSpec extends AnyFreeSpec with MockFactory with BeforeAndAfterAll {
   import AWSGraphStageStreamSpec._
   import Eventually.{patienceConfig ⇒ _, _}
-  import GeneratorDrivenPropertyChecks._
+  import ScalaCheckDrivenPropertyChecks._
   import Matchers._
   import ScalaFutures.{patienceConfig ⇒ _, _}
 
@@ -34,9 +35,8 @@ class AWSGraphStageStreamSpec extends FreeSpec with MockFactory with BeforeAndAf
 
   "an AWSGraphStage streams results" - {
     import Eventually.{patienceConfig ⇒ _}
-    implicit val streamMaterialiser = ActorMaterializer()(actorSystem)
     implicit val futurePatienceConfig = ScalaFutures.PatienceConfig(5.seconds, 10.milliseconds)
-    val eventuallyPatienceConfig = Eventually.PatienceConfig(5.seconds, 10.milliseconds)
+    implicit val eventuallyPatienceConfig = Eventually.PatienceConfig(5.seconds, 10.milliseconds)
 
     "from a single request terminating" - {
       "normally" in {
@@ -54,7 +54,7 @@ class AWSGraphStageStreamSpec extends FreeSpec with MockFactory with BeforeAndAf
           val result = graph.run()
           eventually {
             result.eitherValue.get shouldBe Left(dynamite)
-          }(eventuallyPatienceConfig, Position.here)
+          }
         }
       }
     }
@@ -77,7 +77,7 @@ class AWSGraphStageStreamSpec extends FreeSpec with MockFactory with BeforeAndAf
             val result = source.via(flow).toMat(sink)(Keep.right).run()
             eventually {
               result.eitherValue.get shouldBe Left(dynamite)
-            }(eventuallyPatienceConfig,Position.here)
+            }
           }
         }
       }
@@ -99,7 +99,7 @@ class AWSGraphStageStreamSpec extends FreeSpec with MockFactory with BeforeAndAf
             val result = source.via(flow).toMat(sink)(Keep.right).run()
             eventually {
               result.eitherValue.get shouldBe Left(dynamite)
-            }(eventuallyPatienceConfig,Position.here)
+            }
           }
         }
       }
@@ -121,7 +121,7 @@ class AWSGraphStageStreamSpec extends FreeSpec with MockFactory with BeforeAndAf
             val result = source.via(flow).via(rateLimit(throttle)).toMat(sink)(Keep.right).run()
             eventually {
               result.eitherValue.get shouldBe Left(dynamite)
-            }(eventuallyPatienceConfig,Position.here)
+            }
           }
         }
       }
@@ -143,7 +143,7 @@ class AWSGraphStageStreamSpec extends FreeSpec with MockFactory with BeforeAndAf
             val result = source.via(flow).toMat(sink)(Keep.right).run()
             eventually {
               result.eitherValue.get shouldBe Left(dynamite)
-            }(eventuallyPatienceConfig,Position.here)
+            }
           }
         }
       }

@@ -14,11 +14,11 @@ import com.monsanto.arch.awsutil.testkit.IamScalaCheckImplicits._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class DefaultStreamingIdentityManagementClientSpec extends FreeSpec with MockFactory with Materialised with AwsMockUtils with AwsMatcherSupport {
+class DefaultStreamingIdentityManagementClientSpec extends AnyFreeSpec with MockFactory with Materialised with AwsMockUtils with AwsMatcherSupport {
   "the default StreamingIdentityManagementClient provides" - {
     "a role lister" in {
       forAll(SizeRange(30)) { (maybePrefix: Option[Path], scalaRoles: List[Role]) ⇒

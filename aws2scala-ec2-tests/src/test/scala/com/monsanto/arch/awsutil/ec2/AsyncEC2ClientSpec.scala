@@ -11,11 +11,11 @@ import com.monsanto.arch.awsutil.testkit.Ec2ScalaCheckImplicits._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class AsyncEC2ClientSpec extends FreeSpec with MockFactory with Materialised with FlowMockUtils {
+class AsyncEC2ClientSpec extends AnyFreeSpec with MockFactory with Materialised with FlowMockUtils {
   "the default async EC2 client can" - {
     "create a key pair" in {
       forAll { keyPair: KeyPair ⇒

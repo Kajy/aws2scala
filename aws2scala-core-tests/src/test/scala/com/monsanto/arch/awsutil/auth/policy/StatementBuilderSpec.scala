@@ -3,11 +3,11 @@ package com.monsanto.arch.awsutil.auth.policy
 import com.monsanto.arch.awsutil.testkit.CoreGen
 import com.monsanto.arch.awsutil.testkit.CoreScalaCheckImplicits._
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class StatementBuilderSpec extends FreeSpec {
+class StatementBuilderSpec extends AnyFreeSpec {
   TestAction.registerActions()
 
   "a StatementBuilder should" - {

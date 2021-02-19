@@ -6,13 +6,13 @@ import com.monsanto.arch.awsutil.identitymanagement.AwsMatcherSupport
 import com.monsanto.arch.awsutil.test_support.AwsEnumerationBehaviours
 import com.monsanto.arch.awsutil.testkit.CoreScalaCheckImplicits._
 import com.monsanto.arch.awsutil.testkit.IamScalaCheckImplicits._
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 import org.scalatest.prop.TableDrivenPropertyChecks.{Table, forAll ⇒ forAllIn}
 
 //noinspection NameBooleanParameters
-class ListPoliciesRequestSpec extends FreeSpec with AwsEnumerationBehaviours with AwsMatcherSupport {
+class ListPoliciesRequestSpec extends AnyFreeSpec with AwsEnumerationBehaviours with AwsMatcherSupport {
   "ListPoliciesRequest should" - {
     "have an allPolicies constant" in {
       ListPoliciesRequest.allPolicies shouldBe ListPoliciesRequest(false, Path.empty, ListPoliciesRequest.Scope.All)

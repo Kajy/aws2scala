@@ -6,11 +6,11 @@ import com.monsanto.arch.awsutil.test_support.AwsScalaFutures._
 import com.monsanto.arch.awsutil.test_support.{AwsIntegrationSpec, IntegrationCleanup, IntegrationTest, TestDefaults}
 import com.typesafe.scalalogging.StrictLogging
 import org.scalactic.Equality
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 
 @IntegrationTest
-class RDSClientIntegrationSpec extends FreeSpec with AwsIntegrationSpec with StrictLogging with IntegrationCleanup {
+class RDSClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with StrictLogging with IntegrationCleanup {
   val streamingClient = awsClient.streaming(RDS)
   val asyncClient = awsClient.async(RDS)
 

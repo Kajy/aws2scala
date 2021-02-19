@@ -4,9 +4,8 @@ import java.io.{ByteArrayInputStream, File}
 import java.net.URL
 import java.util.concurrent.TimeoutException
 import java.util.{Date, UUID}
-
 import akka.stream.scaladsl.{Sink, Source}
-import com.amazonaws.services.s3.model. _
+import com.amazonaws.services.s3.model._
 import com.amazonaws.services.s3.transfer.model.UploadResult
 import com.amazonaws.services.s3.transfer.{Download, TransferManager, Upload}
 import com.amazonaws.services.s3.{AbstractAmazonS3, Headers}
@@ -19,15 +18,17 @@ import com.typesafe.config.ConfigFactory
 import org.scalacheck.Gen
 import org.scalactic.source.Position
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
-import org.scalatest.{Assertion, FreeSpec}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
+import org.scalatest.Assertion
+import org.scalatest.concurrent.PatienceConfiguration.{Interval, Timeout}
 
 import scala.collection.JavaConverters._
 import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
 
-class DefaultS3ClientSpec extends FreeSpec with Materialised with MockFactory {
+class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory {
   private val userName = System.getProperty("user.name")
 
   "the S3 client" - {
@@ -440,7 +441,8 @@ class DefaultS3ClientSpec extends FreeSpec with Materialised with MockFactory {
         }
         .anyNumberOfTimes()
 
-      val result = f.asyncClient.emptyBucket(bucketName).futureValue(PatienceConfig(1.second, 100.milliseconds), Position.here)
+      val patienceConfig = PatienceConfig(1.second, 100.milliseconds)
+      val result = f.asyncClient.emptyBucket(bucketName).futureValue(Timeout(patienceConfig.timeout), Interval(patienceConfig.interval))(Position.here)
       result shouldBe bucketName
     }
 

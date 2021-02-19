@@ -4,9 +4,8 @@ import com.amazonaws.auth.policy.actions.SNSActions
 import com.monsanto.arch.awsutil.converters.CoreConverters._
 import com.monsanto.arch.awsutil.sns.SNS
 import com.monsanto.arch.awsutil.test_support.ActionBehaviours
-import org.scalatest.FreeSpec
-
-class SNSActionSpec extends FreeSpec with ActionBehaviours {
+import org.scalatest.freespec.AnyFreeSpec
+class SNSActionSpec extends AnyFreeSpec with ActionBehaviours {
   "an SNSAction object" - {
     // ensure that actions are registered
     SNS.init()

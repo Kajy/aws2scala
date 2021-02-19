@@ -12,7 +12,6 @@ import scala.concurrent.duration.DurationInt
 
 trait AwsIntegrationSpec extends BeforeAndAfterAll { this: Suite ⇒
   private val actorSystem = ActorSystem(this.getClass.getSimpleName)
-  protected implicit val materialiser = ActorMaterializer()(actorSystem)
   protected val awsClient = AwsClient(AwsSettings.Default)
 
   /** A randomly-generated identifier for the test. */

@@ -4,11 +4,11 @@ import com.monsanto.arch.awsutil.s3.model.AwsConverters._
 import com.monsanto.arch.awsutil.testkit.S3Gen
 import com.monsanto.arch.awsutil.testkit.S3ScalaCheckImplicits._
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class CreateBucketRequestSpec extends FreeSpec {
+class CreateBucketRequestSpec extends AnyFreeSpec {
   "a CreateBucketRequest" - {
     "can be created" - {
       "with a bucket name" in {

@@ -8,11 +8,11 @@ import com.monsanto.arch.awsutil.testkit.S3Gen
 import com.monsanto.arch.awsutil.testkit.S3ScalaCheckImplicits._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class DefaultAsyncS3ClientSpec extends FreeSpec with MockFactory with Materialised with FlowMockUtils {
+class DefaultAsyncS3ClientSpec extends AnyFreeSpec with MockFactory with Materialised with FlowMockUtils {
   "the async S3 client can" - {
     "create buckets" in {
       forAll(S3Gen.bucketName, arbitrary[Bucket]) { (bucketName, bucket) ⇒

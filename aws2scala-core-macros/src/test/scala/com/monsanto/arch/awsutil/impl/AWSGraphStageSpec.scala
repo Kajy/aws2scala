@@ -1,7 +1,6 @@
 package com.monsanto.arch.awsutil.impl
 
-import java.util.concurrent.{Future ⇒ JFuture}
-
+import java.util.concurrent.{Future => JFuture}
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Keep
@@ -12,15 +11,16 @@ import com.monsanto.arch.awsutil.impl.AWSGraphStageSpec._
 import com.monsanto.arch.awsutil._
 import com.typesafe.config.ConfigFactory
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.Matchers._
-import org.scalatest.{BeforeAndAfterAll, FreeSpec}
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.BeforeAndAfterAll
 
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{Await, Promise}
 import scala.util.{Failure, Success}
 
 /** Lower-level unit tests of the AWSGraphStage. */
-class AWSGraphStageSpec extends FreeSpec with BeforeAndAfterAll with MockFactory {
+class AWSGraphStageSpec extends AnyFreeSpec with BeforeAndAfterAll with MockFactory {
   implicit val actorSystem = ActorSystem("AWSGraphStageSpec", TestConfig)
 
   private case class IdleFixture(source: TestPublisher.Probe[TestRequest],

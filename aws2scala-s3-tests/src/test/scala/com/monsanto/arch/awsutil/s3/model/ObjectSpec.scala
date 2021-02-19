@@ -10,12 +10,12 @@ import com.monsanto.arch.awsutil.s3.{AsyncS3Client, DownloadSink}
 import com.monsanto.arch.awsutil.test_support.AdaptableScalaFutures._
 import com.monsanto.arch.awsutil.test_support.Materialised
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 
 import scala.concurrent.Future
 
-class ObjectSpec extends FreeSpec with MockFactory with Materialised {
+class ObjectSpec extends AnyFreeSpec with MockFactory with Materialised {
   private val who = System.getProperty("user.name")
   private val bucketName = "some-bucket"
   private val key = "key"

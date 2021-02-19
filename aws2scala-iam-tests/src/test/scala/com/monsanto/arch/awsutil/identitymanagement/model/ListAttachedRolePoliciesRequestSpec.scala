@@ -5,11 +5,11 @@ import com.monsanto.arch.awsutil.converters.IamConverters._
 import com.monsanto.arch.awsutil.testkit.CoreGen
 import com.monsanto.arch.awsutil.testkit.CoreScalaCheckImplicits._
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class ListAttachedRolePoliciesRequestSpec extends FreeSpec {
+class ListAttachedRolePoliciesRequestSpec extends AnyFreeSpec {
   "the list all roles request" - {
     "creates the correct AWS request" in {
       forAll(CoreGen.iamName) { roleName ⇒

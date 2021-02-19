@@ -11,13 +11,13 @@ import com.monsanto.arch.awsutil.test_support.AwsScalaFutures._
 import com.monsanto.arch.awsutil.test_support.{AwsIntegrationSpec, IntegrationCleanup, IntegrationTest, TestDefaults}
 import com.typesafe.scalalogging.StrictLogging
 import org.scalactic.Equality
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 import org.scalatest.concurrent.Eventually._
 import spray.json.JsonParser
 
 @IntegrationTest
-class S3ClientIntegrationSpec extends FreeSpec with AwsIntegrationSpec with StrictLogging with IntegrationCleanup {
+class S3ClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with StrictLogging with IntegrationCleanup {
   val streamingClient = awsClient.streaming(S3)
   val asyncClient = awsClient.async(S3)
   val bucketPrefix = s"aws2scala-it-s3"

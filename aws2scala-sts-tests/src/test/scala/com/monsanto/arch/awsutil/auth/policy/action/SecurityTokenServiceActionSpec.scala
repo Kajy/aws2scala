@@ -4,9 +4,8 @@ import com.amazonaws.auth.policy.actions.SecurityTokenServiceActions
 import com.monsanto.arch.awsutil.converters.CoreConverters._
 import com.monsanto.arch.awsutil.securitytoken.SecurityTokenService
 import com.monsanto.arch.awsutil.test_support.ActionBehaviours
-import org.scalatest.FreeSpec
-
-class SecurityTokenServiceActionSpec extends FreeSpec with ActionBehaviours {
+import org.scalatest.freespec.AnyFreeSpec
+class SecurityTokenServiceActionSpec extends AnyFreeSpec with ActionBehaviours {
   "an SecurityTokenServiceAction object" - {
     // ensure that actions are registered
     SecurityTokenService.init()

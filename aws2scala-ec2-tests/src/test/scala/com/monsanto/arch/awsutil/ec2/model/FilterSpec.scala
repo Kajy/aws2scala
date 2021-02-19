@@ -1,13 +1,13 @@
 package com.monsanto.arch.awsutil.ec2.model
 
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 import com.monsanto.arch.awsutil.testkit.Ec2ScalaCheckImplicits._
 
 import scala.collection.JavaConverters._
 
-class FilterSpec extends FreeSpec {
+class FilterSpec extends AnyFreeSpec {
   "a Filter instance should" - {
     "create valid AWS filters" in {
       forAll { filter: Filter ⇒

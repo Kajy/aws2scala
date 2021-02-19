@@ -1,14 +1,14 @@
 package com.monsanto.arch.awsutil.test_support
 
 import com.monsanto.arch.awsutil.util.{AwsEnumeration, AwsEnumerationCompanion}
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.scalatest.prop.Tables.Table
 
 import scala.reflect.ClassTag
 
-trait AwsEnumerationBehaviours { this: FreeSpec ⇒
+trait AwsEnumerationBehaviours { this: AnyFreeSpec ⇒
   def anAwsEnumeration[AwsType,ScalaType](awsValueArray: Array[AwsType],
                                           scalaValueSeq: Seq[ScalaType],
                                           asAws: ScalaType ⇒ AwsType,

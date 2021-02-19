@@ -2002,4 +2002,1000 @@ class FakeAmazonEC2Async extends AmazonEC2Async {
   override def getCachedResponseMetadata(request: AmazonWebServiceRequest): ResponseMetadata = ???
 
   override def waiters(): AmazonEC2Waiters = ???
+
+  override def acceptTransitGatewayMulticastDomainAssociations(acceptTransitGatewayMulticastDomainAssociationsRequest: AcceptTransitGatewayMulticastDomainAssociationsRequest): AcceptTransitGatewayMulticastDomainAssociationsResult = ???
+
+  override def acceptTransitGatewayMulticastDomainAssociationsAsync(acceptTransitGatewayMulticastDomainAssociationsRequest: AcceptTransitGatewayMulticastDomainAssociationsRequest): Future[AcceptTransitGatewayMulticastDomainAssociationsResult] = ???
+
+  override def acceptTransitGatewayMulticastDomainAssociationsAsync(acceptTransitGatewayMulticastDomainAssociationsRequest: AcceptTransitGatewayMulticastDomainAssociationsRequest, asyncHandler: AsyncHandler[AcceptTransitGatewayMulticastDomainAssociationsRequest, AcceptTransitGatewayMulticastDomainAssociationsResult]): Future[AcceptTransitGatewayMulticastDomainAssociationsResult] = ???
+
+  override def acceptTransitGatewayPeeringAttachmentAsync(acceptTransitGatewayPeeringAttachmentRequest: AcceptTransitGatewayPeeringAttachmentRequest): Future[AcceptTransitGatewayPeeringAttachmentResult] = ???
+
+  override def acceptTransitGatewayPeeringAttachmentAsync(acceptTransitGatewayPeeringAttachmentRequest: AcceptTransitGatewayPeeringAttachmentRequest, asyncHandler: AsyncHandler[AcceptTransitGatewayPeeringAttachmentRequest, AcceptTransitGatewayPeeringAttachmentResult]): Future[AcceptTransitGatewayPeeringAttachmentResult] = ???
+
+  override def acceptTransitGatewayVpcAttachmentAsync(acceptTransitGatewayVpcAttachmentRequest: AcceptTransitGatewayVpcAttachmentRequest): Future[AcceptTransitGatewayVpcAttachmentResult] = ???
+
+  override def acceptTransitGatewayVpcAttachmentAsync(acceptTransitGatewayVpcAttachmentRequest: AcceptTransitGatewayVpcAttachmentRequest, asyncHandler: AsyncHandler[AcceptTransitGatewayVpcAttachmentRequest, AcceptTransitGatewayVpcAttachmentResult]): Future[AcceptTransitGatewayVpcAttachmentResult] = ???
+
+  override def advertiseByoipCidrAsync(advertiseByoipCidrRequest: AdvertiseByoipCidrRequest): Future[AdvertiseByoipCidrResult] = ???
+
+  override def advertiseByoipCidrAsync(advertiseByoipCidrRequest: AdvertiseByoipCidrRequest, asyncHandler: AsyncHandler[AdvertiseByoipCidrRequest, AdvertiseByoipCidrResult]): Future[AdvertiseByoipCidrResult] = ???
+
+  override def applySecurityGroupsToClientVpnTargetNetworkAsync(applySecurityGroupsToClientVpnTargetNetworkRequest: ApplySecurityGroupsToClientVpnTargetNetworkRequest): Future[ApplySecurityGroupsToClientVpnTargetNetworkResult] = ???
+
+  override def applySecurityGroupsToClientVpnTargetNetworkAsync(applySecurityGroupsToClientVpnTargetNetworkRequest: ApplySecurityGroupsToClientVpnTargetNetworkRequest, asyncHandler: AsyncHandler[ApplySecurityGroupsToClientVpnTargetNetworkRequest, ApplySecurityGroupsToClientVpnTargetNetworkResult]): Future[ApplySecurityGroupsToClientVpnTargetNetworkResult] = ???
+
+  override def associateClientVpnTargetNetworkAsync(associateClientVpnTargetNetworkRequest: AssociateClientVpnTargetNetworkRequest): Future[AssociateClientVpnTargetNetworkResult] = ???
+
+  override def associateClientVpnTargetNetworkAsync(associateClientVpnTargetNetworkRequest: AssociateClientVpnTargetNetworkRequest, asyncHandler: AsyncHandler[AssociateClientVpnTargetNetworkRequest, AssociateClientVpnTargetNetworkResult]): Future[AssociateClientVpnTargetNetworkResult] = ???
+
+  override def associateEnclaveCertificateIamRoleAsync(associateEnclaveCertificateIamRoleRequest: AssociateEnclaveCertificateIamRoleRequest): Future[AssociateEnclaveCertificateIamRoleResult] = ???
+
+  override def associateEnclaveCertificateIamRoleAsync(associateEnclaveCertificateIamRoleRequest: AssociateEnclaveCertificateIamRoleRequest, asyncHandler: AsyncHandler[AssociateEnclaveCertificateIamRoleRequest, AssociateEnclaveCertificateIamRoleResult]): Future[AssociateEnclaveCertificateIamRoleResult] = ???
+
+  override def associateTransitGatewayMulticastDomainAsync(associateTransitGatewayMulticastDomainRequest: AssociateTransitGatewayMulticastDomainRequest): Future[AssociateTransitGatewayMulticastDomainResult] = ???
+
+  override def associateTransitGatewayMulticastDomainAsync(associateTransitGatewayMulticastDomainRequest: AssociateTransitGatewayMulticastDomainRequest, asyncHandler: AsyncHandler[AssociateTransitGatewayMulticastDomainRequest, AssociateTransitGatewayMulticastDomainResult]): Future[AssociateTransitGatewayMulticastDomainResult] = ???
+
+  override def associateTransitGatewayRouteTableAsync(associateTransitGatewayRouteTableRequest: AssociateTransitGatewayRouteTableRequest): Future[AssociateTransitGatewayRouteTableResult] = ???
+
+  override def associateTransitGatewayRouteTableAsync(associateTransitGatewayRouteTableRequest: AssociateTransitGatewayRouteTableRequest, asyncHandler: AsyncHandler[AssociateTransitGatewayRouteTableRequest, AssociateTransitGatewayRouteTableResult]): Future[AssociateTransitGatewayRouteTableResult] = ???
+
+  override def authorizeClientVpnIngressAsync(authorizeClientVpnIngressRequest: AuthorizeClientVpnIngressRequest): Future[AuthorizeClientVpnIngressResult] = ???
+
+  override def authorizeClientVpnIngressAsync(authorizeClientVpnIngressRequest: AuthorizeClientVpnIngressRequest, asyncHandler: AsyncHandler[AuthorizeClientVpnIngressRequest, AuthorizeClientVpnIngressResult]): Future[AuthorizeClientVpnIngressResult] = ???
+
+  override def cancelCapacityReservationAsync(cancelCapacityReservationRequest: CancelCapacityReservationRequest): Future[CancelCapacityReservationResult] = ???
+
+  override def cancelCapacityReservationAsync(cancelCapacityReservationRequest: CancelCapacityReservationRequest, asyncHandler: AsyncHandler[CancelCapacityReservationRequest, CancelCapacityReservationResult]): Future[CancelCapacityReservationResult] = ???
+
+  override def createCapacityReservationAsync(createCapacityReservationRequest: CreateCapacityReservationRequest): Future[CreateCapacityReservationResult] = ???
+
+  override def createCapacityReservationAsync(createCapacityReservationRequest: CreateCapacityReservationRequest, asyncHandler: AsyncHandler[CreateCapacityReservationRequest, CreateCapacityReservationResult]): Future[CreateCapacityReservationResult] = ???
+
+  override def createCarrierGatewayAsync(createCarrierGatewayRequest: CreateCarrierGatewayRequest): Future[CreateCarrierGatewayResult] = ???
+
+  override def createCarrierGatewayAsync(createCarrierGatewayRequest: CreateCarrierGatewayRequest, asyncHandler: AsyncHandler[CreateCarrierGatewayRequest, CreateCarrierGatewayResult]): Future[CreateCarrierGatewayResult] = ???
+
+  override def createClientVpnEndpointAsync(createClientVpnEndpointRequest: CreateClientVpnEndpointRequest): Future[CreateClientVpnEndpointResult] = ???
+
+  override def createClientVpnEndpointAsync(createClientVpnEndpointRequest: CreateClientVpnEndpointRequest, asyncHandler: AsyncHandler[CreateClientVpnEndpointRequest, CreateClientVpnEndpointResult]): Future[CreateClientVpnEndpointResult] = ???
+
+  override def createClientVpnRouteAsync(createClientVpnRouteRequest: CreateClientVpnRouteRequest): Future[CreateClientVpnRouteResult] = ???
+
+  override def createClientVpnRouteAsync(createClientVpnRouteRequest: CreateClientVpnRouteRequest, asyncHandler: AsyncHandler[CreateClientVpnRouteRequest, CreateClientVpnRouteResult]): Future[CreateClientVpnRouteResult] = ???
+
+  override def createLocalGatewayRouteAsync(createLocalGatewayRouteRequest: CreateLocalGatewayRouteRequest): Future[CreateLocalGatewayRouteResult] = ???
+
+  override def createLocalGatewayRouteAsync(createLocalGatewayRouteRequest: CreateLocalGatewayRouteRequest, asyncHandler: AsyncHandler[CreateLocalGatewayRouteRequest, CreateLocalGatewayRouteResult]): Future[CreateLocalGatewayRouteResult] = ???
+
+  override def createLocalGatewayRouteTableVpcAssociationAsync(createLocalGatewayRouteTableVpcAssociationRequest: CreateLocalGatewayRouteTableVpcAssociationRequest): Future[CreateLocalGatewayRouteTableVpcAssociationResult] = ???
+
+  override def createLocalGatewayRouteTableVpcAssociationAsync(createLocalGatewayRouteTableVpcAssociationRequest: CreateLocalGatewayRouteTableVpcAssociationRequest, asyncHandler: AsyncHandler[CreateLocalGatewayRouteTableVpcAssociationRequest, CreateLocalGatewayRouteTableVpcAssociationResult]): Future[CreateLocalGatewayRouteTableVpcAssociationResult] = ???
+
+  override def createManagedPrefixListAsync(createManagedPrefixListRequest: CreateManagedPrefixListRequest): Future[CreateManagedPrefixListResult] = ???
+
+  override def createManagedPrefixListAsync(createManagedPrefixListRequest: CreateManagedPrefixListRequest, asyncHandler: AsyncHandler[CreateManagedPrefixListRequest, CreateManagedPrefixListResult]): Future[CreateManagedPrefixListResult] = ???
+
+  override def createNetworkInsightsPathAsync(createNetworkInsightsPathRequest: CreateNetworkInsightsPathRequest): Future[CreateNetworkInsightsPathResult] = ???
+
+  override def createNetworkInsightsPathAsync(createNetworkInsightsPathRequest: CreateNetworkInsightsPathRequest, asyncHandler: AsyncHandler[CreateNetworkInsightsPathRequest, CreateNetworkInsightsPathResult]): Future[CreateNetworkInsightsPathResult] = ???
+
+  override def createSnapshotsAsync(createSnapshotsRequest: CreateSnapshotsRequest): Future[CreateSnapshotsResult] = ???
+
+  override def createSnapshotsAsync(createSnapshotsRequest: CreateSnapshotsRequest, asyncHandler: AsyncHandler[CreateSnapshotsRequest, CreateSnapshotsResult]): Future[CreateSnapshotsResult] = ???
+
+  override def createTrafficMirrorFilterAsync(createTrafficMirrorFilterRequest: CreateTrafficMirrorFilterRequest): Future[CreateTrafficMirrorFilterResult] = ???
+
+  override def createTrafficMirrorFilterAsync(createTrafficMirrorFilterRequest: CreateTrafficMirrorFilterRequest, asyncHandler: AsyncHandler[CreateTrafficMirrorFilterRequest, CreateTrafficMirrorFilterResult]): Future[CreateTrafficMirrorFilterResult] = ???
+
+  override def createTrafficMirrorFilterRuleAsync(createTrafficMirrorFilterRuleRequest: CreateTrafficMirrorFilterRuleRequest): Future[CreateTrafficMirrorFilterRuleResult] = ???
+
+  override def createTrafficMirrorFilterRuleAsync(createTrafficMirrorFilterRuleRequest: CreateTrafficMirrorFilterRuleRequest, asyncHandler: AsyncHandler[CreateTrafficMirrorFilterRuleRequest, CreateTrafficMirrorFilterRuleResult]): Future[CreateTrafficMirrorFilterRuleResult] = ???
+
+  override def createTrafficMirrorSessionAsync(createTrafficMirrorSessionRequest: CreateTrafficMirrorSessionRequest): Future[CreateTrafficMirrorSessionResult] = ???
+
+  override def createTrafficMirrorSessionAsync(createTrafficMirrorSessionRequest: CreateTrafficMirrorSessionRequest, asyncHandler: AsyncHandler[CreateTrafficMirrorSessionRequest, CreateTrafficMirrorSessionResult]): Future[CreateTrafficMirrorSessionResult] = ???
+
+  override def createTrafficMirrorTargetAsync(createTrafficMirrorTargetRequest: CreateTrafficMirrorTargetRequest): Future[CreateTrafficMirrorTargetResult] = ???
+
+  override def createTrafficMirrorTargetAsync(createTrafficMirrorTargetRequest: CreateTrafficMirrorTargetRequest, asyncHandler: AsyncHandler[CreateTrafficMirrorTargetRequest, CreateTrafficMirrorTargetResult]): Future[CreateTrafficMirrorTargetResult] = ???
+
+  override def createTransitGatewayAsync(createTransitGatewayRequest: CreateTransitGatewayRequest): Future[CreateTransitGatewayResult] = ???
+
+  override def createTransitGatewayAsync(createTransitGatewayRequest: CreateTransitGatewayRequest, asyncHandler: AsyncHandler[CreateTransitGatewayRequest, CreateTransitGatewayResult]): Future[CreateTransitGatewayResult] = ???
+
+  override def createTransitGatewayConnectAsync(createTransitGatewayConnectRequest: CreateTransitGatewayConnectRequest): Future[CreateTransitGatewayConnectResult] = ???
+
+  override def createTransitGatewayConnectAsync(createTransitGatewayConnectRequest: CreateTransitGatewayConnectRequest, asyncHandler: AsyncHandler[CreateTransitGatewayConnectRequest, CreateTransitGatewayConnectResult]): Future[CreateTransitGatewayConnectResult] = ???
+
+  override def createTransitGatewayConnectPeerAsync(createTransitGatewayConnectPeerRequest: CreateTransitGatewayConnectPeerRequest): Future[CreateTransitGatewayConnectPeerResult] = ???
+
+  override def createTransitGatewayConnectPeerAsync(createTransitGatewayConnectPeerRequest: CreateTransitGatewayConnectPeerRequest, asyncHandler: AsyncHandler[CreateTransitGatewayConnectPeerRequest, CreateTransitGatewayConnectPeerResult]): Future[CreateTransitGatewayConnectPeerResult] = ???
+
+  override def createTransitGatewayMulticastDomainAsync(createTransitGatewayMulticastDomainRequest: CreateTransitGatewayMulticastDomainRequest): Future[CreateTransitGatewayMulticastDomainResult] = ???
+
+  override def createTransitGatewayMulticastDomainAsync(createTransitGatewayMulticastDomainRequest: CreateTransitGatewayMulticastDomainRequest, asyncHandler: AsyncHandler[CreateTransitGatewayMulticastDomainRequest, CreateTransitGatewayMulticastDomainResult]): Future[CreateTransitGatewayMulticastDomainResult] = ???
+
+  override def createTransitGatewayPeeringAttachmentAsync(createTransitGatewayPeeringAttachmentRequest: CreateTransitGatewayPeeringAttachmentRequest): Future[CreateTransitGatewayPeeringAttachmentResult] = ???
+
+  override def createTransitGatewayPeeringAttachmentAsync(createTransitGatewayPeeringAttachmentRequest: CreateTransitGatewayPeeringAttachmentRequest, asyncHandler: AsyncHandler[CreateTransitGatewayPeeringAttachmentRequest, CreateTransitGatewayPeeringAttachmentResult]): Future[CreateTransitGatewayPeeringAttachmentResult] = ???
+
+  override def createTransitGatewayPrefixListReferenceAsync(createTransitGatewayPrefixListReferenceRequest: CreateTransitGatewayPrefixListReferenceRequest): Future[CreateTransitGatewayPrefixListReferenceResult] = ???
+
+  override def createTransitGatewayPrefixListReferenceAsync(createTransitGatewayPrefixListReferenceRequest: CreateTransitGatewayPrefixListReferenceRequest, asyncHandler: AsyncHandler[CreateTransitGatewayPrefixListReferenceRequest, CreateTransitGatewayPrefixListReferenceResult]): Future[CreateTransitGatewayPrefixListReferenceResult] = ???
+
+  override def createTransitGatewayRouteAsync(createTransitGatewayRouteRequest: CreateTransitGatewayRouteRequest): Future[CreateTransitGatewayRouteResult] = ???
+
+  override def createTransitGatewayRouteAsync(createTransitGatewayRouteRequest: CreateTransitGatewayRouteRequest, asyncHandler: AsyncHandler[CreateTransitGatewayRouteRequest, CreateTransitGatewayRouteResult]): Future[CreateTransitGatewayRouteResult] = ???
+
+  override def createTransitGatewayRouteTableAsync(createTransitGatewayRouteTableRequest: CreateTransitGatewayRouteTableRequest): Future[CreateTransitGatewayRouteTableResult] = ???
+
+  override def createTransitGatewayRouteTableAsync(createTransitGatewayRouteTableRequest: CreateTransitGatewayRouteTableRequest, asyncHandler: AsyncHandler[CreateTransitGatewayRouteTableRequest, CreateTransitGatewayRouteTableResult]): Future[CreateTransitGatewayRouteTableResult] = ???
+
+  override def createTransitGatewayVpcAttachmentAsync(createTransitGatewayVpcAttachmentRequest: CreateTransitGatewayVpcAttachmentRequest): Future[CreateTransitGatewayVpcAttachmentResult] = ???
+
+  override def createTransitGatewayVpcAttachmentAsync(createTransitGatewayVpcAttachmentRequest: CreateTransitGatewayVpcAttachmentRequest, asyncHandler: AsyncHandler[CreateTransitGatewayVpcAttachmentRequest, CreateTransitGatewayVpcAttachmentResult]): Future[CreateTransitGatewayVpcAttachmentResult] = ???
+
+  override def deleteCarrierGatewayAsync(deleteCarrierGatewayRequest: DeleteCarrierGatewayRequest): Future[DeleteCarrierGatewayResult] = ???
+
+  override def deleteCarrierGatewayAsync(deleteCarrierGatewayRequest: DeleteCarrierGatewayRequest, asyncHandler: AsyncHandler[DeleteCarrierGatewayRequest, DeleteCarrierGatewayResult]): Future[DeleteCarrierGatewayResult] = ???
+
+  override def deleteClientVpnEndpointAsync(deleteClientVpnEndpointRequest: DeleteClientVpnEndpointRequest): Future[DeleteClientVpnEndpointResult] = ???
+
+  override def deleteClientVpnEndpointAsync(deleteClientVpnEndpointRequest: DeleteClientVpnEndpointRequest, asyncHandler: AsyncHandler[DeleteClientVpnEndpointRequest, DeleteClientVpnEndpointResult]): Future[DeleteClientVpnEndpointResult] = ???
+
+  override def deleteClientVpnRouteAsync(deleteClientVpnRouteRequest: DeleteClientVpnRouteRequest): Future[DeleteClientVpnRouteResult] = ???
+
+  override def deleteClientVpnRouteAsync(deleteClientVpnRouteRequest: DeleteClientVpnRouteRequest, asyncHandler: AsyncHandler[DeleteClientVpnRouteRequest, DeleteClientVpnRouteResult]): Future[DeleteClientVpnRouteResult] = ???
+
+  override def deleteLocalGatewayRouteAsync(deleteLocalGatewayRouteRequest: DeleteLocalGatewayRouteRequest): Future[DeleteLocalGatewayRouteResult] = ???
+
+  override def deleteLocalGatewayRouteAsync(deleteLocalGatewayRouteRequest: DeleteLocalGatewayRouteRequest, asyncHandler: AsyncHandler[DeleteLocalGatewayRouteRequest, DeleteLocalGatewayRouteResult]): Future[DeleteLocalGatewayRouteResult] = ???
+
+  override def deleteLocalGatewayRouteTableVpcAssociationAsync(deleteLocalGatewayRouteTableVpcAssociationRequest: DeleteLocalGatewayRouteTableVpcAssociationRequest): Future[DeleteLocalGatewayRouteTableVpcAssociationResult] = ???
+
+  override def deleteLocalGatewayRouteTableVpcAssociationAsync(deleteLocalGatewayRouteTableVpcAssociationRequest: DeleteLocalGatewayRouteTableVpcAssociationRequest, asyncHandler: AsyncHandler[DeleteLocalGatewayRouteTableVpcAssociationRequest, DeleteLocalGatewayRouteTableVpcAssociationResult]): Future[DeleteLocalGatewayRouteTableVpcAssociationResult] = ???
+
+  override def deleteManagedPrefixListAsync(deleteManagedPrefixListRequest: DeleteManagedPrefixListRequest): Future[DeleteManagedPrefixListResult] = ???
+
+  override def deleteManagedPrefixListAsync(deleteManagedPrefixListRequest: DeleteManagedPrefixListRequest, asyncHandler: AsyncHandler[DeleteManagedPrefixListRequest, DeleteManagedPrefixListResult]): Future[DeleteManagedPrefixListResult] = ???
+
+  override def deleteNetworkInsightsAnalysisAsync(deleteNetworkInsightsAnalysisRequest: DeleteNetworkInsightsAnalysisRequest): Future[DeleteNetworkInsightsAnalysisResult] = ???
+
+  override def deleteNetworkInsightsAnalysisAsync(deleteNetworkInsightsAnalysisRequest: DeleteNetworkInsightsAnalysisRequest, asyncHandler: AsyncHandler[DeleteNetworkInsightsAnalysisRequest, DeleteNetworkInsightsAnalysisResult]): Future[DeleteNetworkInsightsAnalysisResult] = ???
+
+  override def deleteNetworkInsightsPathAsync(deleteNetworkInsightsPathRequest: DeleteNetworkInsightsPathRequest): Future[DeleteNetworkInsightsPathResult] = ???
+
+  override def deleteNetworkInsightsPathAsync(deleteNetworkInsightsPathRequest: DeleteNetworkInsightsPathRequest, asyncHandler: AsyncHandler[DeleteNetworkInsightsPathRequest, DeleteNetworkInsightsPathResult]): Future[DeleteNetworkInsightsPathResult] = ???
+
+  override def deleteQueuedReservedInstancesAsync(deleteQueuedReservedInstancesRequest: DeleteQueuedReservedInstancesRequest): Future[DeleteQueuedReservedInstancesResult] = ???
+
+  override def deleteQueuedReservedInstancesAsync(deleteQueuedReservedInstancesRequest: DeleteQueuedReservedInstancesRequest, asyncHandler: AsyncHandler[DeleteQueuedReservedInstancesRequest, DeleteQueuedReservedInstancesResult]): Future[DeleteQueuedReservedInstancesResult] = ???
+
+  override def deleteTrafficMirrorFilterAsync(deleteTrafficMirrorFilterRequest: DeleteTrafficMirrorFilterRequest): Future[DeleteTrafficMirrorFilterResult] = ???
+
+  override def deleteTrafficMirrorFilterAsync(deleteTrafficMirrorFilterRequest: DeleteTrafficMirrorFilterRequest, asyncHandler: AsyncHandler[DeleteTrafficMirrorFilterRequest, DeleteTrafficMirrorFilterResult]): Future[DeleteTrafficMirrorFilterResult] = ???
+
+  override def deleteTrafficMirrorFilterRuleAsync(deleteTrafficMirrorFilterRuleRequest: DeleteTrafficMirrorFilterRuleRequest): Future[DeleteTrafficMirrorFilterRuleResult] = ???
+
+  override def deleteTrafficMirrorFilterRuleAsync(deleteTrafficMirrorFilterRuleRequest: DeleteTrafficMirrorFilterRuleRequest, asyncHandler: AsyncHandler[DeleteTrafficMirrorFilterRuleRequest, DeleteTrafficMirrorFilterRuleResult]): Future[DeleteTrafficMirrorFilterRuleResult] = ???
+
+  override def deleteTrafficMirrorSessionAsync(deleteTrafficMirrorSessionRequest: DeleteTrafficMirrorSessionRequest): Future[DeleteTrafficMirrorSessionResult] = ???
+
+  override def deleteTrafficMirrorSessionAsync(deleteTrafficMirrorSessionRequest: DeleteTrafficMirrorSessionRequest, asyncHandler: AsyncHandler[DeleteTrafficMirrorSessionRequest, DeleteTrafficMirrorSessionResult]): Future[DeleteTrafficMirrorSessionResult] = ???
+
+  override def deleteTrafficMirrorTargetAsync(deleteTrafficMirrorTargetRequest: DeleteTrafficMirrorTargetRequest): Future[DeleteTrafficMirrorTargetResult] = ???
+
+  override def deleteTrafficMirrorTargetAsync(deleteTrafficMirrorTargetRequest: DeleteTrafficMirrorTargetRequest, asyncHandler: AsyncHandler[DeleteTrafficMirrorTargetRequest, DeleteTrafficMirrorTargetResult]): Future[DeleteTrafficMirrorTargetResult] = ???
+
+  override def deleteTransitGatewayAsync(deleteTransitGatewayRequest: DeleteTransitGatewayRequest): Future[DeleteTransitGatewayResult] = ???
+
+  override def deleteTransitGatewayAsync(deleteTransitGatewayRequest: DeleteTransitGatewayRequest, asyncHandler: AsyncHandler[DeleteTransitGatewayRequest, DeleteTransitGatewayResult]): Future[DeleteTransitGatewayResult] = ???
+
+  override def deleteTransitGatewayConnectAsync(deleteTransitGatewayConnectRequest: DeleteTransitGatewayConnectRequest): Future[DeleteTransitGatewayConnectResult] = ???
+
+  override def deleteTransitGatewayConnectAsync(deleteTransitGatewayConnectRequest: DeleteTransitGatewayConnectRequest, asyncHandler: AsyncHandler[DeleteTransitGatewayConnectRequest, DeleteTransitGatewayConnectResult]): Future[DeleteTransitGatewayConnectResult] = ???
+
+  override def deleteTransitGatewayConnectPeerAsync(deleteTransitGatewayConnectPeerRequest: DeleteTransitGatewayConnectPeerRequest): Future[DeleteTransitGatewayConnectPeerResult] = ???
+
+  override def deleteTransitGatewayConnectPeerAsync(deleteTransitGatewayConnectPeerRequest: DeleteTransitGatewayConnectPeerRequest, asyncHandler: AsyncHandler[DeleteTransitGatewayConnectPeerRequest, DeleteTransitGatewayConnectPeerResult]): Future[DeleteTransitGatewayConnectPeerResult] = ???
+
+  override def deleteTransitGatewayMulticastDomainAsync(deleteTransitGatewayMulticastDomainRequest: DeleteTransitGatewayMulticastDomainRequest): Future[DeleteTransitGatewayMulticastDomainResult] = ???
+
+  override def deleteTransitGatewayMulticastDomainAsync(deleteTransitGatewayMulticastDomainRequest: DeleteTransitGatewayMulticastDomainRequest, asyncHandler: AsyncHandler[DeleteTransitGatewayMulticastDomainRequest, DeleteTransitGatewayMulticastDomainResult]): Future[DeleteTransitGatewayMulticastDomainResult] = ???
+
+  override def deleteTransitGatewayPeeringAttachmentAsync(deleteTransitGatewayPeeringAttachmentRequest: DeleteTransitGatewayPeeringAttachmentRequest): Future[DeleteTransitGatewayPeeringAttachmentResult] = ???
+
+  override def deleteTransitGatewayPeeringAttachmentAsync(deleteTransitGatewayPeeringAttachmentRequest: DeleteTransitGatewayPeeringAttachmentRequest, asyncHandler: AsyncHandler[DeleteTransitGatewayPeeringAttachmentRequest, DeleteTransitGatewayPeeringAttachmentResult]): Future[DeleteTransitGatewayPeeringAttachmentResult] = ???
+
+  override def deleteTransitGatewayPrefixListReferenceAsync(deleteTransitGatewayPrefixListReferenceRequest: DeleteTransitGatewayPrefixListReferenceRequest): Future[DeleteTransitGatewayPrefixListReferenceResult] = ???
+
+  override def deleteTransitGatewayPrefixListReferenceAsync(deleteTransitGatewayPrefixListReferenceRequest: DeleteTransitGatewayPrefixListReferenceRequest, asyncHandler: AsyncHandler[DeleteTransitGatewayPrefixListReferenceRequest, DeleteTransitGatewayPrefixListReferenceResult]): Future[DeleteTransitGatewayPrefixListReferenceResult] = ???
+
+  override def deleteTransitGatewayRouteAsync(deleteTransitGatewayRouteRequest: DeleteTransitGatewayRouteRequest): Future[DeleteTransitGatewayRouteResult] = ???
+
+  override def deleteTransitGatewayRouteAsync(deleteTransitGatewayRouteRequest: DeleteTransitGatewayRouteRequest, asyncHandler: AsyncHandler[DeleteTransitGatewayRouteRequest, DeleteTransitGatewayRouteResult]): Future[DeleteTransitGatewayRouteResult] = ???
+
+  override def deleteTransitGatewayRouteTableAsync(deleteTransitGatewayRouteTableRequest: DeleteTransitGatewayRouteTableRequest): Future[DeleteTransitGatewayRouteTableResult] = ???
+
+  override def deleteTransitGatewayRouteTableAsync(deleteTransitGatewayRouteTableRequest: DeleteTransitGatewayRouteTableRequest, asyncHandler: AsyncHandler[DeleteTransitGatewayRouteTableRequest, DeleteTransitGatewayRouteTableResult]): Future[DeleteTransitGatewayRouteTableResult] = ???
+
+  override def deleteTransitGatewayVpcAttachmentAsync(deleteTransitGatewayVpcAttachmentRequest: DeleteTransitGatewayVpcAttachmentRequest): Future[DeleteTransitGatewayVpcAttachmentResult] = ???
+
+  override def deleteTransitGatewayVpcAttachmentAsync(deleteTransitGatewayVpcAttachmentRequest: DeleteTransitGatewayVpcAttachmentRequest, asyncHandler: AsyncHandler[DeleteTransitGatewayVpcAttachmentRequest, DeleteTransitGatewayVpcAttachmentResult]): Future[DeleteTransitGatewayVpcAttachmentResult] = ???
+
+  override def deprovisionByoipCidrAsync(deprovisionByoipCidrRequest: DeprovisionByoipCidrRequest): Future[DeprovisionByoipCidrResult] = ???
+
+  override def deprovisionByoipCidrAsync(deprovisionByoipCidrRequest: DeprovisionByoipCidrRequest, asyncHandler: AsyncHandler[DeprovisionByoipCidrRequest, DeprovisionByoipCidrResult]): Future[DeprovisionByoipCidrResult] = ???
+
+  override def deregisterInstanceEventNotificationAttributesAsync(deregisterInstanceEventNotificationAttributesRequest: DeregisterInstanceEventNotificationAttributesRequest): Future[DeregisterInstanceEventNotificationAttributesResult] = ???
+
+  override def deregisterInstanceEventNotificationAttributesAsync(deregisterInstanceEventNotificationAttributesRequest: DeregisterInstanceEventNotificationAttributesRequest, asyncHandler: AsyncHandler[DeregisterInstanceEventNotificationAttributesRequest, DeregisterInstanceEventNotificationAttributesResult]): Future[DeregisterInstanceEventNotificationAttributesResult] = ???
+
+  override def deregisterTransitGatewayMulticastGroupMembersAsync(deregisterTransitGatewayMulticastGroupMembersRequest: DeregisterTransitGatewayMulticastGroupMembersRequest): Future[DeregisterTransitGatewayMulticastGroupMembersResult] = ???
+
+  override def deregisterTransitGatewayMulticastGroupMembersAsync(deregisterTransitGatewayMulticastGroupMembersRequest: DeregisterTransitGatewayMulticastGroupMembersRequest, asyncHandler: AsyncHandler[DeregisterTransitGatewayMulticastGroupMembersRequest, DeregisterTransitGatewayMulticastGroupMembersResult]): Future[DeregisterTransitGatewayMulticastGroupMembersResult] = ???
+
+  override def deregisterTransitGatewayMulticastGroupSourcesAsync(deregisterTransitGatewayMulticastGroupSourcesRequest: DeregisterTransitGatewayMulticastGroupSourcesRequest): Future[DeregisterTransitGatewayMulticastGroupSourcesResult] = ???
+
+  override def deregisterTransitGatewayMulticastGroupSourcesAsync(deregisterTransitGatewayMulticastGroupSourcesRequest: DeregisterTransitGatewayMulticastGroupSourcesRequest, asyncHandler: AsyncHandler[DeregisterTransitGatewayMulticastGroupSourcesRequest, DeregisterTransitGatewayMulticastGroupSourcesResult]): Future[DeregisterTransitGatewayMulticastGroupSourcesResult] = ???
+
+  override def describeAddressesAttributeAsync(describeAddressesAttributeRequest: DescribeAddressesAttributeRequest): Future[DescribeAddressesAttributeResult] = ???
+
+  override def describeAddressesAttributeAsync(describeAddressesAttributeRequest: DescribeAddressesAttributeRequest, asyncHandler: AsyncHandler[DescribeAddressesAttributeRequest, DescribeAddressesAttributeResult]): Future[DescribeAddressesAttributeResult] = ???
+
+  override def describeByoipCidrsAsync(describeByoipCidrsRequest: DescribeByoipCidrsRequest): Future[DescribeByoipCidrsResult] = ???
+
+  override def describeByoipCidrsAsync(describeByoipCidrsRequest: DescribeByoipCidrsRequest, asyncHandler: AsyncHandler[DescribeByoipCidrsRequest, DescribeByoipCidrsResult]): Future[DescribeByoipCidrsResult] = ???
+
+  override def describeCapacityReservationsAsync(describeCapacityReservationsRequest: DescribeCapacityReservationsRequest): Future[DescribeCapacityReservationsResult] = ???
+
+  override def describeCapacityReservationsAsync(describeCapacityReservationsRequest: DescribeCapacityReservationsRequest, asyncHandler: AsyncHandler[DescribeCapacityReservationsRequest, DescribeCapacityReservationsResult]): Future[DescribeCapacityReservationsResult] = ???
+
+  override def describeCarrierGatewaysAsync(describeCarrierGatewaysRequest: DescribeCarrierGatewaysRequest): Future[DescribeCarrierGatewaysResult] = ???
+
+  override def describeCarrierGatewaysAsync(describeCarrierGatewaysRequest: DescribeCarrierGatewaysRequest, asyncHandler: AsyncHandler[DescribeCarrierGatewaysRequest, DescribeCarrierGatewaysResult]): Future[DescribeCarrierGatewaysResult] = ???
+
+  override def describeClientVpnAuthorizationRulesAsync(describeClientVpnAuthorizationRulesRequest: DescribeClientVpnAuthorizationRulesRequest): Future[DescribeClientVpnAuthorizationRulesResult] = ???
+
+  override def describeClientVpnAuthorizationRulesAsync(describeClientVpnAuthorizationRulesRequest: DescribeClientVpnAuthorizationRulesRequest, asyncHandler: AsyncHandler[DescribeClientVpnAuthorizationRulesRequest, DescribeClientVpnAuthorizationRulesResult]): Future[DescribeClientVpnAuthorizationRulesResult] = ???
+
+  override def describeClientVpnConnectionsAsync(describeClientVpnConnectionsRequest: DescribeClientVpnConnectionsRequest): Future[DescribeClientVpnConnectionsResult] = ???
+
+  override def describeClientVpnConnectionsAsync(describeClientVpnConnectionsRequest: DescribeClientVpnConnectionsRequest, asyncHandler: AsyncHandler[DescribeClientVpnConnectionsRequest, DescribeClientVpnConnectionsResult]): Future[DescribeClientVpnConnectionsResult] = ???
+
+  override def describeClientVpnEndpointsAsync(describeClientVpnEndpointsRequest: DescribeClientVpnEndpointsRequest): Future[DescribeClientVpnEndpointsResult] = ???
+
+  override def describeClientVpnEndpointsAsync(describeClientVpnEndpointsRequest: DescribeClientVpnEndpointsRequest, asyncHandler: AsyncHandler[DescribeClientVpnEndpointsRequest, DescribeClientVpnEndpointsResult]): Future[DescribeClientVpnEndpointsResult] = ???
+
+  override def describeClientVpnRoutesAsync(describeClientVpnRoutesRequest: DescribeClientVpnRoutesRequest): Future[DescribeClientVpnRoutesResult] = ???
+
+  override def describeClientVpnRoutesAsync(describeClientVpnRoutesRequest: DescribeClientVpnRoutesRequest, asyncHandler: AsyncHandler[DescribeClientVpnRoutesRequest, DescribeClientVpnRoutesResult]): Future[DescribeClientVpnRoutesResult] = ???
+
+  override def describeClientVpnTargetNetworksAsync(describeClientVpnTargetNetworksRequest: DescribeClientVpnTargetNetworksRequest): Future[DescribeClientVpnTargetNetworksResult] = ???
+
+  override def describeClientVpnTargetNetworksAsync(describeClientVpnTargetNetworksRequest: DescribeClientVpnTargetNetworksRequest, asyncHandler: AsyncHandler[DescribeClientVpnTargetNetworksRequest, DescribeClientVpnTargetNetworksResult]): Future[DescribeClientVpnTargetNetworksResult] = ???
+
+  override def describeCoipPoolsAsync(describeCoipPoolsRequest: DescribeCoipPoolsRequest): Future[DescribeCoipPoolsResult] = ???
+
+  override def describeCoipPoolsAsync(describeCoipPoolsRequest: DescribeCoipPoolsRequest, asyncHandler: AsyncHandler[DescribeCoipPoolsRequest, DescribeCoipPoolsResult]): Future[DescribeCoipPoolsResult] = ???
+
+  override def describeExportImageTasksAsync(describeExportImageTasksRequest: DescribeExportImageTasksRequest): Future[DescribeExportImageTasksResult] = ???
+
+  override def describeExportImageTasksAsync(describeExportImageTasksRequest: DescribeExportImageTasksRequest, asyncHandler: AsyncHandler[DescribeExportImageTasksRequest, DescribeExportImageTasksResult]): Future[DescribeExportImageTasksResult] = ???
+
+  override def describeFastSnapshotRestoresAsync(describeFastSnapshotRestoresRequest: DescribeFastSnapshotRestoresRequest): Future[DescribeFastSnapshotRestoresResult] = ???
+
+  override def describeFastSnapshotRestoresAsync(describeFastSnapshotRestoresRequest: DescribeFastSnapshotRestoresRequest, asyncHandler: AsyncHandler[DescribeFastSnapshotRestoresRequest, DescribeFastSnapshotRestoresResult]): Future[DescribeFastSnapshotRestoresResult] = ???
+
+  override def describeInstanceEventNotificationAttributesAsync(describeInstanceEventNotificationAttributesRequest: DescribeInstanceEventNotificationAttributesRequest): Future[DescribeInstanceEventNotificationAttributesResult] = ???
+
+  override def describeInstanceEventNotificationAttributesAsync(describeInstanceEventNotificationAttributesRequest: DescribeInstanceEventNotificationAttributesRequest, asyncHandler: AsyncHandler[DescribeInstanceEventNotificationAttributesRequest, DescribeInstanceEventNotificationAttributesResult]): Future[DescribeInstanceEventNotificationAttributesResult] = ???
+
+  override def describeInstanceTypeOfferingsAsync(describeInstanceTypeOfferingsRequest: DescribeInstanceTypeOfferingsRequest): Future[DescribeInstanceTypeOfferingsResult] = ???
+
+  override def describeInstanceTypeOfferingsAsync(describeInstanceTypeOfferingsRequest: DescribeInstanceTypeOfferingsRequest, asyncHandler: AsyncHandler[DescribeInstanceTypeOfferingsRequest, DescribeInstanceTypeOfferingsResult]): Future[DescribeInstanceTypeOfferingsResult] = ???
+
+  override def describeInstanceTypesAsync(describeInstanceTypesRequest: DescribeInstanceTypesRequest): Future[DescribeInstanceTypesResult] = ???
+
+  override def describeInstanceTypesAsync(describeInstanceTypesRequest: DescribeInstanceTypesRequest, asyncHandler: AsyncHandler[DescribeInstanceTypesRequest, DescribeInstanceTypesResult]): Future[DescribeInstanceTypesResult] = ???
+
+  override def describeIpv6PoolsAsync(describeIpv6PoolsRequest: DescribeIpv6PoolsRequest): Future[DescribeIpv6PoolsResult] = ???
+
+  override def describeIpv6PoolsAsync(describeIpv6PoolsRequest: DescribeIpv6PoolsRequest, asyncHandler: AsyncHandler[DescribeIpv6PoolsRequest, DescribeIpv6PoolsResult]): Future[DescribeIpv6PoolsResult] = ???
+
+  override def describeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsAsync(describeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsRequest: DescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsRequest): Future[DescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsResult] = ???
+
+  override def describeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsAsync(describeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsRequest: DescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsRequest, asyncHandler: AsyncHandler[DescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsRequest, DescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsResult]): Future[DescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsResult] = ???
+
+  override def describeLocalGatewayRouteTableVpcAssociationsAsync(describeLocalGatewayRouteTableVpcAssociationsRequest: DescribeLocalGatewayRouteTableVpcAssociationsRequest): Future[DescribeLocalGatewayRouteTableVpcAssociationsResult] = ???
+
+  override def describeLocalGatewayRouteTableVpcAssociationsAsync(describeLocalGatewayRouteTableVpcAssociationsRequest: DescribeLocalGatewayRouteTableVpcAssociationsRequest, asyncHandler: AsyncHandler[DescribeLocalGatewayRouteTableVpcAssociationsRequest, DescribeLocalGatewayRouteTableVpcAssociationsResult]): Future[DescribeLocalGatewayRouteTableVpcAssociationsResult] = ???
+
+  override def describeLocalGatewayRouteTablesAsync(describeLocalGatewayRouteTablesRequest: DescribeLocalGatewayRouteTablesRequest): Future[DescribeLocalGatewayRouteTablesResult] = ???
+
+  override def describeLocalGatewayRouteTablesAsync(describeLocalGatewayRouteTablesRequest: DescribeLocalGatewayRouteTablesRequest, asyncHandler: AsyncHandler[DescribeLocalGatewayRouteTablesRequest, DescribeLocalGatewayRouteTablesResult]): Future[DescribeLocalGatewayRouteTablesResult] = ???
+
+  override def describeLocalGatewayVirtualInterfaceGroupsAsync(describeLocalGatewayVirtualInterfaceGroupsRequest: DescribeLocalGatewayVirtualInterfaceGroupsRequest): Future[DescribeLocalGatewayVirtualInterfaceGroupsResult] = ???
+
+  override def describeLocalGatewayVirtualInterfaceGroupsAsync(describeLocalGatewayVirtualInterfaceGroupsRequest: DescribeLocalGatewayVirtualInterfaceGroupsRequest, asyncHandler: AsyncHandler[DescribeLocalGatewayVirtualInterfaceGroupsRequest, DescribeLocalGatewayVirtualInterfaceGroupsResult]): Future[DescribeLocalGatewayVirtualInterfaceGroupsResult] = ???
+
+  override def describeLocalGatewayVirtualInterfacesAsync(describeLocalGatewayVirtualInterfacesRequest: DescribeLocalGatewayVirtualInterfacesRequest): Future[DescribeLocalGatewayVirtualInterfacesResult] = ???
+
+  override def describeLocalGatewayVirtualInterfacesAsync(describeLocalGatewayVirtualInterfacesRequest: DescribeLocalGatewayVirtualInterfacesRequest, asyncHandler: AsyncHandler[DescribeLocalGatewayVirtualInterfacesRequest, DescribeLocalGatewayVirtualInterfacesResult]): Future[DescribeLocalGatewayVirtualInterfacesResult] = ???
+
+  override def describeLocalGatewaysAsync(describeLocalGatewaysRequest: DescribeLocalGatewaysRequest): Future[DescribeLocalGatewaysResult] = ???
+
+  override def describeLocalGatewaysAsync(describeLocalGatewaysRequest: DescribeLocalGatewaysRequest, asyncHandler: AsyncHandler[DescribeLocalGatewaysRequest, DescribeLocalGatewaysResult]): Future[DescribeLocalGatewaysResult] = ???
+
+  override def describeManagedPrefixListsAsync(describeManagedPrefixListsRequest: DescribeManagedPrefixListsRequest): Future[DescribeManagedPrefixListsResult] = ???
+
+  override def describeManagedPrefixListsAsync(describeManagedPrefixListsRequest: DescribeManagedPrefixListsRequest, asyncHandler: AsyncHandler[DescribeManagedPrefixListsRequest, DescribeManagedPrefixListsResult]): Future[DescribeManagedPrefixListsResult] = ???
+
+  override def describeNetworkInsightsAnalysesAsync(describeNetworkInsightsAnalysesRequest: DescribeNetworkInsightsAnalysesRequest): Future[DescribeNetworkInsightsAnalysesResult] = ???
+
+  override def describeNetworkInsightsAnalysesAsync(describeNetworkInsightsAnalysesRequest: DescribeNetworkInsightsAnalysesRequest, asyncHandler: AsyncHandler[DescribeNetworkInsightsAnalysesRequest, DescribeNetworkInsightsAnalysesResult]): Future[DescribeNetworkInsightsAnalysesResult] = ???
+
+  override def describeNetworkInsightsPathsAsync(describeNetworkInsightsPathsRequest: DescribeNetworkInsightsPathsRequest): Future[DescribeNetworkInsightsPathsResult] = ???
+
+  override def describeNetworkInsightsPathsAsync(describeNetworkInsightsPathsRequest: DescribeNetworkInsightsPathsRequest, asyncHandler: AsyncHandler[DescribeNetworkInsightsPathsRequest, DescribeNetworkInsightsPathsResult]): Future[DescribeNetworkInsightsPathsResult] = ???
+
+  override def describePublicIpv4PoolsAsync(describePublicIpv4PoolsRequest: DescribePublicIpv4PoolsRequest): Future[DescribePublicIpv4PoolsResult] = ???
+
+  override def describePublicIpv4PoolsAsync(describePublicIpv4PoolsRequest: DescribePublicIpv4PoolsRequest, asyncHandler: AsyncHandler[DescribePublicIpv4PoolsRequest, DescribePublicIpv4PoolsResult]): Future[DescribePublicIpv4PoolsResult] = ???
+
+  override def describeTrafficMirrorFiltersAsync(describeTrafficMirrorFiltersRequest: DescribeTrafficMirrorFiltersRequest): Future[DescribeTrafficMirrorFiltersResult] = ???
+
+  override def describeTrafficMirrorFiltersAsync(describeTrafficMirrorFiltersRequest: DescribeTrafficMirrorFiltersRequest, asyncHandler: AsyncHandler[DescribeTrafficMirrorFiltersRequest, DescribeTrafficMirrorFiltersResult]): Future[DescribeTrafficMirrorFiltersResult] = ???
+
+  override def describeTrafficMirrorSessionsAsync(describeTrafficMirrorSessionsRequest: DescribeTrafficMirrorSessionsRequest): Future[DescribeTrafficMirrorSessionsResult] = ???
+
+  override def describeTrafficMirrorSessionsAsync(describeTrafficMirrorSessionsRequest: DescribeTrafficMirrorSessionsRequest, asyncHandler: AsyncHandler[DescribeTrafficMirrorSessionsRequest, DescribeTrafficMirrorSessionsResult]): Future[DescribeTrafficMirrorSessionsResult] = ???
+
+  override def describeTrafficMirrorTargetsAsync(describeTrafficMirrorTargetsRequest: DescribeTrafficMirrorTargetsRequest): Future[DescribeTrafficMirrorTargetsResult] = ???
+
+  override def describeTrafficMirrorTargetsAsync(describeTrafficMirrorTargetsRequest: DescribeTrafficMirrorTargetsRequest, asyncHandler: AsyncHandler[DescribeTrafficMirrorTargetsRequest, DescribeTrafficMirrorTargetsResult]): Future[DescribeTrafficMirrorTargetsResult] = ???
+
+  override def describeTransitGatewayAttachmentsAsync(describeTransitGatewayAttachmentsRequest: DescribeTransitGatewayAttachmentsRequest): Future[DescribeTransitGatewayAttachmentsResult] = ???
+
+  override def describeTransitGatewayAttachmentsAsync(describeTransitGatewayAttachmentsRequest: DescribeTransitGatewayAttachmentsRequest, asyncHandler: AsyncHandler[DescribeTransitGatewayAttachmentsRequest, DescribeTransitGatewayAttachmentsResult]): Future[DescribeTransitGatewayAttachmentsResult] = ???
+
+  override def describeTransitGatewayConnectPeersAsync(describeTransitGatewayConnectPeersRequest: DescribeTransitGatewayConnectPeersRequest): Future[DescribeTransitGatewayConnectPeersResult] = ???
+
+  override def describeTransitGatewayConnectPeersAsync(describeTransitGatewayConnectPeersRequest: DescribeTransitGatewayConnectPeersRequest, asyncHandler: AsyncHandler[DescribeTransitGatewayConnectPeersRequest, DescribeTransitGatewayConnectPeersResult]): Future[DescribeTransitGatewayConnectPeersResult] = ???
+
+  override def describeTransitGatewayConnectsAsync(describeTransitGatewayConnectsRequest: DescribeTransitGatewayConnectsRequest): Future[DescribeTransitGatewayConnectsResult] = ???
+
+  override def describeTransitGatewayConnectsAsync(describeTransitGatewayConnectsRequest: DescribeTransitGatewayConnectsRequest, asyncHandler: AsyncHandler[DescribeTransitGatewayConnectsRequest, DescribeTransitGatewayConnectsResult]): Future[DescribeTransitGatewayConnectsResult] = ???
+
+  override def describeTransitGatewayMulticastDomainsAsync(describeTransitGatewayMulticastDomainsRequest: DescribeTransitGatewayMulticastDomainsRequest): Future[DescribeTransitGatewayMulticastDomainsResult] = ???
+
+  override def describeTransitGatewayMulticastDomainsAsync(describeTransitGatewayMulticastDomainsRequest: DescribeTransitGatewayMulticastDomainsRequest, asyncHandler: AsyncHandler[DescribeTransitGatewayMulticastDomainsRequest, DescribeTransitGatewayMulticastDomainsResult]): Future[DescribeTransitGatewayMulticastDomainsResult] = ???
+
+  override def describeTransitGatewayPeeringAttachmentsAsync(describeTransitGatewayPeeringAttachmentsRequest: DescribeTransitGatewayPeeringAttachmentsRequest): Future[DescribeTransitGatewayPeeringAttachmentsResult] = ???
+
+  override def describeTransitGatewayPeeringAttachmentsAsync(describeTransitGatewayPeeringAttachmentsRequest: DescribeTransitGatewayPeeringAttachmentsRequest, asyncHandler: AsyncHandler[DescribeTransitGatewayPeeringAttachmentsRequest, DescribeTransitGatewayPeeringAttachmentsResult]): Future[DescribeTransitGatewayPeeringAttachmentsResult] = ???
+
+  override def describeTransitGatewayRouteTablesAsync(describeTransitGatewayRouteTablesRequest: DescribeTransitGatewayRouteTablesRequest): Future[DescribeTransitGatewayRouteTablesResult] = ???
+
+  override def describeTransitGatewayRouteTablesAsync(describeTransitGatewayRouteTablesRequest: DescribeTransitGatewayRouteTablesRequest, asyncHandler: AsyncHandler[DescribeTransitGatewayRouteTablesRequest, DescribeTransitGatewayRouteTablesResult]): Future[DescribeTransitGatewayRouteTablesResult] = ???
+
+  override def describeTransitGatewayVpcAttachmentsAsync(describeTransitGatewayVpcAttachmentsRequest: DescribeTransitGatewayVpcAttachmentsRequest): Future[DescribeTransitGatewayVpcAttachmentsResult] = ???
+
+  override def describeTransitGatewayVpcAttachmentsAsync(describeTransitGatewayVpcAttachmentsRequest: DescribeTransitGatewayVpcAttachmentsRequest, asyncHandler: AsyncHandler[DescribeTransitGatewayVpcAttachmentsRequest, DescribeTransitGatewayVpcAttachmentsResult]): Future[DescribeTransitGatewayVpcAttachmentsResult] = ???
+
+  override def describeTransitGatewaysAsync(describeTransitGatewaysRequest: DescribeTransitGatewaysRequest): Future[DescribeTransitGatewaysResult] = ???
+
+  override def describeTransitGatewaysAsync(describeTransitGatewaysRequest: DescribeTransitGatewaysRequest, asyncHandler: AsyncHandler[DescribeTransitGatewaysRequest, DescribeTransitGatewaysResult]): Future[DescribeTransitGatewaysResult] = ???
+
+  override def disableEbsEncryptionByDefaultAsync(disableEbsEncryptionByDefaultRequest: DisableEbsEncryptionByDefaultRequest): Future[DisableEbsEncryptionByDefaultResult] = ???
+
+  override def disableEbsEncryptionByDefaultAsync(disableEbsEncryptionByDefaultRequest: DisableEbsEncryptionByDefaultRequest, asyncHandler: AsyncHandler[DisableEbsEncryptionByDefaultRequest, DisableEbsEncryptionByDefaultResult]): Future[DisableEbsEncryptionByDefaultResult] = ???
+
+  override def disableFastSnapshotRestoresAsync(disableFastSnapshotRestoresRequest: DisableFastSnapshotRestoresRequest): Future[DisableFastSnapshotRestoresResult] = ???
+
+  override def disableFastSnapshotRestoresAsync(disableFastSnapshotRestoresRequest: DisableFastSnapshotRestoresRequest, asyncHandler: AsyncHandler[DisableFastSnapshotRestoresRequest, DisableFastSnapshotRestoresResult]): Future[DisableFastSnapshotRestoresResult] = ???
+
+  override def disableTransitGatewayRouteTablePropagationAsync(disableTransitGatewayRouteTablePropagationRequest: DisableTransitGatewayRouteTablePropagationRequest): Future[DisableTransitGatewayRouteTablePropagationResult] = ???
+
+  override def disableTransitGatewayRouteTablePropagationAsync(disableTransitGatewayRouteTablePropagationRequest: DisableTransitGatewayRouteTablePropagationRequest, asyncHandler: AsyncHandler[DisableTransitGatewayRouteTablePropagationRequest, DisableTransitGatewayRouteTablePropagationResult]): Future[DisableTransitGatewayRouteTablePropagationResult] = ???
+
+  override def disassociateClientVpnTargetNetworkAsync(disassociateClientVpnTargetNetworkRequest: DisassociateClientVpnTargetNetworkRequest): Future[DisassociateClientVpnTargetNetworkResult] = ???
+
+  override def disassociateClientVpnTargetNetworkAsync(disassociateClientVpnTargetNetworkRequest: DisassociateClientVpnTargetNetworkRequest, asyncHandler: AsyncHandler[DisassociateClientVpnTargetNetworkRequest, DisassociateClientVpnTargetNetworkResult]): Future[DisassociateClientVpnTargetNetworkResult] = ???
+
+  override def disassociateEnclaveCertificateIamRoleAsync(disassociateEnclaveCertificateIamRoleRequest: DisassociateEnclaveCertificateIamRoleRequest): Future[DisassociateEnclaveCertificateIamRoleResult] = ???
+
+  override def disassociateEnclaveCertificateIamRoleAsync(disassociateEnclaveCertificateIamRoleRequest: DisassociateEnclaveCertificateIamRoleRequest, asyncHandler: AsyncHandler[DisassociateEnclaveCertificateIamRoleRequest, DisassociateEnclaveCertificateIamRoleResult]): Future[DisassociateEnclaveCertificateIamRoleResult] = ???
+
+  override def disassociateTransitGatewayMulticastDomainAsync(disassociateTransitGatewayMulticastDomainRequest: DisassociateTransitGatewayMulticastDomainRequest): Future[DisassociateTransitGatewayMulticastDomainResult] = ???
+
+  override def disassociateTransitGatewayMulticastDomainAsync(disassociateTransitGatewayMulticastDomainRequest: DisassociateTransitGatewayMulticastDomainRequest, asyncHandler: AsyncHandler[DisassociateTransitGatewayMulticastDomainRequest, DisassociateTransitGatewayMulticastDomainResult]): Future[DisassociateTransitGatewayMulticastDomainResult] = ???
+
+  override def disassociateTransitGatewayRouteTableAsync(disassociateTransitGatewayRouteTableRequest: DisassociateTransitGatewayRouteTableRequest): Future[DisassociateTransitGatewayRouteTableResult] = ???
+
+  override def disassociateTransitGatewayRouteTableAsync(disassociateTransitGatewayRouteTableRequest: DisassociateTransitGatewayRouteTableRequest, asyncHandler: AsyncHandler[DisassociateTransitGatewayRouteTableRequest, DisassociateTransitGatewayRouteTableResult]): Future[DisassociateTransitGatewayRouteTableResult] = ???
+
+  override def enableEbsEncryptionByDefaultAsync(enableEbsEncryptionByDefaultRequest: EnableEbsEncryptionByDefaultRequest): Future[EnableEbsEncryptionByDefaultResult] = ???
+
+  override def enableEbsEncryptionByDefaultAsync(enableEbsEncryptionByDefaultRequest: EnableEbsEncryptionByDefaultRequest, asyncHandler: AsyncHandler[EnableEbsEncryptionByDefaultRequest, EnableEbsEncryptionByDefaultResult]): Future[EnableEbsEncryptionByDefaultResult] = ???
+
+  override def enableFastSnapshotRestoresAsync(enableFastSnapshotRestoresRequest: EnableFastSnapshotRestoresRequest): Future[EnableFastSnapshotRestoresResult] = ???
+
+  override def enableFastSnapshotRestoresAsync(enableFastSnapshotRestoresRequest: EnableFastSnapshotRestoresRequest, asyncHandler: AsyncHandler[EnableFastSnapshotRestoresRequest, EnableFastSnapshotRestoresResult]): Future[EnableFastSnapshotRestoresResult] = ???
+
+  override def enableTransitGatewayRouteTablePropagationAsync(enableTransitGatewayRouteTablePropagationRequest: EnableTransitGatewayRouteTablePropagationRequest): Future[EnableTransitGatewayRouteTablePropagationResult] = ???
+
+  override def enableTransitGatewayRouteTablePropagationAsync(enableTransitGatewayRouteTablePropagationRequest: EnableTransitGatewayRouteTablePropagationRequest, asyncHandler: AsyncHandler[EnableTransitGatewayRouteTablePropagationRequest, EnableTransitGatewayRouteTablePropagationResult]): Future[EnableTransitGatewayRouteTablePropagationResult] = ???
+
+  override def exportClientVpnClientCertificateRevocationListAsync(exportClientVpnClientCertificateRevocationListRequest: ExportClientVpnClientCertificateRevocationListRequest): Future[ExportClientVpnClientCertificateRevocationListResult] = ???
+
+  override def exportClientVpnClientCertificateRevocationListAsync(exportClientVpnClientCertificateRevocationListRequest: ExportClientVpnClientCertificateRevocationListRequest, asyncHandler: AsyncHandler[ExportClientVpnClientCertificateRevocationListRequest, ExportClientVpnClientCertificateRevocationListResult]): Future[ExportClientVpnClientCertificateRevocationListResult] = ???
+
+  override def exportClientVpnClientConfigurationAsync(exportClientVpnClientConfigurationRequest: ExportClientVpnClientConfigurationRequest): Future[ExportClientVpnClientConfigurationResult] = ???
+
+  override def exportClientVpnClientConfigurationAsync(exportClientVpnClientConfigurationRequest: ExportClientVpnClientConfigurationRequest, asyncHandler: AsyncHandler[ExportClientVpnClientConfigurationRequest, ExportClientVpnClientConfigurationResult]): Future[ExportClientVpnClientConfigurationResult] = ???
+
+  override def exportImageAsync(exportImageRequest: ExportImageRequest): Future[ExportImageResult] = ???
+
+  override def exportImageAsync(exportImageRequest: ExportImageRequest, asyncHandler: AsyncHandler[ExportImageRequest, ExportImageResult]): Future[ExportImageResult] = ???
+
+  override def exportTransitGatewayRoutesAsync(exportTransitGatewayRoutesRequest: ExportTransitGatewayRoutesRequest): Future[ExportTransitGatewayRoutesResult] = ???
+
+  override def exportTransitGatewayRoutesAsync(exportTransitGatewayRoutesRequest: ExportTransitGatewayRoutesRequest, asyncHandler: AsyncHandler[ExportTransitGatewayRoutesRequest, ExportTransitGatewayRoutesResult]): Future[ExportTransitGatewayRoutesResult] = ???
+
+  override def getAssociatedEnclaveCertificateIamRolesAsync(getAssociatedEnclaveCertificateIamRolesRequest: GetAssociatedEnclaveCertificateIamRolesRequest): Future[GetAssociatedEnclaveCertificateIamRolesResult] = ???
+
+  override def getAssociatedEnclaveCertificateIamRolesAsync(getAssociatedEnclaveCertificateIamRolesRequest: GetAssociatedEnclaveCertificateIamRolesRequest, asyncHandler: AsyncHandler[GetAssociatedEnclaveCertificateIamRolesRequest, GetAssociatedEnclaveCertificateIamRolesResult]): Future[GetAssociatedEnclaveCertificateIamRolesResult] = ???
+
+  override def getAssociatedIpv6PoolCidrsAsync(getAssociatedIpv6PoolCidrsRequest: GetAssociatedIpv6PoolCidrsRequest): Future[GetAssociatedIpv6PoolCidrsResult] = ???
+
+  override def getAssociatedIpv6PoolCidrsAsync(getAssociatedIpv6PoolCidrsRequest: GetAssociatedIpv6PoolCidrsRequest, asyncHandler: AsyncHandler[GetAssociatedIpv6PoolCidrsRequest, GetAssociatedIpv6PoolCidrsResult]): Future[GetAssociatedIpv6PoolCidrsResult] = ???
+
+  override def getCapacityReservationUsageAsync(getCapacityReservationUsageRequest: GetCapacityReservationUsageRequest): Future[GetCapacityReservationUsageResult] = ???
+
+  override def getCapacityReservationUsageAsync(getCapacityReservationUsageRequest: GetCapacityReservationUsageRequest, asyncHandler: AsyncHandler[GetCapacityReservationUsageRequest, GetCapacityReservationUsageResult]): Future[GetCapacityReservationUsageResult] = ???
+
+  override def getCoipPoolUsageAsync(getCoipPoolUsageRequest: GetCoipPoolUsageRequest): Future[GetCoipPoolUsageResult] = ???
+
+  override def getCoipPoolUsageAsync(getCoipPoolUsageRequest: GetCoipPoolUsageRequest, asyncHandler: AsyncHandler[GetCoipPoolUsageRequest, GetCoipPoolUsageResult]): Future[GetCoipPoolUsageResult] = ???
+
+  override def getDefaultCreditSpecificationAsync(getDefaultCreditSpecificationRequest: GetDefaultCreditSpecificationRequest): Future[GetDefaultCreditSpecificationResult] = ???
+
+  override def getDefaultCreditSpecificationAsync(getDefaultCreditSpecificationRequest: GetDefaultCreditSpecificationRequest, asyncHandler: AsyncHandler[GetDefaultCreditSpecificationRequest, GetDefaultCreditSpecificationResult]): Future[GetDefaultCreditSpecificationResult] = ???
+
+  override def getEbsDefaultKmsKeyIdAsync(getEbsDefaultKmsKeyIdRequest: GetEbsDefaultKmsKeyIdRequest): Future[GetEbsDefaultKmsKeyIdResult] = ???
+
+  override def getEbsDefaultKmsKeyIdAsync(getEbsDefaultKmsKeyIdRequest: GetEbsDefaultKmsKeyIdRequest, asyncHandler: AsyncHandler[GetEbsDefaultKmsKeyIdRequest, GetEbsDefaultKmsKeyIdResult]): Future[GetEbsDefaultKmsKeyIdResult] = ???
+
+  override def getEbsEncryptionByDefaultAsync(getEbsEncryptionByDefaultRequest: GetEbsEncryptionByDefaultRequest): Future[GetEbsEncryptionByDefaultResult] = ???
+
+  override def getEbsEncryptionByDefaultAsync(getEbsEncryptionByDefaultRequest: GetEbsEncryptionByDefaultRequest, asyncHandler: AsyncHandler[GetEbsEncryptionByDefaultRequest, GetEbsEncryptionByDefaultResult]): Future[GetEbsEncryptionByDefaultResult] = ???
+
+  override def getGroupsForCapacityReservationAsync(getGroupsForCapacityReservationRequest: GetGroupsForCapacityReservationRequest): Future[GetGroupsForCapacityReservationResult] = ???
+
+  override def getGroupsForCapacityReservationAsync(getGroupsForCapacityReservationRequest: GetGroupsForCapacityReservationRequest, asyncHandler: AsyncHandler[GetGroupsForCapacityReservationRequest, GetGroupsForCapacityReservationResult]): Future[GetGroupsForCapacityReservationResult] = ???
+
+  override def getManagedPrefixListAssociationsAsync(getManagedPrefixListAssociationsRequest: GetManagedPrefixListAssociationsRequest): Future[GetManagedPrefixListAssociationsResult] = ???
+
+  override def getManagedPrefixListAssociationsAsync(getManagedPrefixListAssociationsRequest: GetManagedPrefixListAssociationsRequest, asyncHandler: AsyncHandler[GetManagedPrefixListAssociationsRequest, GetManagedPrefixListAssociationsResult]): Future[GetManagedPrefixListAssociationsResult] = ???
+
+  override def getManagedPrefixListEntriesAsync(getManagedPrefixListEntriesRequest: GetManagedPrefixListEntriesRequest): Future[GetManagedPrefixListEntriesResult] = ???
+
+  override def getManagedPrefixListEntriesAsync(getManagedPrefixListEntriesRequest: GetManagedPrefixListEntriesRequest, asyncHandler: AsyncHandler[GetManagedPrefixListEntriesRequest, GetManagedPrefixListEntriesResult]): Future[GetManagedPrefixListEntriesResult] = ???
+
+  override def getTransitGatewayAttachmentPropagationsAsync(getTransitGatewayAttachmentPropagationsRequest: GetTransitGatewayAttachmentPropagationsRequest): Future[GetTransitGatewayAttachmentPropagationsResult] = ???
+
+  override def getTransitGatewayAttachmentPropagationsAsync(getTransitGatewayAttachmentPropagationsRequest: GetTransitGatewayAttachmentPropagationsRequest, asyncHandler: AsyncHandler[GetTransitGatewayAttachmentPropagationsRequest, GetTransitGatewayAttachmentPropagationsResult]): Future[GetTransitGatewayAttachmentPropagationsResult] = ???
+
+  override def getTransitGatewayMulticastDomainAssociationsAsync(getTransitGatewayMulticastDomainAssociationsRequest: GetTransitGatewayMulticastDomainAssociationsRequest): Future[GetTransitGatewayMulticastDomainAssociationsResult] = ???
+
+  override def getTransitGatewayMulticastDomainAssociationsAsync(getTransitGatewayMulticastDomainAssociationsRequest: GetTransitGatewayMulticastDomainAssociationsRequest, asyncHandler: AsyncHandler[GetTransitGatewayMulticastDomainAssociationsRequest, GetTransitGatewayMulticastDomainAssociationsResult]): Future[GetTransitGatewayMulticastDomainAssociationsResult] = ???
+
+  override def getTransitGatewayPrefixListReferencesAsync(getTransitGatewayPrefixListReferencesRequest: GetTransitGatewayPrefixListReferencesRequest): Future[GetTransitGatewayPrefixListReferencesResult] = ???
+
+  override def getTransitGatewayPrefixListReferencesAsync(getTransitGatewayPrefixListReferencesRequest: GetTransitGatewayPrefixListReferencesRequest, asyncHandler: AsyncHandler[GetTransitGatewayPrefixListReferencesRequest, GetTransitGatewayPrefixListReferencesResult]): Future[GetTransitGatewayPrefixListReferencesResult] = ???
+
+  override def getTransitGatewayRouteTableAssociationsAsync(getTransitGatewayRouteTableAssociationsRequest: GetTransitGatewayRouteTableAssociationsRequest): Future[GetTransitGatewayRouteTableAssociationsResult] = ???
+
+  override def getTransitGatewayRouteTableAssociationsAsync(getTransitGatewayRouteTableAssociationsRequest: GetTransitGatewayRouteTableAssociationsRequest, asyncHandler: AsyncHandler[GetTransitGatewayRouteTableAssociationsRequest, GetTransitGatewayRouteTableAssociationsResult]): Future[GetTransitGatewayRouteTableAssociationsResult] = ???
+
+  override def getTransitGatewayRouteTablePropagationsAsync(getTransitGatewayRouteTablePropagationsRequest: GetTransitGatewayRouteTablePropagationsRequest): Future[GetTransitGatewayRouteTablePropagationsResult] = ???
+
+  override def getTransitGatewayRouteTablePropagationsAsync(getTransitGatewayRouteTablePropagationsRequest: GetTransitGatewayRouteTablePropagationsRequest, asyncHandler: AsyncHandler[GetTransitGatewayRouteTablePropagationsRequest, GetTransitGatewayRouteTablePropagationsResult]): Future[GetTransitGatewayRouteTablePropagationsResult] = ???
+
+  override def importClientVpnClientCertificateRevocationListAsync(importClientVpnClientCertificateRevocationListRequest: ImportClientVpnClientCertificateRevocationListRequest): Future[ImportClientVpnClientCertificateRevocationListResult] = ???
+
+  override def importClientVpnClientCertificateRevocationListAsync(importClientVpnClientCertificateRevocationListRequest: ImportClientVpnClientCertificateRevocationListRequest, asyncHandler: AsyncHandler[ImportClientVpnClientCertificateRevocationListRequest, ImportClientVpnClientCertificateRevocationListResult]): Future[ImportClientVpnClientCertificateRevocationListResult] = ???
+
+  override def modifyAddressAttributeAsync(modifyAddressAttributeRequest: ModifyAddressAttributeRequest): Future[ModifyAddressAttributeResult] = ???
+
+  override def modifyAddressAttributeAsync(modifyAddressAttributeRequest: ModifyAddressAttributeRequest, asyncHandler: AsyncHandler[ModifyAddressAttributeRequest, ModifyAddressAttributeResult]): Future[ModifyAddressAttributeResult] = ???
+
+  override def modifyAvailabilityZoneGroupAsync(modifyAvailabilityZoneGroupRequest: ModifyAvailabilityZoneGroupRequest): Future[ModifyAvailabilityZoneGroupResult] = ???
+
+  override def modifyAvailabilityZoneGroupAsync(modifyAvailabilityZoneGroupRequest: ModifyAvailabilityZoneGroupRequest, asyncHandler: AsyncHandler[ModifyAvailabilityZoneGroupRequest, ModifyAvailabilityZoneGroupResult]): Future[ModifyAvailabilityZoneGroupResult] = ???
+
+  override def modifyCapacityReservationAsync(modifyCapacityReservationRequest: ModifyCapacityReservationRequest): Future[ModifyCapacityReservationResult] = ???
+
+  override def modifyCapacityReservationAsync(modifyCapacityReservationRequest: ModifyCapacityReservationRequest, asyncHandler: AsyncHandler[ModifyCapacityReservationRequest, ModifyCapacityReservationResult]): Future[ModifyCapacityReservationResult] = ???
+
+  override def modifyClientVpnEndpointAsync(modifyClientVpnEndpointRequest: ModifyClientVpnEndpointRequest): Future[ModifyClientVpnEndpointResult] = ???
+
+  override def modifyClientVpnEndpointAsync(modifyClientVpnEndpointRequest: ModifyClientVpnEndpointRequest, asyncHandler: AsyncHandler[ModifyClientVpnEndpointRequest, ModifyClientVpnEndpointResult]): Future[ModifyClientVpnEndpointResult] = ???
+
+  override def modifyDefaultCreditSpecificationAsync(modifyDefaultCreditSpecificationRequest: ModifyDefaultCreditSpecificationRequest): Future[ModifyDefaultCreditSpecificationResult] = ???
+
+  override def modifyDefaultCreditSpecificationAsync(modifyDefaultCreditSpecificationRequest: ModifyDefaultCreditSpecificationRequest, asyncHandler: AsyncHandler[ModifyDefaultCreditSpecificationRequest, ModifyDefaultCreditSpecificationResult]): Future[ModifyDefaultCreditSpecificationResult] = ???
+
+  override def modifyEbsDefaultKmsKeyIdAsync(modifyEbsDefaultKmsKeyIdRequest: ModifyEbsDefaultKmsKeyIdRequest): Future[ModifyEbsDefaultKmsKeyIdResult] = ???
+
+  override def modifyEbsDefaultKmsKeyIdAsync(modifyEbsDefaultKmsKeyIdRequest: ModifyEbsDefaultKmsKeyIdRequest, asyncHandler: AsyncHandler[ModifyEbsDefaultKmsKeyIdRequest, ModifyEbsDefaultKmsKeyIdResult]): Future[ModifyEbsDefaultKmsKeyIdResult] = ???
+
+  override def modifyInstanceCapacityReservationAttributesAsync(modifyInstanceCapacityReservationAttributesRequest: ModifyInstanceCapacityReservationAttributesRequest): Future[ModifyInstanceCapacityReservationAttributesResult] = ???
+
+  override def modifyInstanceCapacityReservationAttributesAsync(modifyInstanceCapacityReservationAttributesRequest: ModifyInstanceCapacityReservationAttributesRequest, asyncHandler: AsyncHandler[ModifyInstanceCapacityReservationAttributesRequest, ModifyInstanceCapacityReservationAttributesResult]): Future[ModifyInstanceCapacityReservationAttributesResult] = ???
+
+  override def modifyInstanceEventStartTimeAsync(modifyInstanceEventStartTimeRequest: ModifyInstanceEventStartTimeRequest): Future[ModifyInstanceEventStartTimeResult] = ???
+
+  override def modifyInstanceEventStartTimeAsync(modifyInstanceEventStartTimeRequest: ModifyInstanceEventStartTimeRequest, asyncHandler: AsyncHandler[ModifyInstanceEventStartTimeRequest, ModifyInstanceEventStartTimeResult]): Future[ModifyInstanceEventStartTimeResult] = ???
+
+  override def modifyInstanceMetadataOptionsAsync(modifyInstanceMetadataOptionsRequest: ModifyInstanceMetadataOptionsRequest): Future[ModifyInstanceMetadataOptionsResult] = ???
+
+  override def modifyInstanceMetadataOptionsAsync(modifyInstanceMetadataOptionsRequest: ModifyInstanceMetadataOptionsRequest, asyncHandler: AsyncHandler[ModifyInstanceMetadataOptionsRequest, ModifyInstanceMetadataOptionsResult]): Future[ModifyInstanceMetadataOptionsResult] = ???
+
+  override def modifyManagedPrefixListAsync(modifyManagedPrefixListRequest: ModifyManagedPrefixListRequest): Future[ModifyManagedPrefixListResult] = ???
+
+  override def modifyManagedPrefixListAsync(modifyManagedPrefixListRequest: ModifyManagedPrefixListRequest, asyncHandler: AsyncHandler[ModifyManagedPrefixListRequest, ModifyManagedPrefixListResult]): Future[ModifyManagedPrefixListResult] = ???
+
+  override def modifyTrafficMirrorFilterNetworkServicesAsync(modifyTrafficMirrorFilterNetworkServicesRequest: ModifyTrafficMirrorFilterNetworkServicesRequest): Future[ModifyTrafficMirrorFilterNetworkServicesResult] = ???
+
+  override def modifyTrafficMirrorFilterNetworkServicesAsync(modifyTrafficMirrorFilterNetworkServicesRequest: ModifyTrafficMirrorFilterNetworkServicesRequest, asyncHandler: AsyncHandler[ModifyTrafficMirrorFilterNetworkServicesRequest, ModifyTrafficMirrorFilterNetworkServicesResult]): Future[ModifyTrafficMirrorFilterNetworkServicesResult] = ???
+
+  override def modifyTrafficMirrorFilterRuleAsync(modifyTrafficMirrorFilterRuleRequest: ModifyTrafficMirrorFilterRuleRequest): Future[ModifyTrafficMirrorFilterRuleResult] = ???
+
+  override def modifyTrafficMirrorFilterRuleAsync(modifyTrafficMirrorFilterRuleRequest: ModifyTrafficMirrorFilterRuleRequest, asyncHandler: AsyncHandler[ModifyTrafficMirrorFilterRuleRequest, ModifyTrafficMirrorFilterRuleResult]): Future[ModifyTrafficMirrorFilterRuleResult] = ???
+
+  override def modifyTrafficMirrorSessionAsync(modifyTrafficMirrorSessionRequest: ModifyTrafficMirrorSessionRequest): Future[ModifyTrafficMirrorSessionResult] = ???
+
+  override def modifyTrafficMirrorSessionAsync(modifyTrafficMirrorSessionRequest: ModifyTrafficMirrorSessionRequest, asyncHandler: AsyncHandler[ModifyTrafficMirrorSessionRequest, ModifyTrafficMirrorSessionResult]): Future[ModifyTrafficMirrorSessionResult] = ???
+
+  override def modifyTransitGatewayAsync(modifyTransitGatewayRequest: ModifyTransitGatewayRequest): Future[ModifyTransitGatewayResult] = ???
+
+  override def modifyTransitGatewayAsync(modifyTransitGatewayRequest: ModifyTransitGatewayRequest, asyncHandler: AsyncHandler[ModifyTransitGatewayRequest, ModifyTransitGatewayResult]): Future[ModifyTransitGatewayResult] = ???
+
+  override def modifyTransitGatewayPrefixListReferenceAsync(modifyTransitGatewayPrefixListReferenceRequest: ModifyTransitGatewayPrefixListReferenceRequest): Future[ModifyTransitGatewayPrefixListReferenceResult] = ???
+
+  override def modifyTransitGatewayPrefixListReferenceAsync(modifyTransitGatewayPrefixListReferenceRequest: ModifyTransitGatewayPrefixListReferenceRequest, asyncHandler: AsyncHandler[ModifyTransitGatewayPrefixListReferenceRequest, ModifyTransitGatewayPrefixListReferenceResult]): Future[ModifyTransitGatewayPrefixListReferenceResult] = ???
+
+  override def modifyTransitGatewayVpcAttachmentAsync(modifyTransitGatewayVpcAttachmentRequest: ModifyTransitGatewayVpcAttachmentRequest): Future[ModifyTransitGatewayVpcAttachmentResult] = ???
+
+  override def modifyTransitGatewayVpcAttachmentAsync(modifyTransitGatewayVpcAttachmentRequest: ModifyTransitGatewayVpcAttachmentRequest, asyncHandler: AsyncHandler[ModifyTransitGatewayVpcAttachmentRequest, ModifyTransitGatewayVpcAttachmentResult]): Future[ModifyTransitGatewayVpcAttachmentResult] = ???
+
+  override def modifyVpnConnectionAsync(modifyVpnConnectionRequest: ModifyVpnConnectionRequest): Future[ModifyVpnConnectionResult] = ???
+
+  override def modifyVpnConnectionAsync(modifyVpnConnectionRequest: ModifyVpnConnectionRequest, asyncHandler: AsyncHandler[ModifyVpnConnectionRequest, ModifyVpnConnectionResult]): Future[ModifyVpnConnectionResult] = ???
+
+  override def modifyVpnConnectionOptionsAsync(modifyVpnConnectionOptionsRequest: ModifyVpnConnectionOptionsRequest): Future[ModifyVpnConnectionOptionsResult] = ???
+
+  override def modifyVpnConnectionOptionsAsync(modifyVpnConnectionOptionsRequest: ModifyVpnConnectionOptionsRequest, asyncHandler: AsyncHandler[ModifyVpnConnectionOptionsRequest, ModifyVpnConnectionOptionsResult]): Future[ModifyVpnConnectionOptionsResult] = ???
+
+  override def modifyVpnTunnelCertificateAsync(modifyVpnTunnelCertificateRequest: ModifyVpnTunnelCertificateRequest): Future[ModifyVpnTunnelCertificateResult] = ???
+
+  override def modifyVpnTunnelCertificateAsync(modifyVpnTunnelCertificateRequest: ModifyVpnTunnelCertificateRequest, asyncHandler: AsyncHandler[ModifyVpnTunnelCertificateRequest, ModifyVpnTunnelCertificateResult]): Future[ModifyVpnTunnelCertificateResult] = ???
+
+  override def modifyVpnTunnelOptionsAsync(modifyVpnTunnelOptionsRequest: ModifyVpnTunnelOptionsRequest): Future[ModifyVpnTunnelOptionsResult] = ???
+
+  override def modifyVpnTunnelOptionsAsync(modifyVpnTunnelOptionsRequest: ModifyVpnTunnelOptionsRequest, asyncHandler: AsyncHandler[ModifyVpnTunnelOptionsRequest, ModifyVpnTunnelOptionsResult]): Future[ModifyVpnTunnelOptionsResult] = ???
+
+  override def provisionByoipCidrAsync(provisionByoipCidrRequest: ProvisionByoipCidrRequest): Future[ProvisionByoipCidrResult] = ???
+
+  override def provisionByoipCidrAsync(provisionByoipCidrRequest: ProvisionByoipCidrRequest, asyncHandler: AsyncHandler[ProvisionByoipCidrRequest, ProvisionByoipCidrResult]): Future[ProvisionByoipCidrResult] = ???
+
+  override def registerInstanceEventNotificationAttributesAsync(registerInstanceEventNotificationAttributesRequest: RegisterInstanceEventNotificationAttributesRequest): Future[RegisterInstanceEventNotificationAttributesResult] = ???
+
+  override def registerInstanceEventNotificationAttributesAsync(registerInstanceEventNotificationAttributesRequest: RegisterInstanceEventNotificationAttributesRequest, asyncHandler: AsyncHandler[RegisterInstanceEventNotificationAttributesRequest, RegisterInstanceEventNotificationAttributesResult]): Future[RegisterInstanceEventNotificationAttributesResult] = ???
+
+  override def registerTransitGatewayMulticastGroupMembersAsync(registerTransitGatewayMulticastGroupMembersRequest: RegisterTransitGatewayMulticastGroupMembersRequest): Future[RegisterTransitGatewayMulticastGroupMembersResult] = ???
+
+  override def registerTransitGatewayMulticastGroupMembersAsync(registerTransitGatewayMulticastGroupMembersRequest: RegisterTransitGatewayMulticastGroupMembersRequest, asyncHandler: AsyncHandler[RegisterTransitGatewayMulticastGroupMembersRequest, RegisterTransitGatewayMulticastGroupMembersResult]): Future[RegisterTransitGatewayMulticastGroupMembersResult] = ???
+
+  override def registerTransitGatewayMulticastGroupSourcesAsync(registerTransitGatewayMulticastGroupSourcesRequest: RegisterTransitGatewayMulticastGroupSourcesRequest): Future[RegisterTransitGatewayMulticastGroupSourcesResult] = ???
+
+  override def registerTransitGatewayMulticastGroupSourcesAsync(registerTransitGatewayMulticastGroupSourcesRequest: RegisterTransitGatewayMulticastGroupSourcesRequest, asyncHandler: AsyncHandler[RegisterTransitGatewayMulticastGroupSourcesRequest, RegisterTransitGatewayMulticastGroupSourcesResult]): Future[RegisterTransitGatewayMulticastGroupSourcesResult] = ???
+
+  override def rejectTransitGatewayMulticastDomainAssociationsAsync(rejectTransitGatewayMulticastDomainAssociationsRequest: RejectTransitGatewayMulticastDomainAssociationsRequest): Future[RejectTransitGatewayMulticastDomainAssociationsResult] = ???
+
+  override def rejectTransitGatewayMulticastDomainAssociationsAsync(rejectTransitGatewayMulticastDomainAssociationsRequest: RejectTransitGatewayMulticastDomainAssociationsRequest, asyncHandler: AsyncHandler[RejectTransitGatewayMulticastDomainAssociationsRequest, RejectTransitGatewayMulticastDomainAssociationsResult]): Future[RejectTransitGatewayMulticastDomainAssociationsResult] = ???
+
+  override def rejectTransitGatewayPeeringAttachmentAsync(rejectTransitGatewayPeeringAttachmentRequest: RejectTransitGatewayPeeringAttachmentRequest): Future[RejectTransitGatewayPeeringAttachmentResult] = ???
+
+  override def rejectTransitGatewayPeeringAttachmentAsync(rejectTransitGatewayPeeringAttachmentRequest: RejectTransitGatewayPeeringAttachmentRequest, asyncHandler: AsyncHandler[RejectTransitGatewayPeeringAttachmentRequest, RejectTransitGatewayPeeringAttachmentResult]): Future[RejectTransitGatewayPeeringAttachmentResult] = ???
+
+  override def rejectTransitGatewayVpcAttachmentAsync(rejectTransitGatewayVpcAttachmentRequest: RejectTransitGatewayVpcAttachmentRequest): Future[RejectTransitGatewayVpcAttachmentResult] = ???
+
+  override def rejectTransitGatewayVpcAttachmentAsync(rejectTransitGatewayVpcAttachmentRequest: RejectTransitGatewayVpcAttachmentRequest, asyncHandler: AsyncHandler[RejectTransitGatewayVpcAttachmentRequest, RejectTransitGatewayVpcAttachmentResult]): Future[RejectTransitGatewayVpcAttachmentResult] = ???
+
+  override def replaceTransitGatewayRouteAsync(replaceTransitGatewayRouteRequest: ReplaceTransitGatewayRouteRequest): Future[ReplaceTransitGatewayRouteResult] = ???
+
+  override def replaceTransitGatewayRouteAsync(replaceTransitGatewayRouteRequest: ReplaceTransitGatewayRouteRequest, asyncHandler: AsyncHandler[ReplaceTransitGatewayRouteRequest, ReplaceTransitGatewayRouteResult]): Future[ReplaceTransitGatewayRouteResult] = ???
+
+  override def resetAddressAttributeAsync(resetAddressAttributeRequest: ResetAddressAttributeRequest): Future[ResetAddressAttributeResult] = ???
+
+  override def resetAddressAttributeAsync(resetAddressAttributeRequest: ResetAddressAttributeRequest, asyncHandler: AsyncHandler[ResetAddressAttributeRequest, ResetAddressAttributeResult]): Future[ResetAddressAttributeResult] = ???
+
+  override def resetEbsDefaultKmsKeyIdAsync(resetEbsDefaultKmsKeyIdRequest: ResetEbsDefaultKmsKeyIdRequest): Future[ResetEbsDefaultKmsKeyIdResult] = ???
+
+  override def resetEbsDefaultKmsKeyIdAsync(resetEbsDefaultKmsKeyIdRequest: ResetEbsDefaultKmsKeyIdRequest, asyncHandler: AsyncHandler[ResetEbsDefaultKmsKeyIdRequest, ResetEbsDefaultKmsKeyIdResult]): Future[ResetEbsDefaultKmsKeyIdResult] = ???
+
+  override def restoreManagedPrefixListVersionAsync(restoreManagedPrefixListVersionRequest: RestoreManagedPrefixListVersionRequest): Future[RestoreManagedPrefixListVersionResult] = ???
+
+  override def restoreManagedPrefixListVersionAsync(restoreManagedPrefixListVersionRequest: RestoreManagedPrefixListVersionRequest, asyncHandler: AsyncHandler[RestoreManagedPrefixListVersionRequest, RestoreManagedPrefixListVersionResult]): Future[RestoreManagedPrefixListVersionResult] = ???
+
+  override def revokeClientVpnIngressAsync(revokeClientVpnIngressRequest: RevokeClientVpnIngressRequest): Future[RevokeClientVpnIngressResult] = ???
+
+  override def revokeClientVpnIngressAsync(revokeClientVpnIngressRequest: RevokeClientVpnIngressRequest, asyncHandler: AsyncHandler[RevokeClientVpnIngressRequest, RevokeClientVpnIngressResult]): Future[RevokeClientVpnIngressResult] = ???
+
+  override def searchLocalGatewayRoutesAsync(searchLocalGatewayRoutesRequest: SearchLocalGatewayRoutesRequest): Future[SearchLocalGatewayRoutesResult] = ???
+
+  override def searchLocalGatewayRoutesAsync(searchLocalGatewayRoutesRequest: SearchLocalGatewayRoutesRequest, asyncHandler: AsyncHandler[SearchLocalGatewayRoutesRequest, SearchLocalGatewayRoutesResult]): Future[SearchLocalGatewayRoutesResult] = ???
+
+  override def searchTransitGatewayMulticastGroupsAsync(searchTransitGatewayMulticastGroupsRequest: SearchTransitGatewayMulticastGroupsRequest): Future[SearchTransitGatewayMulticastGroupsResult] = ???
+
+  override def searchTransitGatewayMulticastGroupsAsync(searchTransitGatewayMulticastGroupsRequest: SearchTransitGatewayMulticastGroupsRequest, asyncHandler: AsyncHandler[SearchTransitGatewayMulticastGroupsRequest, SearchTransitGatewayMulticastGroupsResult]): Future[SearchTransitGatewayMulticastGroupsResult] = ???
+
+  override def searchTransitGatewayRoutesAsync(searchTransitGatewayRoutesRequest: SearchTransitGatewayRoutesRequest): Future[SearchTransitGatewayRoutesResult] = ???
+
+  override def searchTransitGatewayRoutesAsync(searchTransitGatewayRoutesRequest: SearchTransitGatewayRoutesRequest, asyncHandler: AsyncHandler[SearchTransitGatewayRoutesRequest, SearchTransitGatewayRoutesResult]): Future[SearchTransitGatewayRoutesResult] = ???
+
+  override def sendDiagnosticInterruptAsync(sendDiagnosticInterruptRequest: SendDiagnosticInterruptRequest): Future[SendDiagnosticInterruptResult] = ???
+
+  override def sendDiagnosticInterruptAsync(sendDiagnosticInterruptRequest: SendDiagnosticInterruptRequest, asyncHandler: AsyncHandler[SendDiagnosticInterruptRequest, SendDiagnosticInterruptResult]): Future[SendDiagnosticInterruptResult] = ???
+
+  override def startNetworkInsightsAnalysisAsync(startNetworkInsightsAnalysisRequest: StartNetworkInsightsAnalysisRequest): Future[StartNetworkInsightsAnalysisResult] = ???
+
+  override def startNetworkInsightsAnalysisAsync(startNetworkInsightsAnalysisRequest: StartNetworkInsightsAnalysisRequest, asyncHandler: AsyncHandler[StartNetworkInsightsAnalysisRequest, StartNetworkInsightsAnalysisResult]): Future[StartNetworkInsightsAnalysisResult] = ???
+
+  override def startVpcEndpointServicePrivateDnsVerificationAsync(startVpcEndpointServicePrivateDnsVerificationRequest: StartVpcEndpointServicePrivateDnsVerificationRequest): Future[StartVpcEndpointServicePrivateDnsVerificationResult] = ???
+
+  override def startVpcEndpointServicePrivateDnsVerificationAsync(startVpcEndpointServicePrivateDnsVerificationRequest: StartVpcEndpointServicePrivateDnsVerificationRequest, asyncHandler: AsyncHandler[StartVpcEndpointServicePrivateDnsVerificationRequest, StartVpcEndpointServicePrivateDnsVerificationResult]): Future[StartVpcEndpointServicePrivateDnsVerificationResult] = ???
+
+  override def terminateClientVpnConnectionsAsync(terminateClientVpnConnectionsRequest: TerminateClientVpnConnectionsRequest): Future[TerminateClientVpnConnectionsResult] = ???
+
+  override def terminateClientVpnConnectionsAsync(terminateClientVpnConnectionsRequest: TerminateClientVpnConnectionsRequest, asyncHandler: AsyncHandler[TerminateClientVpnConnectionsRequest, TerminateClientVpnConnectionsResult]): Future[TerminateClientVpnConnectionsResult] = ???
+
+  override def withdrawByoipCidrAsync(withdrawByoipCidrRequest: WithdrawByoipCidrRequest): Future[WithdrawByoipCidrResult] = ???
+
+  override def withdrawByoipCidrAsync(withdrawByoipCidrRequest: WithdrawByoipCidrRequest, asyncHandler: AsyncHandler[WithdrawByoipCidrRequest, WithdrawByoipCidrResult]): Future[WithdrawByoipCidrResult] = ???
+
+  override def acceptTransitGatewayPeeringAttachment(acceptTransitGatewayPeeringAttachmentRequest: AcceptTransitGatewayPeeringAttachmentRequest): AcceptTransitGatewayPeeringAttachmentResult = ???
+
+  override def acceptTransitGatewayVpcAttachment(acceptTransitGatewayVpcAttachmentRequest: AcceptTransitGatewayVpcAttachmentRequest): AcceptTransitGatewayVpcAttachmentResult = ???
+
+  override def advertiseByoipCidr(advertiseByoipCidrRequest: AdvertiseByoipCidrRequest): AdvertiseByoipCidrResult = ???
+
+  override def applySecurityGroupsToClientVpnTargetNetwork(applySecurityGroupsToClientVpnTargetNetworkRequest: ApplySecurityGroupsToClientVpnTargetNetworkRequest): ApplySecurityGroupsToClientVpnTargetNetworkResult = ???
+
+  override def associateClientVpnTargetNetwork(associateClientVpnTargetNetworkRequest: AssociateClientVpnTargetNetworkRequest): AssociateClientVpnTargetNetworkResult = ???
+
+  override def associateEnclaveCertificateIamRole(associateEnclaveCertificateIamRoleRequest: AssociateEnclaveCertificateIamRoleRequest): AssociateEnclaveCertificateIamRoleResult = ???
+
+  override def associateTransitGatewayMulticastDomain(associateTransitGatewayMulticastDomainRequest: AssociateTransitGatewayMulticastDomainRequest): AssociateTransitGatewayMulticastDomainResult = ???
+
+  override def associateTransitGatewayRouteTable(associateTransitGatewayRouteTableRequest: AssociateTransitGatewayRouteTableRequest): AssociateTransitGatewayRouteTableResult = ???
+
+  override def authorizeClientVpnIngress(authorizeClientVpnIngressRequest: AuthorizeClientVpnIngressRequest): AuthorizeClientVpnIngressResult = ???
+
+  override def cancelCapacityReservation(cancelCapacityReservationRequest: CancelCapacityReservationRequest): CancelCapacityReservationResult = ???
+
+  override def createCapacityReservation(createCapacityReservationRequest: CreateCapacityReservationRequest): CreateCapacityReservationResult = ???
+
+  override def createCarrierGateway(createCarrierGatewayRequest: CreateCarrierGatewayRequest): CreateCarrierGatewayResult = ???
+
+  override def createClientVpnEndpoint(createClientVpnEndpointRequest: CreateClientVpnEndpointRequest): CreateClientVpnEndpointResult = ???
+
+  override def createClientVpnRoute(createClientVpnRouteRequest: CreateClientVpnRouteRequest): CreateClientVpnRouteResult = ???
+
+  override def createLocalGatewayRoute(createLocalGatewayRouteRequest: CreateLocalGatewayRouteRequest): CreateLocalGatewayRouteResult = ???
+
+  override def createLocalGatewayRouteTableVpcAssociation(createLocalGatewayRouteTableVpcAssociationRequest: CreateLocalGatewayRouteTableVpcAssociationRequest): CreateLocalGatewayRouteTableVpcAssociationResult = ???
+
+  override def createManagedPrefixList(createManagedPrefixListRequest: CreateManagedPrefixListRequest): CreateManagedPrefixListResult = ???
+
+  override def createNetworkInsightsPath(createNetworkInsightsPathRequest: CreateNetworkInsightsPathRequest): CreateNetworkInsightsPathResult = ???
+
+  override def createSnapshots(createSnapshotsRequest: CreateSnapshotsRequest): CreateSnapshotsResult = ???
+
+  override def createTrafficMirrorFilter(createTrafficMirrorFilterRequest: CreateTrafficMirrorFilterRequest): CreateTrafficMirrorFilterResult = ???
+
+  override def createTrafficMirrorFilterRule(createTrafficMirrorFilterRuleRequest: CreateTrafficMirrorFilterRuleRequest): CreateTrafficMirrorFilterRuleResult = ???
+
+  override def createTrafficMirrorSession(createTrafficMirrorSessionRequest: CreateTrafficMirrorSessionRequest): CreateTrafficMirrorSessionResult = ???
+
+  override def createTrafficMirrorTarget(createTrafficMirrorTargetRequest: CreateTrafficMirrorTargetRequest): CreateTrafficMirrorTargetResult = ???
+
+  override def createTransitGateway(createTransitGatewayRequest: CreateTransitGatewayRequest): CreateTransitGatewayResult = ???
+
+  override def createTransitGatewayConnect(createTransitGatewayConnectRequest: CreateTransitGatewayConnectRequest): CreateTransitGatewayConnectResult = ???
+
+  override def createTransitGatewayConnectPeer(createTransitGatewayConnectPeerRequest: CreateTransitGatewayConnectPeerRequest): CreateTransitGatewayConnectPeerResult = ???
+
+  override def createTransitGatewayMulticastDomain(createTransitGatewayMulticastDomainRequest: CreateTransitGatewayMulticastDomainRequest): CreateTransitGatewayMulticastDomainResult = ???
+
+  override def createTransitGatewayPeeringAttachment(createTransitGatewayPeeringAttachmentRequest: CreateTransitGatewayPeeringAttachmentRequest): CreateTransitGatewayPeeringAttachmentResult = ???
+
+  override def createTransitGatewayPrefixListReference(createTransitGatewayPrefixListReferenceRequest: CreateTransitGatewayPrefixListReferenceRequest): CreateTransitGatewayPrefixListReferenceResult = ???
+
+  override def createTransitGatewayRoute(createTransitGatewayRouteRequest: CreateTransitGatewayRouteRequest): CreateTransitGatewayRouteResult = ???
+
+  override def createTransitGatewayRouteTable(createTransitGatewayRouteTableRequest: CreateTransitGatewayRouteTableRequest): CreateTransitGatewayRouteTableResult = ???
+
+  override def createTransitGatewayVpcAttachment(createTransitGatewayVpcAttachmentRequest: CreateTransitGatewayVpcAttachmentRequest): CreateTransitGatewayVpcAttachmentResult = ???
+
+  override def deleteCarrierGateway(deleteCarrierGatewayRequest: DeleteCarrierGatewayRequest): DeleteCarrierGatewayResult = ???
+
+  override def deleteClientVpnEndpoint(deleteClientVpnEndpointRequest: DeleteClientVpnEndpointRequest): DeleteClientVpnEndpointResult = ???
+
+  override def deleteClientVpnRoute(deleteClientVpnRouteRequest: DeleteClientVpnRouteRequest): DeleteClientVpnRouteResult = ???
+
+  override def deleteLocalGatewayRoute(deleteLocalGatewayRouteRequest: DeleteLocalGatewayRouteRequest): DeleteLocalGatewayRouteResult = ???
+
+  override def deleteLocalGatewayRouteTableVpcAssociation(deleteLocalGatewayRouteTableVpcAssociationRequest: DeleteLocalGatewayRouteTableVpcAssociationRequest): DeleteLocalGatewayRouteTableVpcAssociationResult = ???
+
+  override def deleteManagedPrefixList(deleteManagedPrefixListRequest: DeleteManagedPrefixListRequest): DeleteManagedPrefixListResult = ???
+
+  override def deleteNetworkInsightsAnalysis(deleteNetworkInsightsAnalysisRequest: DeleteNetworkInsightsAnalysisRequest): DeleteNetworkInsightsAnalysisResult = ???
+
+  override def deleteNetworkInsightsPath(deleteNetworkInsightsPathRequest: DeleteNetworkInsightsPathRequest): DeleteNetworkInsightsPathResult = ???
+
+  override def deleteQueuedReservedInstances(deleteQueuedReservedInstancesRequest: DeleteQueuedReservedInstancesRequest): DeleteQueuedReservedInstancesResult = ???
+
+  override def deleteTrafficMirrorFilter(deleteTrafficMirrorFilterRequest: DeleteTrafficMirrorFilterRequest): DeleteTrafficMirrorFilterResult = ???
+
+  override def deleteTrafficMirrorFilterRule(deleteTrafficMirrorFilterRuleRequest: DeleteTrafficMirrorFilterRuleRequest): DeleteTrafficMirrorFilterRuleResult = ???
+
+  override def deleteTrafficMirrorSession(deleteTrafficMirrorSessionRequest: DeleteTrafficMirrorSessionRequest): DeleteTrafficMirrorSessionResult = ???
+
+  override def deleteTrafficMirrorTarget(deleteTrafficMirrorTargetRequest: DeleteTrafficMirrorTargetRequest): DeleteTrafficMirrorTargetResult = ???
+
+  override def deleteTransitGateway(deleteTransitGatewayRequest: DeleteTransitGatewayRequest): DeleteTransitGatewayResult = ???
+
+  override def deleteTransitGatewayConnect(deleteTransitGatewayConnectRequest: DeleteTransitGatewayConnectRequest): DeleteTransitGatewayConnectResult = ???
+
+  override def deleteTransitGatewayConnectPeer(deleteTransitGatewayConnectPeerRequest: DeleteTransitGatewayConnectPeerRequest): DeleteTransitGatewayConnectPeerResult = ???
+
+  override def deleteTransitGatewayMulticastDomain(deleteTransitGatewayMulticastDomainRequest: DeleteTransitGatewayMulticastDomainRequest): DeleteTransitGatewayMulticastDomainResult = ???
+
+  override def deleteTransitGatewayPeeringAttachment(deleteTransitGatewayPeeringAttachmentRequest: DeleteTransitGatewayPeeringAttachmentRequest): DeleteTransitGatewayPeeringAttachmentResult = ???
+
+  override def deleteTransitGatewayPrefixListReference(deleteTransitGatewayPrefixListReferenceRequest: DeleteTransitGatewayPrefixListReferenceRequest): DeleteTransitGatewayPrefixListReferenceResult = ???
+
+  override def deleteTransitGatewayRoute(deleteTransitGatewayRouteRequest: DeleteTransitGatewayRouteRequest): DeleteTransitGatewayRouteResult = ???
+
+  override def deleteTransitGatewayRouteTable(deleteTransitGatewayRouteTableRequest: DeleteTransitGatewayRouteTableRequest): DeleteTransitGatewayRouteTableResult = ???
+
+  override def deleteTransitGatewayVpcAttachment(deleteTransitGatewayVpcAttachmentRequest: DeleteTransitGatewayVpcAttachmentRequest): DeleteTransitGatewayVpcAttachmentResult = ???
+
+  override def deprovisionByoipCidr(deprovisionByoipCidrRequest: DeprovisionByoipCidrRequest): DeprovisionByoipCidrResult = ???
+
+  override def deregisterInstanceEventNotificationAttributes(deregisterInstanceEventNotificationAttributesRequest: DeregisterInstanceEventNotificationAttributesRequest): DeregisterInstanceEventNotificationAttributesResult = ???
+
+  override def deregisterTransitGatewayMulticastGroupMembers(deregisterTransitGatewayMulticastGroupMembersRequest: DeregisterTransitGatewayMulticastGroupMembersRequest): DeregisterTransitGatewayMulticastGroupMembersResult = ???
+
+  override def deregisterTransitGatewayMulticastGroupSources(deregisterTransitGatewayMulticastGroupSourcesRequest: DeregisterTransitGatewayMulticastGroupSourcesRequest): DeregisterTransitGatewayMulticastGroupSourcesResult = ???
+
+  override def describeAddressesAttribute(describeAddressesAttributeRequest: DescribeAddressesAttributeRequest): DescribeAddressesAttributeResult = ???
+
+  override def describeByoipCidrs(describeByoipCidrsRequest: DescribeByoipCidrsRequest): DescribeByoipCidrsResult = ???
+
+  override def describeCapacityReservations(describeCapacityReservationsRequest: DescribeCapacityReservationsRequest): DescribeCapacityReservationsResult = ???
+
+  override def describeCarrierGateways(describeCarrierGatewaysRequest: DescribeCarrierGatewaysRequest): DescribeCarrierGatewaysResult = ???
+
+  override def describeClientVpnAuthorizationRules(describeClientVpnAuthorizationRulesRequest: DescribeClientVpnAuthorizationRulesRequest): DescribeClientVpnAuthorizationRulesResult = ???
+
+  override def describeClientVpnConnections(describeClientVpnConnectionsRequest: DescribeClientVpnConnectionsRequest): DescribeClientVpnConnectionsResult = ???
+
+  override def describeClientVpnEndpoints(describeClientVpnEndpointsRequest: DescribeClientVpnEndpointsRequest): DescribeClientVpnEndpointsResult = ???
+
+  override def describeClientVpnRoutes(describeClientVpnRoutesRequest: DescribeClientVpnRoutesRequest): DescribeClientVpnRoutesResult = ???
+
+  override def describeClientVpnTargetNetworks(describeClientVpnTargetNetworksRequest: DescribeClientVpnTargetNetworksRequest): DescribeClientVpnTargetNetworksResult = ???
+
+  override def describeCoipPools(describeCoipPoolsRequest: DescribeCoipPoolsRequest): DescribeCoipPoolsResult = ???
+
+  override def describeExportImageTasks(describeExportImageTasksRequest: DescribeExportImageTasksRequest): DescribeExportImageTasksResult = ???
+
+  override def describeFastSnapshotRestores(describeFastSnapshotRestoresRequest: DescribeFastSnapshotRestoresRequest): DescribeFastSnapshotRestoresResult = ???
+
+  override def describeInstanceEventNotificationAttributes(describeInstanceEventNotificationAttributesRequest: DescribeInstanceEventNotificationAttributesRequest): DescribeInstanceEventNotificationAttributesResult = ???
+
+  override def describeInstanceTypeOfferings(describeInstanceTypeOfferingsRequest: DescribeInstanceTypeOfferingsRequest): DescribeInstanceTypeOfferingsResult = ???
+
+  override def describeInstanceTypes(describeInstanceTypesRequest: DescribeInstanceTypesRequest): DescribeInstanceTypesResult = ???
+
+  override def describeIpv6Pools(describeIpv6PoolsRequest: DescribeIpv6PoolsRequest): DescribeIpv6PoolsResult = ???
+
+  override def describeLocalGatewayRouteTableVirtualInterfaceGroupAssociations(describeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsRequest: DescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsRequest): DescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsResult = ???
+
+  override def describeLocalGatewayRouteTableVpcAssociations(describeLocalGatewayRouteTableVpcAssociationsRequest: DescribeLocalGatewayRouteTableVpcAssociationsRequest): DescribeLocalGatewayRouteTableVpcAssociationsResult = ???
+
+  override def describeLocalGatewayRouteTables(describeLocalGatewayRouteTablesRequest: DescribeLocalGatewayRouteTablesRequest): DescribeLocalGatewayRouteTablesResult = ???
+
+  override def describeLocalGatewayVirtualInterfaceGroups(describeLocalGatewayVirtualInterfaceGroupsRequest: DescribeLocalGatewayVirtualInterfaceGroupsRequest): DescribeLocalGatewayVirtualInterfaceGroupsResult = ???
+
+  override def describeLocalGatewayVirtualInterfaces(describeLocalGatewayVirtualInterfacesRequest: DescribeLocalGatewayVirtualInterfacesRequest): DescribeLocalGatewayVirtualInterfacesResult = ???
+
+  override def describeLocalGateways(describeLocalGatewaysRequest: DescribeLocalGatewaysRequest): DescribeLocalGatewaysResult = ???
+
+  override def describeManagedPrefixLists(describeManagedPrefixListsRequest: DescribeManagedPrefixListsRequest): DescribeManagedPrefixListsResult = ???
+
+  override def describeNetworkInsightsAnalyses(describeNetworkInsightsAnalysesRequest: DescribeNetworkInsightsAnalysesRequest): DescribeNetworkInsightsAnalysesResult = ???
+
+  override def describeNetworkInsightsPaths(describeNetworkInsightsPathsRequest: DescribeNetworkInsightsPathsRequest): DescribeNetworkInsightsPathsResult = ???
+
+  override def describePublicIpv4Pools(describePublicIpv4PoolsRequest: DescribePublicIpv4PoolsRequest): DescribePublicIpv4PoolsResult = ???
+
+  override def describeTrafficMirrorFilters(describeTrafficMirrorFiltersRequest: DescribeTrafficMirrorFiltersRequest): DescribeTrafficMirrorFiltersResult = ???
+
+  override def describeTrafficMirrorSessions(describeTrafficMirrorSessionsRequest: DescribeTrafficMirrorSessionsRequest): DescribeTrafficMirrorSessionsResult = ???
+
+  override def describeTrafficMirrorTargets(describeTrafficMirrorTargetsRequest: DescribeTrafficMirrorTargetsRequest): DescribeTrafficMirrorTargetsResult = ???
+
+  override def describeTransitGatewayAttachments(describeTransitGatewayAttachmentsRequest: DescribeTransitGatewayAttachmentsRequest): DescribeTransitGatewayAttachmentsResult = ???
+
+  override def describeTransitGatewayConnectPeers(describeTransitGatewayConnectPeersRequest: DescribeTransitGatewayConnectPeersRequest): DescribeTransitGatewayConnectPeersResult = ???
+
+  override def describeTransitGatewayConnects(describeTransitGatewayConnectsRequest: DescribeTransitGatewayConnectsRequest): DescribeTransitGatewayConnectsResult = ???
+
+  override def describeTransitGatewayMulticastDomains(describeTransitGatewayMulticastDomainsRequest: DescribeTransitGatewayMulticastDomainsRequest): DescribeTransitGatewayMulticastDomainsResult = ???
+
+  override def describeTransitGatewayPeeringAttachments(describeTransitGatewayPeeringAttachmentsRequest: DescribeTransitGatewayPeeringAttachmentsRequest): DescribeTransitGatewayPeeringAttachmentsResult = ???
+
+  override def describeTransitGatewayRouteTables(describeTransitGatewayRouteTablesRequest: DescribeTransitGatewayRouteTablesRequest): DescribeTransitGatewayRouteTablesResult = ???
+
+  override def describeTransitGatewayVpcAttachments(describeTransitGatewayVpcAttachmentsRequest: DescribeTransitGatewayVpcAttachmentsRequest): DescribeTransitGatewayVpcAttachmentsResult = ???
+
+  override def describeTransitGateways(describeTransitGatewaysRequest: DescribeTransitGatewaysRequest): DescribeTransitGatewaysResult = ???
+
+  override def disableEbsEncryptionByDefault(disableEbsEncryptionByDefaultRequest: DisableEbsEncryptionByDefaultRequest): DisableEbsEncryptionByDefaultResult = ???
+
+  override def disableFastSnapshotRestores(disableFastSnapshotRestoresRequest: DisableFastSnapshotRestoresRequest): DisableFastSnapshotRestoresResult = ???
+
+  override def disableTransitGatewayRouteTablePropagation(disableTransitGatewayRouteTablePropagationRequest: DisableTransitGatewayRouteTablePropagationRequest): DisableTransitGatewayRouteTablePropagationResult = ???
+
+  override def disassociateClientVpnTargetNetwork(disassociateClientVpnTargetNetworkRequest: DisassociateClientVpnTargetNetworkRequest): DisassociateClientVpnTargetNetworkResult = ???
+
+  override def disassociateEnclaveCertificateIamRole(disassociateEnclaveCertificateIamRoleRequest: DisassociateEnclaveCertificateIamRoleRequest): DisassociateEnclaveCertificateIamRoleResult = ???
+
+  override def disassociateTransitGatewayMulticastDomain(disassociateTransitGatewayMulticastDomainRequest: DisassociateTransitGatewayMulticastDomainRequest): DisassociateTransitGatewayMulticastDomainResult = ???
+
+  override def disassociateTransitGatewayRouteTable(disassociateTransitGatewayRouteTableRequest: DisassociateTransitGatewayRouteTableRequest): DisassociateTransitGatewayRouteTableResult = ???
+
+  override def enableEbsEncryptionByDefault(enableEbsEncryptionByDefaultRequest: EnableEbsEncryptionByDefaultRequest): EnableEbsEncryptionByDefaultResult = ???
+
+  override def enableFastSnapshotRestores(enableFastSnapshotRestoresRequest: EnableFastSnapshotRestoresRequest): EnableFastSnapshotRestoresResult = ???
+
+  override def enableTransitGatewayRouteTablePropagation(enableTransitGatewayRouteTablePropagationRequest: EnableTransitGatewayRouteTablePropagationRequest): EnableTransitGatewayRouteTablePropagationResult = ???
+
+  override def exportClientVpnClientCertificateRevocationList(exportClientVpnClientCertificateRevocationListRequest: ExportClientVpnClientCertificateRevocationListRequest): ExportClientVpnClientCertificateRevocationListResult = ???
+
+  override def exportClientVpnClientConfiguration(exportClientVpnClientConfigurationRequest: ExportClientVpnClientConfigurationRequest): ExportClientVpnClientConfigurationResult = ???
+
+  override def exportImage(exportImageRequest: ExportImageRequest): ExportImageResult = ???
+
+  override def exportTransitGatewayRoutes(exportTransitGatewayRoutesRequest: ExportTransitGatewayRoutesRequest): ExportTransitGatewayRoutesResult = ???
+
+  override def getAssociatedEnclaveCertificateIamRoles(getAssociatedEnclaveCertificateIamRolesRequest: GetAssociatedEnclaveCertificateIamRolesRequest): GetAssociatedEnclaveCertificateIamRolesResult = ???
+
+  override def getAssociatedIpv6PoolCidrs(getAssociatedIpv6PoolCidrsRequest: GetAssociatedIpv6PoolCidrsRequest): GetAssociatedIpv6PoolCidrsResult = ???
+
+  override def getCapacityReservationUsage(getCapacityReservationUsageRequest: GetCapacityReservationUsageRequest): GetCapacityReservationUsageResult = ???
+
+  override def getCoipPoolUsage(getCoipPoolUsageRequest: GetCoipPoolUsageRequest): GetCoipPoolUsageResult = ???
+
+  override def getDefaultCreditSpecification(getDefaultCreditSpecificationRequest: GetDefaultCreditSpecificationRequest): GetDefaultCreditSpecificationResult = ???
+
+  override def getEbsDefaultKmsKeyId(getEbsDefaultKmsKeyIdRequest: GetEbsDefaultKmsKeyIdRequest): GetEbsDefaultKmsKeyIdResult = ???
+
+  override def getEbsEncryptionByDefault(getEbsEncryptionByDefaultRequest: GetEbsEncryptionByDefaultRequest): GetEbsEncryptionByDefaultResult = ???
+
+  override def getGroupsForCapacityReservation(getGroupsForCapacityReservationRequest: GetGroupsForCapacityReservationRequest): GetGroupsForCapacityReservationResult = ???
+
+  override def getManagedPrefixListAssociations(getManagedPrefixListAssociationsRequest: GetManagedPrefixListAssociationsRequest): GetManagedPrefixListAssociationsResult = ???
+
+  override def getManagedPrefixListEntries(getManagedPrefixListEntriesRequest: GetManagedPrefixListEntriesRequest): GetManagedPrefixListEntriesResult = ???
+
+  override def getTransitGatewayAttachmentPropagations(getTransitGatewayAttachmentPropagationsRequest: GetTransitGatewayAttachmentPropagationsRequest): GetTransitGatewayAttachmentPropagationsResult = ???
+
+  override def getTransitGatewayMulticastDomainAssociations(getTransitGatewayMulticastDomainAssociationsRequest: GetTransitGatewayMulticastDomainAssociationsRequest): GetTransitGatewayMulticastDomainAssociationsResult = ???
+
+  override def getTransitGatewayPrefixListReferences(getTransitGatewayPrefixListReferencesRequest: GetTransitGatewayPrefixListReferencesRequest): GetTransitGatewayPrefixListReferencesResult = ???
+
+  override def getTransitGatewayRouteTableAssociations(getTransitGatewayRouteTableAssociationsRequest: GetTransitGatewayRouteTableAssociationsRequest): GetTransitGatewayRouteTableAssociationsResult = ???
+
+  override def getTransitGatewayRouteTablePropagations(getTransitGatewayRouteTablePropagationsRequest: GetTransitGatewayRouteTablePropagationsRequest): GetTransitGatewayRouteTablePropagationsResult = ???
+
+  override def importClientVpnClientCertificateRevocationList(importClientVpnClientCertificateRevocationListRequest: ImportClientVpnClientCertificateRevocationListRequest): ImportClientVpnClientCertificateRevocationListResult = ???
+
+  override def modifyAddressAttribute(modifyAddressAttributeRequest: ModifyAddressAttributeRequest): ModifyAddressAttributeResult = ???
+
+  override def modifyAvailabilityZoneGroup(modifyAvailabilityZoneGroupRequest: ModifyAvailabilityZoneGroupRequest): ModifyAvailabilityZoneGroupResult = ???
+
+  override def modifyCapacityReservation(modifyCapacityReservationRequest: ModifyCapacityReservationRequest): ModifyCapacityReservationResult = ???
+
+  override def modifyClientVpnEndpoint(modifyClientVpnEndpointRequest: ModifyClientVpnEndpointRequest): ModifyClientVpnEndpointResult = ???
+
+  override def modifyDefaultCreditSpecification(modifyDefaultCreditSpecificationRequest: ModifyDefaultCreditSpecificationRequest): ModifyDefaultCreditSpecificationResult = ???
+
+  override def modifyEbsDefaultKmsKeyId(modifyEbsDefaultKmsKeyIdRequest: ModifyEbsDefaultKmsKeyIdRequest): ModifyEbsDefaultKmsKeyIdResult = ???
+
+  override def modifyInstanceCapacityReservationAttributes(modifyInstanceCapacityReservationAttributesRequest: ModifyInstanceCapacityReservationAttributesRequest): ModifyInstanceCapacityReservationAttributesResult = ???
+
+  override def modifyInstanceEventStartTime(modifyInstanceEventStartTimeRequest: ModifyInstanceEventStartTimeRequest): ModifyInstanceEventStartTimeResult = ???
+
+  override def modifyInstanceMetadataOptions(modifyInstanceMetadataOptionsRequest: ModifyInstanceMetadataOptionsRequest): ModifyInstanceMetadataOptionsResult = ???
+
+  override def modifyManagedPrefixList(modifyManagedPrefixListRequest: ModifyManagedPrefixListRequest): ModifyManagedPrefixListResult = ???
+
+  override def modifyTrafficMirrorFilterNetworkServices(modifyTrafficMirrorFilterNetworkServicesRequest: ModifyTrafficMirrorFilterNetworkServicesRequest): ModifyTrafficMirrorFilterNetworkServicesResult = ???
+
+  override def modifyTrafficMirrorFilterRule(modifyTrafficMirrorFilterRuleRequest: ModifyTrafficMirrorFilterRuleRequest): ModifyTrafficMirrorFilterRuleResult = ???
+
+  override def modifyTrafficMirrorSession(modifyTrafficMirrorSessionRequest: ModifyTrafficMirrorSessionRequest): ModifyTrafficMirrorSessionResult = ???
+
+  override def modifyTransitGateway(modifyTransitGatewayRequest: ModifyTransitGatewayRequest): ModifyTransitGatewayResult = ???
+
+  override def modifyTransitGatewayPrefixListReference(modifyTransitGatewayPrefixListReferenceRequest: ModifyTransitGatewayPrefixListReferenceRequest): ModifyTransitGatewayPrefixListReferenceResult = ???
+
+  override def modifyTransitGatewayVpcAttachment(modifyTransitGatewayVpcAttachmentRequest: ModifyTransitGatewayVpcAttachmentRequest): ModifyTransitGatewayVpcAttachmentResult = ???
+
+  override def modifyVpnConnection(modifyVpnConnectionRequest: ModifyVpnConnectionRequest): ModifyVpnConnectionResult = ???
+
+  override def modifyVpnConnectionOptions(modifyVpnConnectionOptionsRequest: ModifyVpnConnectionOptionsRequest): ModifyVpnConnectionOptionsResult = ???
+
+  override def modifyVpnTunnelCertificate(modifyVpnTunnelCertificateRequest: ModifyVpnTunnelCertificateRequest): ModifyVpnTunnelCertificateResult = ???
+
+  override def modifyVpnTunnelOptions(modifyVpnTunnelOptionsRequest: ModifyVpnTunnelOptionsRequest): ModifyVpnTunnelOptionsResult = ???
+
+  override def provisionByoipCidr(provisionByoipCidrRequest: ProvisionByoipCidrRequest): ProvisionByoipCidrResult = ???
+
+  override def registerInstanceEventNotificationAttributes(registerInstanceEventNotificationAttributesRequest: RegisterInstanceEventNotificationAttributesRequest): RegisterInstanceEventNotificationAttributesResult = ???
+
+  override def registerTransitGatewayMulticastGroupMembers(registerTransitGatewayMulticastGroupMembersRequest: RegisterTransitGatewayMulticastGroupMembersRequest): RegisterTransitGatewayMulticastGroupMembersResult = ???
+
+  override def registerTransitGatewayMulticastGroupSources(registerTransitGatewayMulticastGroupSourcesRequest: RegisterTransitGatewayMulticastGroupSourcesRequest): RegisterTransitGatewayMulticastGroupSourcesResult = ???
+
+  override def rejectTransitGatewayMulticastDomainAssociations(rejectTransitGatewayMulticastDomainAssociationsRequest: RejectTransitGatewayMulticastDomainAssociationsRequest): RejectTransitGatewayMulticastDomainAssociationsResult = ???
+
+  override def rejectTransitGatewayPeeringAttachment(rejectTransitGatewayPeeringAttachmentRequest: RejectTransitGatewayPeeringAttachmentRequest): RejectTransitGatewayPeeringAttachmentResult = ???
+
+  override def rejectTransitGatewayVpcAttachment(rejectTransitGatewayVpcAttachmentRequest: RejectTransitGatewayVpcAttachmentRequest): RejectTransitGatewayVpcAttachmentResult = ???
+
+  override def replaceTransitGatewayRoute(replaceTransitGatewayRouteRequest: ReplaceTransitGatewayRouteRequest): ReplaceTransitGatewayRouteResult = ???
+
+  override def resetAddressAttribute(resetAddressAttributeRequest: ResetAddressAttributeRequest): ResetAddressAttributeResult = ???
+
+  override def resetEbsDefaultKmsKeyId(resetEbsDefaultKmsKeyIdRequest: ResetEbsDefaultKmsKeyIdRequest): ResetEbsDefaultKmsKeyIdResult = ???
+
+  override def restoreManagedPrefixListVersion(restoreManagedPrefixListVersionRequest: RestoreManagedPrefixListVersionRequest): RestoreManagedPrefixListVersionResult = ???
+
+  override def revokeClientVpnIngress(revokeClientVpnIngressRequest: RevokeClientVpnIngressRequest): RevokeClientVpnIngressResult = ???
+
+  override def searchLocalGatewayRoutes(searchLocalGatewayRoutesRequest: SearchLocalGatewayRoutesRequest): SearchLocalGatewayRoutesResult = ???
+
+  override def searchTransitGatewayMulticastGroups(searchTransitGatewayMulticastGroupsRequest: SearchTransitGatewayMulticastGroupsRequest): SearchTransitGatewayMulticastGroupsResult = ???
+
+  override def searchTransitGatewayRoutes(searchTransitGatewayRoutesRequest: SearchTransitGatewayRoutesRequest): SearchTransitGatewayRoutesResult = ???
+
+  override def sendDiagnosticInterrupt(sendDiagnosticInterruptRequest: SendDiagnosticInterruptRequest): SendDiagnosticInterruptResult = ???
+
+  override def startNetworkInsightsAnalysis(startNetworkInsightsAnalysisRequest: StartNetworkInsightsAnalysisRequest): StartNetworkInsightsAnalysisResult = ???
+
+  override def startVpcEndpointServicePrivateDnsVerification(startVpcEndpointServicePrivateDnsVerificationRequest: StartVpcEndpointServicePrivateDnsVerificationRequest): StartVpcEndpointServicePrivateDnsVerificationResult = ???
+
+  override def terminateClientVpnConnections(terminateClientVpnConnectionsRequest: TerminateClientVpnConnectionsRequest): TerminateClientVpnConnectionsResult = ???
+
+  override def withdrawByoipCidr(withdrawByoipCidrRequest: WithdrawByoipCidrRequest): WithdrawByoipCidrResult = ???
 }

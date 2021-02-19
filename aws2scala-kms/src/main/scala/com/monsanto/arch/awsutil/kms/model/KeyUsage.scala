@@ -10,8 +10,10 @@ object KeyUsage {
   /** The key may be used encryption and decryption. */
   case object EncryptDecrypt extends KeyUsage("ENCRYPT_DECRYPT")
 
+  case object SignVerify extends KeyUsage("SIGN_VERIFY")
+
   /** All valid values for the enumeration. */
-  val values: Seq[KeyUsage] = Seq(EncryptDecrypt)
+  val values: Seq[KeyUsage] = Seq(EncryptDecrypt, SignVerify)
 
   /** Utility for building/extracting a `KeyUsage` instance from an identifier string. */
   object fromName {

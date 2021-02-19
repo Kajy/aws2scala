@@ -5,13 +5,13 @@ import com.amazonaws.services.s3.Headers
 import com.amazonaws.services.s3.model.ObjectMetadata
 import com.monsanto.arch.awsutil.AwsSettingsSpec._
 import com.typesafe.config._
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 import spray.json.{JsArray, JsObject, JsString, JsonParser}
 
 import scala.concurrent.duration.DurationInt
 
-class AwsSettingsSpec extends FreeSpec {
+class AwsSettingsSpec extends AnyFreeSpec {
   "the AwsSettings class" - {
     "loads the defaults" in {
       val settings = new AwsSettings(ConfigFactory.defaultReference())

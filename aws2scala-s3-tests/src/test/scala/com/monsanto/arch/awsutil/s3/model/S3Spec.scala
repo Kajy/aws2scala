@@ -9,10 +9,10 @@ import com.monsanto.arch.awsutil.s3.model.AwsConverters._
 import com.monsanto.arch.awsutil.test_support.AdaptableScalaFutures._
 import com.monsanto.arch.awsutil.test_support.Materialised
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 
-class S3Spec extends FreeSpec with MockFactory with Materialised {
+class S3Spec extends AnyFreeSpec with MockFactory with Materialised {
   private val who = System.getProperty("user.name")
 
   "the S3 object" - {

@@ -1,9 +1,10 @@
 package com.monsanto.arch.awsutil.kms.model
 
 import com.amazonaws.services.kms.model.{DataKeySpec ⇒ AWSDataKeySpec}
-import org.scalatest.{FreeSpec, Matchers}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers
 
-class DataKeySpecSpec extends FreeSpec {
+class DataKeySpecSpec extends AnyFreeSpec {
   import Matchers._
 
   def scalafiedEnum(scala: DataKeySpec, aws: AWSDataKeySpec): Unit = {

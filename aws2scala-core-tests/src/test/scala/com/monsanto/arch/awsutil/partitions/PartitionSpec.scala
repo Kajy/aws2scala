@@ -1,10 +1,10 @@
 package com.monsanto.arch.awsutil.partitions
 
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 import org.scalatest.prop.TableDrivenPropertyChecks._
 
-class PartitionSpec extends FreeSpec {
+class PartitionSpec extends AnyFreeSpec {
   val partitions = Table("partition", Partition.values: _*)
 
   "a Partition" - {

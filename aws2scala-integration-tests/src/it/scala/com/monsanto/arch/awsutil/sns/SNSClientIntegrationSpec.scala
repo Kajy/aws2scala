@@ -10,8 +10,8 @@ import com.monsanto.arch.awsutil.sns.model._
 import com.monsanto.arch.awsutil.test_support.AwsScalaFutures._
 import com.monsanto.arch.awsutil.test_support.{AwsIntegrationSpec, IntegrationCleanup, IntegrationTest}
 import com.typesafe.scalalogging.StrictLogging
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 import org.scalatest.concurrent.Eventually._
 import org.scalatest.concurrent.PatienceConfiguration.{Interval, Timeout}
 import spray.json.{JsArray, JsObject, JsString, JsonParser}
@@ -21,7 +21,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
 
 @IntegrationTest
-class SNSClientIntegrationSpec extends FreeSpec with AwsIntegrationSpec with StrictLogging with IntegrationCleanup {
+class SNSClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with StrictLogging with IntegrationCleanup {
   // TODO: get credentials from main source
   private val sqs = new AmazonSQSClient()
   private implicit val streaming = awsClient.streaming(sns.SNS)

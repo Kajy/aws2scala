@@ -10,15 +10,15 @@ import com.monsanto.arch.awsutil.test_support.AwsEnumerationBehaviours
 import com.monsanto.arch.awsutil.testkit.CoreScalaCheckImplicits._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
-import org.scalatest.FreeSpec
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.Inside._
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 import org.scalatest.prop.TableDrivenPropertyChecks.{Table, forAll ⇒ forAllIn}
 
 import scala.collection.JavaConverters._
 
-class ConditionSpec extends FreeSpec with AwsEnumerationBehaviours {
+class ConditionSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
   "Condition should" - {
     "generate the correct AWS equivalent" in {
       forAll { condition: Condition ⇒

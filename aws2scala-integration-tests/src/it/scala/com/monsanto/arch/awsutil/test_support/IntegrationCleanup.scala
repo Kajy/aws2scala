@@ -17,14 +17,14 @@ import com.monsanto.arch.awsutil.s3.S3
 import com.monsanto.arch.awsutil.sns.SNS
 import com.monsanto.arch.awsutil.sns.model.ListSubscriptionsRequest
 import com.typesafe.scalalogging.StrictLogging
-import org.scalatest.FreeSpec
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 
 import scala.collection.JavaConverters._
 import scala.concurrent.duration.DurationInt
 
-trait IntegrationCleanup { this: FreeSpec with StrictLogging with AwsIntegrationSpec ⇒
+trait IntegrationCleanup { this: AnyFreeSpec with StrictLogging with AwsIntegrationSpec ⇒
   implicit protected def materialiser: Materializer
   private val oneHourAgo = new Date(System.currentTimeMillis() - IntegrationCleanup.OneHourMillis)
   private implicit val patienceConfig = ScalaFutures.PatienceConfig(5.minutes, 5.seconds)

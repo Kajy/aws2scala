@@ -3,11 +3,11 @@ package com.monsanto.arch.awsutil
 import com.monsanto.arch.awsutil.partitions.Partition
 import com.monsanto.arch.awsutil.testkit.CoreGen
 import com.monsanto.arch.awsutil.testkit.CoreScalaCheckImplicits._
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class AccountSpec extends FreeSpec {
+class AccountSpec extends AnyFreeSpec {
   "an Account must" - {
     "have a 12-digit ID" in {
       forAll { id: String ⇒

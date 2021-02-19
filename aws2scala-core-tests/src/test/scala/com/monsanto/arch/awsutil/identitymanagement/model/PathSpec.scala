@@ -3,11 +3,11 @@ package com.monsanto.arch.awsutil.identitymanagement.model
 import com.monsanto.arch.awsutil.testkit.CoreScalaCheckImplicits._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class PathSpec extends FreeSpec {
+class PathSpec extends AnyFreeSpec {
   "a Path should" - {
     "be round-tripped via its string representation" in {
       forAll { path: Path ⇒

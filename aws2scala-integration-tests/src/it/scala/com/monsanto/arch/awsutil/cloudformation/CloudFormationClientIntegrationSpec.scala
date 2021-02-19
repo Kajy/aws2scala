@@ -14,12 +14,12 @@ import com.monsanto.arch.cloudformation.model.resource.`AWS::SNS::Topic`
 import com.monsanto.arch.cloudformation.model.{ParameterRef, StringParameter, Template}
 import com.typesafe.scalalogging.StrictLogging
 import org.scalactic.Equality
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 import spray.json.JsonWriter
 
 @IntegrationTest
-class CloudFormationClientIntegrationSpec extends FreeSpec with AwsIntegrationSpec with StrictLogging with IntegrationCleanup {
+class CloudFormationClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with StrictLogging with IntegrationCleanup {
   val client = awsClient.async(CloudFormation)
   val stackPrefix = "aws2scala-it-cf"
   val stackName = s"$stackPrefix-$testId"

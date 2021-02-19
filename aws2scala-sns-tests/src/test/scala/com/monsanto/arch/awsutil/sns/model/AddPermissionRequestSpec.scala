@@ -2,13 +2,13 @@ package com.monsanto.arch.awsutil.sns.model
 
 import com.monsanto.arch.awsutil.sns.model.AwsConverters._
 import com.monsanto.arch.awsutil.testkit.SnsScalaCheckImplicits._
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
 import scala.collection.JavaConverters._
 
-class AddPermissionRequestSpec extends FreeSpec {
+class AddPermissionRequestSpec extends AnyFreeSpec {
   "a AddPermissionRequest should" - {
     "be convertible to its AWS equivalent" in {
       forAll { request: AddPermissionRequest ⇒

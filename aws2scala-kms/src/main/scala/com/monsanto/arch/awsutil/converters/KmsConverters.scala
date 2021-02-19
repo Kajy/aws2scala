@@ -42,6 +42,7 @@ object KmsConverters {
         case aws.KeyState.Disabled        ⇒ KeyState.Disabled
         case aws.KeyState.PendingDeletion ⇒ KeyState.PendingDeletion
         case aws.KeyState.PendingImport   ⇒ KeyState.PendingImport
+        case aws.KeyState.Unavailable     ⇒ KeyState.Unavailable
       }
   }
 
@@ -52,6 +53,7 @@ object KmsConverters {
         case KeyState.Disabled        ⇒ aws.KeyState.Disabled
         case KeyState.PendingDeletion ⇒ aws.KeyState.PendingDeletion
         case KeyState.PendingImport   ⇒ aws.KeyState.PendingImport
+        case KeyState.Unavailable     ⇒ aws.KeyState.Unavailable
       }
   }
 
@@ -59,6 +61,7 @@ object KmsConverters {
     def asScala: KeyUsage =
       keyUsage match {
         case aws.KeyUsageType.ENCRYPT_DECRYPT ⇒ KeyUsage.EncryptDecrypt
+        case aws.KeyUsageType.SIGN_VERIFY     ⇒ KeyUsage.SignVerify
       }
   }
 
@@ -66,6 +69,7 @@ object KmsConverters {
     def asAws: aws.KeyUsageType =
       keyUsage match {
         case KeyUsage.EncryptDecrypt ⇒ aws.KeyUsageType.ENCRYPT_DECRYPT
+        case KeyUsage.SignVerify     ⇒ aws.KeyUsageType.SIGN_VERIFY
       }
   }
 

@@ -10,11 +10,11 @@ import com.monsanto.arch.awsutil.testkit.StsScalaCheckImplicits._
 import com.monsanto.arch.awsutil.testkit.{CoreGen, StsGen}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class DefaultAsyncSecurityTokenServiceClientSpec extends FreeSpec with MockFactory with FlowMockUtils with Materialised {
+class DefaultAsyncSecurityTokenServiceClientSpec extends AnyFreeSpec with MockFactory with FlowMockUtils with Materialised {
   "the asynchronous SecurityTokenService client should" - {
     "assume roles" - {
       "using the simplified two-argument method" in {

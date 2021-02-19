@@ -12,14 +12,14 @@ import com.monsanto.arch.awsutil.testkit.{SnsGen, UtilGen}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 import spray.json.{JsObject, JsString, JsonParser}
 
 import scala.collection.JavaConverters._
 
-class DefaultSNSClientSpec extends FreeSpec with MockFactory with AwsMockUtils with Materialised {
+class DefaultSNSClientSpec extends AnyFreeSpec with MockFactory with AwsMockUtils with Materialised {
   private implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 50, sizeRange = 50)
 
   "the default SNS client can" - {

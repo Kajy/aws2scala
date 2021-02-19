@@ -1,11 +1,11 @@
 package com.monsanto.arch.awsutil.securitytoken.model
 
 import com.monsanto.arch.awsutil.testkit.CoreScalaCheckImplicits._
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-class AssumedRoleArnSpec extends FreeSpec {
+class AssumedRoleArnSpec extends AnyFreeSpec {
   "an AssumedRoleArn should" - {
     "provide the correct resource" in {
       forAll { arn: AssumedRoleArn ⇒
