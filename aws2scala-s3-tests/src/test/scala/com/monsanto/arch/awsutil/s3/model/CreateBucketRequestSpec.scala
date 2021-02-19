@@ -12,40 +12,40 @@ class CreateBucketRequestSpec extends AnyFreeSpec {
   "a CreateBucketRequest" - {
     "can be created" - {
       "with a bucket name" in {
-        forAll(S3Gen.bucketName) { name ⇒
+        forAll(S3Gen.bucketName) { name =>
           CreateBucketRequest(name) shouldBe CreateBucketRequest.CreateBucketWithNoAcl(name, None)
         }
       }
 
       "with a bucket name and region" in {
-        forAll(S3Gen.bucketName, arbitrary[Region]) { (name, region) ⇒
+        forAll(S3Gen.bucketName, arbitrary[Region]) { (name, region) =>
           CreateBucketRequest(name, region) shouldBe CreateBucketRequest.CreateBucketWithNoAcl(name, Some(region))
         }
       }
 
       "with a bucket name and canned ACL" in {
-        forAll(S3Gen.bucketName, arbitrary[CannedAccessControlList]) { (name, cannedAcl) ⇒
+        forAll(S3Gen.bucketName, arbitrary[CannedAccessControlList]) { (name, cannedAcl) =>
           CreateBucketRequest(name, cannedAcl) shouldBe
             CreateBucketRequest.CreateBucketWithCannedAcl(name, cannedAcl, None)
         }
       }
 
       "with a bucket name, canned ACL, and region" in {
-        forAll(S3Gen.bucketName, arbitrary[CannedAccessControlList], arbitrary[Region]) { (name, cannedAcl, region) ⇒
+        forAll(S3Gen.bucketName, arbitrary[CannedAccessControlList], arbitrary[Region]) { (name, cannedAcl, region) =>
           CreateBucketRequest(name, cannedAcl, region) shouldBe
             CreateBucketRequest.CreateBucketWithCannedAcl(name, cannedAcl, Some(region))
         }
       }
 
       "with a bucket name and list of grants" in {
-        forAll(S3Gen.bucketName, arbitrary[Seq[Grant]]) { (name, grants) ⇒
+        forAll(S3Gen.bucketName, arbitrary[Seq[Grant]]) { (name, grants) =>
           CreateBucketRequest(name, grants) shouldBe
             CreateBucketRequest.CreateBucketWithGrants(name, grants, None)
         }
       }
 
       "with a bucket name, list of grants, and region" in {
-        forAll(S3Gen.bucketName, arbitrary[Seq[Grant]], arbitrary[Region]) { (name, grants, region) ⇒
+        forAll(S3Gen.bucketName, arbitrary[Seq[Grant]], arbitrary[Region]) { (name, grants, region) =>
           CreateBucketRequest(name, grants, region) shouldBe
             CreateBucketRequest.CreateBucketWithGrants(name, grants, Some(region))
         }
@@ -53,17 +53,17 @@ class CreateBucketRequestSpec extends AnyFreeSpec {
     }
 
     "converts to the correct AWS object" in {
-      forAll { request: CreateBucketRequest ⇒
+      forAll { request: CreateBucketRequest =>
         val (maybeCannedAcl, maybeAccessControlList) = request.acl match {
-          case None                  ⇒ (None, None)
-          case Some(Left(cannedAcl)) ⇒ (Some(cannedAcl.toAws), None)
-          case Some(Right(grants))   ⇒ (None, Some(grants.asAws))
+          case None                  => (None, None)
+          case Some(Left(cannedAcl)) => (Some(cannedAcl.toAws), None)
+          case Some(Right(grants))   => (None, Some(grants.asAws))
         }
         request.asAws should have (
-          'AccessControlList (maybeAccessControlList.orNull),
-          'BucketName (request.bucketName),
-          'CannedAcl (maybeCannedAcl.orNull),
-          'Region (request.region.map(_.toString).orNull)
+          Symbol("AccessControlList") (maybeAccessControlList.orNull),
+          Symbol("BucketName") (request.bucketName),
+          Symbol("CannedAcl") (maybeCannedAcl.orNull),
+          Symbol("Region") (request.region.map(_.toString).orNull)
         )
       }
     }

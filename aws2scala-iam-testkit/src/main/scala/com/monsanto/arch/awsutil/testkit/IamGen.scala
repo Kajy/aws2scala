@@ -21,8 +21,8 @@ object IamGen {
   /** Generates a role from the given name, policy, and path. */
   def role(roleName: String, assumeRolePolicyDocument: policy.Policy, path: Path = Path.empty): Gen[Role] =
     for {
-      account ← arbitrary[Account]
-      id ← roleId
+      account <- arbitrary[Account]
+      id <- roleId
     } yield {
       val arn = RoleArn(account, roleName, path)
       Role(arn, roleName, path, id, assumeRolePolicyDocument, new Date)
@@ -43,7 +43,7 @@ object IamGen {
   /** Generates a simple assume role policy with a random principal. */
   val assumeRolePolicy: Gen[policy.Policy] =
     for {
-      principal ← arbitrary[Principal]
+      principal <- arbitrary[Principal]
     } yield {
       import PolicyDSL._
 
@@ -61,7 +61,7 @@ object IamGen {
   val policyId: Gen[String] = id("ANP")
 
   /** Generates a managed policy version ID. */
-  val policyVersionId: Gen[String] = Gen.posNum[Int].map(n ⇒ s"v$n").suchThat { v ⇒
+  val policyVersionId: Gen[String] = Gen.posNum[Int].map(n => s"v$n").suchThat { v =>
     v.length >= 2 && v.charAt(0) == 'v' && Try(v.substring(1).toInt >= 1).isSuccess
   }
 

@@ -1,7 +1,7 @@
 package com.monsanto.arch.awsutil.sns.model
 
 import akka.Done
-import akka.stream.Materializer
+import akka.actor.ActorSystem
 import akka.stream.scaladsl.{Flow, Keep, Sink, Source}
 import com.monsanto.arch.awsutil.sns.StreamingSNSClient
 import com.monsanto.arch.awsutil.sns.model.AwsConverters._
@@ -50,7 +50,7 @@ case class Subscription private[awsutil] (attributes: Map[String,String]) {
     * @return a fresh snapshot of the subscription
     */
   def setRawMessageDelivery(rawMessageDelivery: Boolean)
-                           (implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+                           (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     setAttribute("RawMessageDelivery", Some(rawMessageDelivery.toString))
 
   /** Allows setting the delivery policy for the subscription.
@@ -59,7 +59,7 @@ case class Subscription private[awsutil] (attributes: Map[String,String]) {
     * @return a fresh snapshot of the subscription
     */
   def setDeliveryPolicy(newDeliveryPolicy: Option[String])
-                       (implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+                       (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     setAttribute("DeliveryPolicy", newDeliveryPolicy)
 
   /** Allows setting of an arbitrary subscription attribute.
@@ -69,28 +69,28 @@ case class Subscription private[awsutil] (attributes: Map[String,String]) {
     * @return a fresh snapshot of the subscription
     */
   def setAttribute(attributeName: String, attributeValue: Option[String])
-                  (implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+                  (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     Source.single(SetSubscriptionAttributesRequest(arn, attributeName, attributeValue))
       .via(sns.subscriptionAttributeSetter)
       .runWith(Sink.ignore)
 
   /** Returns a new `Subscription` instance with the latest values from AWS. */
-  def refresh()(implicit sns: StreamingSNSClient, m: Materializer): Future[Subscription] = Subscription(arn)
+  def refresh()(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Subscription] = Subscription(arn)
 
   /** Deletes this subscription. */
-  def unsubscribe()(implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+  def unsubscribe()(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     Source.single(arn).via(sns.unsubscriber).runWith(Sink.ignore)
 }
 
 object Subscription {
   /** Given the ARN of a subscription, get its attributes and build a new `Subscription` object. */
-  def apply(subscriptionArn: String)(implicit sns: StreamingSNSClient, m: Materializer): Future[Subscription] =
+  def apply(subscriptionArn: String)(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Subscription] =
     Source.single(subscriptionArn).runWith(toSubscription)
 
   private[sns] def toSubscription()(implicit sns: StreamingSNSClient) =
     Flow[String]
       .via(sns.subscriptionAttributesGetter)
-      .map(attrs ⇒ Subscription(attrs))
+      .map(attrs => Subscription(attrs))
       .toMat(Sink.head)(Keep.right)
       .named("Subscription.toSubscription")
 
@@ -99,7 +99,7 @@ object Subscription {
       .filter(_.isDefined)
       .map(_.get)
       .via(sns.subscriptionAttributesGetter)
-      .map(attrs ⇒ Subscription(attrs))
+      .map(attrs => Subscription(attrs))
       .toMat(Sink.headOption)(Keep.right)
       .named("Subscription.toSubscriptionOption")
 }

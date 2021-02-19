@@ -23,13 +23,13 @@ object InstanceProfileArn {
     /** Extracts an `InstanceProfileArn` object from the given ARN string. */
     def unapply(arnString: String): Option[InstanceProfileArn] =
       arnString match {
-        case Arn.fromArnString(accountArn: InstanceProfileArn) ⇒ Some(accountArn)
-        case _                                                 ⇒ None
+        case Arn.fromArnString(accountArn: InstanceProfileArn) => Some(accountArn)
+        case _                                                 => None
       }
   }
 
   private[identitymanagement] val instanceProfileArnPF: PartialFunction[Arn.ArnParts, InstanceProfileArn] = {
-    case (_, Arn.Namespace.IAM, None, Some(account), InstanceProfileResourceRegex(Path.fromPathString(path), name)) ⇒
+    case (_, Arn.Namespace.IAM, None, Some(account), InstanceProfileResourceRegex(Path.fromPathString(path), name)) =>
       InstanceProfileArn(account, name, path)
   }
 

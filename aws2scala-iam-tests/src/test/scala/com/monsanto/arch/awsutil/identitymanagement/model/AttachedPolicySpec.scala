@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.identitymanagement.model
 
-import com.amazonaws.services.identitymanagement.{model ⇒ aws}
+import com.amazonaws.services.identitymanagement.{model => aws}
 import com.monsanto.arch.awsutil.converters.IamConverters._
 import com.monsanto.arch.awsutil.testkit.CoreGen
 import com.monsanto.arch.awsutil.testkit.IamScalaCheckImplicits._
@@ -12,7 +12,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class AttachedPolicySpec extends AnyFreeSpec {
   "a AttachedPolicy can be round-tripped" - {
     "from its AWS equivalent" in {
-      forAll(arbitrary[PolicyArn], CoreGen.iamName) { (arn, name) ⇒
+      forAll(arbitrary[PolicyArn], CoreGen.iamName) { (arn, name) =>
         val attachedPolicy = new aws.AttachedPolicy()
           .withPolicyArn(arn.arnString)
           .withPolicyName(name)
@@ -22,7 +22,7 @@ class AttachedPolicySpec extends AnyFreeSpec {
     }
 
     "via its AWS equivalent" in {
-      forAll { attachedPolicy: AttachedPolicy ⇒
+      forAll { attachedPolicy: AttachedPolicy =>
         attachedPolicy.asAws.asScala shouldBe attachedPolicy
       }
     }

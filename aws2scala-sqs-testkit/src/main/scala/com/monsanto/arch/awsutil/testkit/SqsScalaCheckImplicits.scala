@@ -12,16 +12,16 @@ object SqsScalaCheckImplicits {
   implicit lazy val arbQueueArn: Arbitrary[QueueArn] =
     Arbitrary {
       for {
-        owner ← arbitrary[Account]
-        region ← arbitrary[Region]
-        queueName ← SqsGen.queueName
+        owner <- arbitrary[Account]
+        region <- arbitrary[Region]
+        queueName <- SqsGen.queueName
       } yield QueueArn(owner, region, queueName)
     }
 
   implicit lazy val shrinkQueueArn: Shrink[QueueArn] =
-    Shrink { arn ⇒
-      Shrink.shrink(arn.account).map(x ⇒ arn.copy(account = x)) append
-        Shrink.shrink(arn.region).map(x ⇒ arn.copy(region = x)) append
-        Shrink.shrink(arn.name).filter(_.nonEmpty).map(x ⇒ arn.copy(name = x))
+    Shrink { arn =>
+      Shrink.shrink(arn.account).map(x => arn.copy(account = x)) lazyAppendedAll
+        Shrink.shrink(arn.region).map(x => arn.copy(region = x)) lazyAppendedAll
+        Shrink.shrink(arn.name).filter(_.nonEmpty).map(x => arn.copy(name = x))
     }
 }

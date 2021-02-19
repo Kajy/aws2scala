@@ -11,21 +11,21 @@ class GranteeSpec extends AnyFreeSpec {
   "the Grantee object provides" - {
     "a method for creating" - {
       "canonical grantees" in {
-        forAll(S3Gen.canonicalIdentifier) { id ⇒
+        forAll(S3Gen.canonicalIdentifier) { id =>
           val grantee = Grantee.canonical(id)
           grantee should have (
-            'identifier (id),
-            'typeIdentifier ("id")
+            Symbol("identifier") (id),
+            Symbol("typeIdentifier") ("id")
           )
         }
       }
 
       "e-mail address grantees" in {
-        forAll(UtilGen.emailAddress) { emailAddress ⇒
+        forAll(UtilGen.emailAddress) { emailAddress =>
           val grantee = Grantee.emailAddress(emailAddress)
           grantee should have (
-            'identifier (emailAddress),
-            'typeIdentifier ("emailAddress")
+            Symbol("identifier") (emailAddress),
+            Symbol("typeIdentifier") ("emailAddress")
           )
         }
       }
@@ -34,29 +34,29 @@ class GranteeSpec extends AnyFreeSpec {
     "a value for" - {
       "all users" in {
         Grantee.allUsers should have (
-          'identifier ("http://acs.amazonaws.com/groups/global/AllUsers"),
-          'typeIdentifier ("uri")
+          Symbol("identifier") ("http://acs.amazonaws.com/groups/global/AllUsers"),
+          Symbol("typeIdentifier") ("uri")
         )
       }
 
       "any authenticated user" in {
         Grantee.authenticatedUsers should have (
-          'identifier ("http://acs.amazonaws.com/groups/global/AuthenticatedUsers"),
-          'typeIdentifier ("uri")
+          Symbol("identifier") ("http://acs.amazonaws.com/groups/global/AuthenticatedUsers"),
+          Symbol("typeIdentifier") ("uri")
         )
       }
 
       "log delivery" in {
         Grantee.logDelivery should have (
-          'identifier ("http://acs.amazonaws.com/groups/s3/LogDelivery"),
-          'typeIdentifier ("uri")
+          Symbol("identifier") ("http://acs.amazonaws.com/groups/s3/LogDelivery"),
+          Symbol("typeIdentifier") ("uri")
         )
       }
     }
   }
 
   "a Grantee can be round-tripped via its AWS equivalent" in {
-    forAll { grantee: Grantee ⇒
+    forAll { grantee: Grantee =>
       grantee.asAws.asScala shouldBe grantee
     }
   }

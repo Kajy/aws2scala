@@ -2,10 +2,10 @@ package com.monsanto.arch.awsutil.ec2.model
 
 import java.util.Date
 
-import com.amazonaws.services.ec2.{model ⇒ aws}
+import com.amazonaws.services.ec2.{model => aws}
 import com.monsanto.arch.awsutil.util.{AwsEnumeration, AwsEnumerationCompanion}
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /** Describes an instance.
   *
@@ -103,7 +103,7 @@ object Instance {
       Placement.fromAws(instance.getPlacement),
       Option(instance.getKernelId),
       Option(instance.getRamdiskId),
-      Option(instance.getPlatform).map(p ⇒ Platform.fromString(p).get),
+      Option(instance.getPlatform).map(p => Platform.fromString(p).get),
       Monitoring.fromAws(instance.getMonitoring),
       Option(instance.getSubnetId),
       Option(instance.getVpcId),
@@ -113,20 +113,20 @@ object Instance {
       Architecture.fromString(instance.getArchitecture).get,
       DeviceType.fromString(instance.getRootDeviceType).get,
       Option(instance.getRootDeviceName),
-      instance.getBlockDeviceMappings.asScala.map(m ⇒ m.getDeviceName → BlockDevice.fromAws(m.getEbs)).toMap,
+      instance.getBlockDeviceMappings.asScala.map(m => m.getDeviceName ->BlockDevice.fromAws(m.getEbs)).toMap,
       VirtualizationType.fromString(instance.getVirtualizationType).get,
-      Option(instance.getInstanceLifecycle).flatMap(t ⇒ LifecycleType.fromString(t)),
+      Option(instance.getInstanceLifecycle).flatMap(t => LifecycleType.fromString(t)),
       Option(instance.getSpotInstanceRequestId),
       Option(instance.getClientToken).filter(_.nonEmpty),
       {
         val tags = Option(instance.getTags).map(_.asScala.map(Tag.fromAws)).getOrElse(Seq.empty)
-        Tag.toMap(tags)
+        Tag.toMap(tags.toSeq)
       },
       Option(instance.getSecurityGroups.asScala.toList).getOrElse(List.empty).map(GroupIdentifier.fromAws),
       Option(instance.getSourceDestCheck).map(_.booleanValue()),
       HypervisorType.fromString(instance.getHypervisor).get,
       instance.getNetworkInterfaces.asScala.map(NetworkInterface.fromAws).toList,
-      Option(instance.getIamInstanceProfile).map(p ⇒ IamInstanceProfile.fromAws(p)),
+      Option(instance.getIamInstanceProfile).map(p => IamInstanceProfile.fromAws(p)),
       instance.getEbsOptimized.booleanValue(),
       Option(instance.getSriovNetSupport))
 

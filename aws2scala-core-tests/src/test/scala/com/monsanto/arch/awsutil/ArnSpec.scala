@@ -8,8 +8,8 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen, Shrink}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers._
-import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks.{whenever ⇒ _, _}
-import org.scalatest.prop.TableDrivenPropertyChecks.{forAll ⇒ forAllIn, _}
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks.{whenever => _, _}
+import org.scalatest.prop.TableDrivenPropertyChecks.{forAll => forAllIn, _}
 
 class ArnSpec extends AnyFreeSpec {
   "an Arn should" - {
@@ -23,33 +23,33 @@ class ArnSpec extends AnyFreeSpec {
     implicit val arbTestArn: Arbitrary[TestArn] =
       Arbitrary {
         for {
-          partition ← arbitrary[Partition]
-          namespace ← arbitrary[Arn.Namespace]
-          region ← arbitrary[Option[Region]]
-          account ← Gen.option(CoreGen.accountId).map(_.map(id ⇒ Account(id, partition)))
-          resource ← UtilGen.stringOf(UtilGen.asciiChar, 1, 1024).suchThat(_.nonEmpty)
+          partition <- arbitrary[Partition]
+          namespace <- arbitrary[Arn.Namespace]
+          region <- arbitrary[Option[Region]]
+          account <- Gen.option(CoreGen.accountId).map(_.map(id => Account(id, partition)))
+          resource <- UtilGen.stringOf(UtilGen.asciiChar, 1, 1024).suchThat(_.nonEmpty)
         } yield TestArn(partition, namespace, region, account, resource)
       }
 
     implicit val shrinkTestArn: Shrink[TestArn] =
-      Shrink { arn ⇒
-        Shrink.shrink(arn.testResource).filter(_.nonEmpty).map(x ⇒ arn.copy(testResource = x))
+      Shrink { arn =>
+        Shrink.shrink(arn.testResource).filter(_.nonEmpty).map(x => arn.copy(testResource = x))
       }
 
     "have the correct properties" in {
-      forAll { arn: TestArn ⇒
+      forAll { arn: TestArn =>
         arn should have (
-          'partition (arn.testPartition),
-          'namespace (arn.testNamespace),
-          'regionOption (arn.testRegion),
-          'accountOption (arn.testAccount),
-          'resource (arn.testResource)
+          Symbol("partition") (arn.testPartition),
+          Symbol("namespace") (arn.testNamespace),
+          Symbol("regionOption") (arn.testRegion),
+          Symbol("accountOption") (arn.testAccount),
+          Symbol("resource") (arn.testResource)
         )
       }
     }
 
     "produce the correct ARN string" in {
-      forAll { arn: TestArn ⇒
+      forAll { arn: TestArn =>
         val partition = arn.testPartition.id
         val namespace = arn.testNamespace.id
         val region = arn.testRegion.map(_.name).getOrElse("")
@@ -62,7 +62,7 @@ class ArnSpec extends AnyFreeSpec {
 
     "have an extractor that returns" - {
       "a generic result when no applicable partial function has been registered" in {
-        forAll { arn: TestArn ⇒
+        forAll { arn: TestArn =>
           Arn.fromArnString(arn.arnString) shouldBe
             Arn.GenericArn(arn.testPartition, arn.testNamespace, arn.testRegion, arn.testAccount, arn.testResource)
         }
@@ -70,11 +70,11 @@ class ArnSpec extends AnyFreeSpec {
 
       "a specfic result once a partial function has been registered" in {
         val testMatcher: PartialFunction[Arn.ArnParts, TestArn] = {
-          case (partition, namespace, region, account, resource) ⇒ TestArn(partition, namespace, region, account, resource)
+          case (partition, namespace, region, account, resource) => TestArn(partition, namespace, region, account, resource)
         }
         Arn.registerArnPartialFunctions(testMatcher)
 
-        forAll { arn: TestArn ⇒
+        forAll { arn: TestArn =>
           Arn.fromArnString(arn.arnString) shouldBe arn
         }
       }
@@ -85,8 +85,8 @@ class ArnSpec extends AnyFreeSpec {
     val namespaces = Table("Namespace", Arn.Namespace.values: _*)
 
     "can generally be round-tripped by their string representation" in {
-      forAllIn(namespaces) { namespace ⇒
-        namespace.id should matchPattern { case Arn.Namespace.fromId(x) if x == namespace ⇒ }
+      forAllIn(namespaces) { namespace =>
+        namespace.id should matchPattern { case Arn.Namespace.fromId(x) if x == namespace => }
       }
     }
   }

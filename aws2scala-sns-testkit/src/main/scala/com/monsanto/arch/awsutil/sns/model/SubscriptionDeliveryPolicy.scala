@@ -12,8 +12,8 @@ object SubscriptionDeliveryPolicy {
   implicit lazy val arbSubscriptionDeliveryPolicy: Arbitrary[SubscriptionDeliveryPolicy] =
     Arbitrary {
       for {
-        throttlePolicy ← arbitrary[Option[ThrottlePolicy]]
-        healthyRetryPolicy ← arbitrary[RetryPolicy]
+        throttlePolicy <- arbitrary[Option[ThrottlePolicy]]
+        healthyRetryPolicy <- arbitrary[RetryPolicy]
       } yield
         SubscriptionDeliveryPolicy(throttlePolicy, healthyRetryPolicy)
     }

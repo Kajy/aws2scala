@@ -8,13 +8,13 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class UserArnSpec extends AnyFreeSpec {
   "a UserArn should" - {
     "provide the correct resource" in {
-      forAll { arn: UserArn ⇒
+      forAll { arn: UserArn =>
         arn.resource shouldBe s"user${arn.path.pathString}${arn.name}"
       }
     }
 
     "produce the correct ARN" in {
-      forAll { arn: UserArn ⇒
+      forAll { arn: UserArn =>
         val partition = arn.account.partition.id
         val path = arn.path.pathString
         val userName = arn.name
@@ -24,7 +24,7 @@ class UserArnSpec extends AnyFreeSpec {
     }
 
     "can round-trip via an ARN" in {
-      forAll { arn: UserArn ⇒
+      forAll { arn: UserArn =>
         UserArn.fromArnString(arn.arnString) shouldBe arn
       }
     }

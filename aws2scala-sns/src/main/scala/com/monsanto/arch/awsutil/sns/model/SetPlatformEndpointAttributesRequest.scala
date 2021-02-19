@@ -5,12 +5,12 @@ case class SetPlatformEndpointAttributesRequest(platformEndpointArn: String, att
 object SetPlatformEndpointAttributesRequest {
   /** Allows creation of `SetPlatformEndpointAttributesRequest` objects with an explicit name and value. */
   def apply(platformEndpointArn: String, attributeName: String, attributeValue: String): SetPlatformEndpointAttributesRequest =
-    SetPlatformEndpointAttributesRequest(platformEndpointArn, Map(attributeName → attributeValue))
+    SetPlatformEndpointAttributesRequest(platformEndpointArn, Map(attributeName ->attributeValue))
 
   /** Allows creation of `SetPlatformEndpointAttributesRequest` objects with an explicit name and optional value (which gets
     *  converted to an empty string.
     */
   def apply(platformEndpointArn: String, attributeName: String, attributeValue: Option[String]): SetPlatformEndpointAttributesRequest =
-    SetPlatformEndpointAttributesRequest(platformEndpointArn, Map(attributeName → attributeValue.getOrElse("")))
+    SetPlatformEndpointAttributesRequest(platformEndpointArn, Map(attributeName ->attributeValue.getOrElse("")))
 }
 

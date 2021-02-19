@@ -10,7 +10,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class InstanceSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
   "an Instance should" - {
     "be constructible from its AWS equivalent" in {
-      forAll { instance: Instance ⇒
+      forAll { instance: Instance =>
         Instance.fromAws(instance.toAws) shouldBe instance
       }
     }
@@ -18,7 +18,7 @@ class InstanceSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
 
   "an Instance.BlockDevice should" - {
     "be constructible from its AWS equivalent" in {
-      forAll { blockDevice: Instance.BlockDevice ⇒
+      forAll { blockDevice: Instance.BlockDevice =>
         Instance.BlockDevice.fromAws(blockDevice.toAws) shouldBe blockDevice
       }
     }
@@ -30,7 +30,7 @@ class InstanceSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
 
   "an Instance.NetworkInterface should" - {
     "be constructible from its AWS equivalent" in {
-      forAll { networkInterface: Instance.NetworkInterface ⇒
+      forAll { networkInterface: Instance.NetworkInterface =>
         Instance.NetworkInterface.fromAws(networkInterface.toAws) shouldBe networkInterface
       }
     }
@@ -38,7 +38,7 @@ class InstanceSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
 
   "an Instance.NetworkInterface.Association should" - {
     "be constructible from its AWS equivalent" in {
-      forAll { association: Instance.NetworkInterface.Association ⇒
+      forAll { association: Instance.NetworkInterface.Association =>
         val awsAssociation = association.toAws
 
         Instance.NetworkInterface.Association.fromAws(awsAssociation) shouldBe association
@@ -48,7 +48,7 @@ class InstanceSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
 
   "an Instance.NetworkInterface.Attachment should" - {
     "be constructible from its AWS equivalent" in {
-      forAll { attachment: Instance.NetworkInterface.Attachment ⇒
+      forAll { attachment: Instance.NetworkInterface.Attachment =>
         Instance.NetworkInterface.Attachment.fromAws(attachment.toAws) shouldBe attachment
       }
     }
@@ -56,7 +56,7 @@ class InstanceSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
 
   "an Instance.NetworkInterface.PrivateIpAddress should" - {
     "be constructible from its AWS equivalent" in {
-      forAll { ipAddress: Instance.NetworkInterface.PrivateIpAddress ⇒
+      forAll { ipAddress: Instance.NetworkInterface.PrivateIpAddress =>
         val awsIpAddress = ipAddress.toAws
 
         Instance.NetworkInterface.PrivateIpAddress.fromAws(awsIpAddress) shouldBe ipAddress

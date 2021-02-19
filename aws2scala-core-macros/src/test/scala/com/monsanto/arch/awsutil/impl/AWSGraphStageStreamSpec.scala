@@ -21,34 +21,34 @@ import scala.concurrent.{Await, Future}
 /** Mid-level integration tests of the AWSGraphStage using streams. */
 class AWSGraphStageStreamSpec extends AnyFreeSpec with MockFactory with BeforeAndAfterAll {
   import AWSGraphStageStreamSpec._
-  import Eventually.{patienceConfig ⇒ _, _}
+  import Eventually.{patienceConfig => _, _}
   import ScalaCheckDrivenPropertyChecks._
   import Matchers._
-  import ScalaFutures.{patienceConfig ⇒ _, _}
+  import ScalaFutures.{patienceConfig => _, _}
 
   private val throttle = 10.milliseconds
   private implicit val actorSystem = ActorSystem("AWSGraphStageStreamSpec")
   private implicit val dispatcher = actorSystem.dispatcher
 
   private val dynamite = new Exception("KABOOM!!!")
-  private val sink = Sink.fold(Seq.empty[Int]) { (seq, item: TestResult) ⇒ seq :+ item.pageId }
+  private val sink = Sink.fold(Seq.empty[Int]) { (seq, item: TestResult) => seq :+ item.pageId }
 
   "an AWSGraphStage streams results" - {
-    import Eventually.{patienceConfig ⇒ _}
+    import Eventually.{patienceConfig => _}
     implicit val futurePatienceConfig = ScalaFutures.PatienceConfig(5.seconds, 10.milliseconds)
     implicit val eventuallyPatienceConfig = Eventually.PatienceConfig(5.seconds, 10.milliseconds)
 
     "from a single request terminating" - {
       "normally" in {
-        forAll(Gen.nonEmptyListOf(Gen.posNum[Int]) → "pages") { pages ⇒
+        forAll(Gen.nonEmptyListOf(Gen.posNum[Int]) ->"pages") { pages =>
           val flow = createFlowFor(Seq(pages))
           val graph = Source.single(TestRequest(0)).via(flow).toMat(sink)(Keep.right)
-          graph.run().futureValue shouldBe pages
+          graph.run().futureValue() shouldBe pages
         }
       }
 
       "with an error" in {
-        forAll(Gen.nonEmptyListOf(Gen.posNum[Int]) → "pages") { pages ⇒
+        forAll(Gen.nonEmptyListOf(Gen.posNum[Int]) ->"pages") { pages =>
           val flow = createFlowFor(Seq(pages), terminalError = Some(dynamite))
           val graph = Source.single(TestRequest(0)).via(flow).toMat(sink)(Keep.right)
           val result = graph.run()
@@ -62,16 +62,16 @@ class AWSGraphStageStreamSpec extends AnyFreeSpec with MockFactory with BeforeAn
     "from multiple requests" - {
       "with no throttling" - {
         "terminating normally" in {
-          forAll(Gen.nonEmptyListOf(Gen.nonEmptyListOf(Gen.posNum[Int])) → "list of pages", SizeRange(10)) { listOfPages ⇒
+          forAll(Gen.nonEmptyListOf(Gen.nonEmptyListOf(Gen.posNum[Int])) ->"list of pages", SizeRange(10)) { listOfPages =>
             val flow = createFlowFor(listOfPages)
             val source = Source(listOfPages.indices.map(TestRequest(_)))
             val graph = source.via(flow).toMat(sink)(Keep.right)
-            graph.run().futureValue shouldBe listOfPages.flatten
+            graph.run().futureValue() shouldBe listOfPages.flatten
           }
         }
 
         "terminating with an error" in {
-          forAll(Gen.nonEmptyListOf(Gen.nonEmptyListOf(Gen.posNum[Int])) → "list of pages", SizeRange(10)) { listOfPages ⇒
+          forAll(Gen.nonEmptyListOf(Gen.nonEmptyListOf(Gen.posNum[Int])) ->"list of pages", SizeRange(10)) { listOfPages =>
             val flow = createFlowFor(listOfPages, terminalError = Some(dynamite))
             val source = Source(listOfPages.indices.map(TestRequest(_)))
             val result = source.via(flow).toMat(sink)(Keep.right).run()
@@ -84,16 +84,16 @@ class AWSGraphStageStreamSpec extends AnyFreeSpec with MockFactory with BeforeAn
 
       "with the source throttled" - {
         "terminating normally" in {
-          forAll(Gen.nonEmptyListOf(Gen.nonEmptyListOf(Gen.posNum[Int])) → "list of pages", SizeRange(8)) { listOfPages ⇒
+          forAll(Gen.nonEmptyListOf(Gen.nonEmptyListOf(Gen.posNum[Int])) ->"list of pages", SizeRange(8)) { listOfPages =>
             val flow = createFlowFor(listOfPages)
             val source = Source(listOfPages.indices.map(TestRequest(_))).via(rateLimit(throttle))
             val graph = source.via(flow).toMat(sink)(Keep.right)
-            graph.run().futureValue shouldBe listOfPages.flatten
+            graph.run().futureValue() shouldBe listOfPages.flatten
           }
         }
 
         "terminating with an error" in {
-          forAll(Gen.nonEmptyListOf(Gen.nonEmptyListOf(Gen.posNum[Int])) → "list of pages", SizeRange(8)) { listOfPages ⇒
+          forAll(Gen.nonEmptyListOf(Gen.nonEmptyListOf(Gen.posNum[Int])) ->"list of pages", SizeRange(8)) { listOfPages =>
             val flow = createFlowFor(listOfPages, terminalError = Some(dynamite))
             val source = Source(listOfPages.indices.map(TestRequest(_))).via(rateLimit(throttle))
             val result = source.via(flow).toMat(sink)(Keep.right).run()
@@ -106,16 +106,16 @@ class AWSGraphStageStreamSpec extends AnyFreeSpec with MockFactory with BeforeAn
 
       "with the sink throttled" - {
         "terminating normally" in {
-          forAll(Gen.nonEmptyListOf(Gen.nonEmptyListOf(Gen.posNum[Int])) → "list of pages", SizeRange(6)) { listOfPages ⇒
+          forAll(Gen.nonEmptyListOf(Gen.nonEmptyListOf(Gen.posNum[Int])) ->"list of pages", SizeRange(6)) { listOfPages =>
             val flow = createFlowFor(listOfPages)
             val source = Source(listOfPages.indices.map(TestRequest(_)))
             val graph = source.via(flow).via(rateLimit(throttle)).toMat(sink)(Keep.right)
-            graph.run().futureValue shouldBe listOfPages.flatten
+            graph.run().futureValue() shouldBe listOfPages.flatten
           }
         }
 
         "terminating with an error" in {
-          forAll(Gen.nonEmptyListOf(Gen.nonEmptyListOf(Gen.posNum[Int])) → "list of pages", SizeRange(6)) { listOfPages ⇒
+          forAll(Gen.nonEmptyListOf(Gen.nonEmptyListOf(Gen.posNum[Int])) ->"list of pages", SizeRange(6)) { listOfPages =>
             val flow = createFlowFor(listOfPages, terminalError = Some(dynamite))
             val source = Source(listOfPages.indices.map(TestRequest(_)))
             val result = source.via(flow).via(rateLimit(throttle)).toMat(sink)(Keep.right).run()
@@ -128,16 +128,16 @@ class AWSGraphStageStreamSpec extends AnyFreeSpec with MockFactory with BeforeAn
 
       "when the processor is slow" - {
         "terminating normally" in {
-          forAll(Gen.nonEmptyListOf(Gen.nonEmptyListOf(Gen.posNum[Int])) → "list of pages", SizeRange(6)) { listOfPages ⇒
+          forAll(Gen.nonEmptyListOf(Gen.nonEmptyListOf(Gen.posNum[Int])) ->"list of pages", SizeRange(6)) { listOfPages =>
             val flow = createFlowFor(listOfPages, throttle = throttle)
             val source = Source(listOfPages.indices.map(TestRequest(_)))
             val graph = source.via(flow).toMat(sink)(Keep.right)
-            graph.run().futureValue shouldBe listOfPages.flatten
+            graph.run().futureValue() shouldBe listOfPages.flatten
           }
         }
 
         "terminating with an error" in {
-          forAll(Gen.nonEmptyListOf(Gen.nonEmptyListOf(Gen.posNum[Int])) → "list of pages", SizeRange(6)) { listOfPages ⇒
+          forAll(Gen.nonEmptyListOf(Gen.nonEmptyListOf(Gen.posNum[Int])) ->"list of pages", SizeRange(6)) { listOfPages =>
             val flow = createFlowFor(listOfPages, throttle = throttle, terminalError = Some(dynamite))
             val source = Source(listOfPages.indices.map(TestRequest(_)))
             val result = source.via(flow).toMat(sink)(Keep.right).run()
@@ -150,12 +150,12 @@ class AWSGraphStageStreamSpec extends AnyFreeSpec with MockFactory with BeforeAn
     }
 
     "from a simple flow" in {
-      forAll(Gen.nonEmptyListOf(Gen.posNum[Int]) → "pages") { pages ⇒
+      forAll(Gen.nonEmptyListOf(Gen.posNum[Int]) ->"pages") { pages =>
         val asyncCall = mock[AWSAsyncCall[TestRequest,TestResult]]
-        pages.zipWithIndex.foreach { case (pageId, requestId) ⇒
+        pages.zipWithIndex.foreach { case (pageId, requestId) =>
           val request = TestRequest(requestId)
           val result = TestResult(requestId, pageId)
-          (asyncCall.apply _).expects(request, *).onCall { (_, handler) ⇒
+          (asyncCall.apply _).expects(request, *).onCall { (_, handler) =>
             Future {
               handler.onSuccess(request, result)
             }
@@ -165,7 +165,7 @@ class AWSGraphStageStreamSpec extends AnyFreeSpec with MockFactory with BeforeAn
         val source = Source(pages.indices.map(TestRequest(_)))
         val flow = AWSFlow.simple(asyncCall)
         val result = source.via(flow).toMat(sink)(Keep.right).run()
-        result.futureValue shouldBe pages
+        result.futureValue() shouldBe pages
       }
     }
   }
@@ -173,12 +173,12 @@ class AWSGraphStageStreamSpec extends AnyFreeSpec with MockFactory with BeforeAn
   private def createFlowFor(allPageIds: Seq[Seq[Int]], terminalError: Option[Exception] = None, throttle: FiniteDuration = Duration.Zero) = {
     val processor = mock[AWSAsyncCall[TestRequest,TestResult]]
     for {
-      (pageIds, requestIndex) ← allPageIds.zipWithIndex
-      tokens = Range(1, pageIds.size).map(i ⇒ Some(i.toString))
-      ((pageId, requestToken), resultToken) ← pageIds.zip(None +: tokens).zip(tokens :+ None)
+      (pageIds, requestIndex) <- allPageIds.zipWithIndex
+      tokens = Range(1, pageIds.size).map(i => Some(i.toString))
+      ((pageId, requestToken), resultToken) <- pageIds.zip(None +: tokens).zip(tokens :+ None)
       request = TestRequest(requestIndex, requestToken)
     } {
-      (processor.apply _).expects(request, *).onCall { (r: TestRequest, h: AsyncHandler[TestRequest, TestResult]) ⇒
+      (processor.apply _).expects(request, *).onCall { (r: TestRequest, h: AsyncHandler[TestRequest, TestResult]) =>
         Future {
           if (throttle > Duration.Zero) {
             Thread.sleep(throttle.toMillis)
@@ -198,11 +198,11 @@ class AWSGraphStageStreamSpec extends AnyFreeSpec with MockFactory with BeforeAn
   }
 
   private def rateLimit[T](interval: FiniteDuration): Flow[T,T,NotUsed] = Flow.fromGraph(
-    GraphDSL.create() { implicit b ⇒
+    GraphDSL.create() { implicit b =>
       import GraphDSL.Implicits._
 
       val ticks = Source.tick(0.days, interval, "TICK")
-      val rateLimited = b.add(ZipWith((_: String, t: T) ⇒ t))
+      val rateLimited = b.add(ZipWith((_: String, t: T) => t))
 
       ticks ~> rateLimited.in0
       FlowShape(rateLimited.in1, rateLimited.out)

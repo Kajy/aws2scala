@@ -5,7 +5,7 @@ import java.net.URL
 import java.util.concurrent.TimeoutException
 import java.util.{Date, UUID}
 import akka.stream.scaladsl.{Sink, Source}
-import com.amazonaws.services.s3.model._
+import com.amazonaws.services.s3.model.{AmazonS3Exception, Bucket, BucketPolicy, BucketTaggingConfiguration, CopyObjectRequest, CopyObjectResult, DeleteObjectRequest, GetObjectRequest, ListObjectsRequest, ObjectListing, Owner, PutObjectRequest, S3Object, S3ObjectSummary, StorageClass, TagSet}
 import com.amazonaws.services.s3.transfer.model.UploadResult
 import com.amazonaws.services.s3.transfer.{Download, TransferManager, Upload}
 import com.amazonaws.services.s3.{AbstractAmazonS3, Headers}
@@ -24,7 +24,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 import org.scalatest.Assertion
 import org.scalatest.concurrent.PatienceConfiguration.{Interval, Timeout}
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
 
@@ -47,7 +47,7 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
 
     "can delete a bucket" in withFixture(settings) { f =>
       (f.s3.deleteBucket(_: String)).expects(bucketName)
-      val result = f.asyncClient.deleteBucket(bucketName).futureValue
+      val result = f.asyncClient.deleteBucket(bucketName).futureValue()
       result shouldBe bucketName
     }
 
@@ -60,13 +60,13 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
           p
         }
         (f.s3.getBucketPolicy(_: String)).expects(bucketName).returning(bucketPolicy)
-        val result = f.asyncClient.getBucketPolicy(bucketName).futureValue
+        val result = f.asyncClient.getBucketPolicy(bucketName).futureValue()
         result shouldBe Some(policyText)
       }
 
       "there is no policy" in withFixture(settings) { f =>
         (f.s3.getBucketPolicy(_: String)).expects(bucketName).returning(new BucketPolicy)
-        val result = f.asyncClient.getBucketPolicy(bucketName).futureValue
+        val result = f.asyncClient.getBucketPolicy(bucketName).futureValue()
         result shouldBe None
       }
     }
@@ -76,13 +76,13 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
 
       "using a plain string" in withFixture(settings) { f =>
         (f.s3.setBucketPolicy(_: String, _: String)).expects(bucketName, policyText)
-        val result = f.asyncClient.setBucketPolicy(bucketName, policyText).futureValue
+        val result = f.asyncClient.setBucketPolicy(bucketName, policyText).futureValue()
         result shouldBe bucketName
       }
 
       "using a string in an option" in withFixture(settings) { f =>
         (f.s3.setBucketPolicy(_: String, _: String)).expects(bucketName, policyText)
-        val result = f.asyncClient.setBucketPolicy(bucketName, Some(policyText)).futureValue
+        val result = f.asyncClient.setBucketPolicy(bucketName, Some(policyText)).futureValue()
         result shouldBe bucketName
       }
     }
@@ -90,85 +90,85 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
     "can delete a bucket policy" - {
       "using the delete method" in withFixture(settings) { f =>
         (f.s3.deleteBucketPolicy(_: String)).expects(bucketName)
-        val result = f.asyncClient.deleteBucketPolicy(bucketName).futureValue
+        val result = f.asyncClient.deleteBucketPolicy(bucketName).futureValue()
         result shouldBe bucketName
       }
 
       "using an empty option" in withFixture(settings) { f =>
         (f.s3.deleteBucketPolicy(_: String)).expects(bucketName)
-        val result = f.asyncClient.setBucketPolicy(bucketName, None).futureValue
+        val result = f.asyncClient.setBucketPolicy(bucketName, None).futureValue()
         result shouldBe bucketName
       }
     }
 
     "can get a bucket tagging configuration" - {
-      "when there are no tags" in withFixture(settings) { f ⇒
+      "when there are no tags" in withFixture(settings) { f =>
         (f.s3.getBucketTaggingConfiguration(_: String)).expects(bucketName).returning(null)
 
-        val result = f.asyncClient.getBucketTags(bucketName).futureValue
+        val result = f.asyncClient.getBucketTags(bucketName).futureValue()
         result shouldBe empty
       }
 
-      "when there are tags" in withFixture(settings) { f ⇒
-        val tags = Map("mon:owner" → "me", "mon:application" → "aws2scala")
+      "when there are tags" in withFixture(settings) { f =>
+        val tags = Map("mon:owner" ->"me", "mon:application" ->"aws2scala")
         (f.s3.getBucketTaggingConfiguration(_: String))
           .expects(bucketName)
           .returning(new BucketTaggingConfiguration(Seq(new TagSet(tags.asJava)).asJavaCollection))
 
-        val result = f.asyncClient.getBucketTags(bucketName).futureValue
+        val result = f.asyncClient.getBucketTags(bucketName).futureValue()
         result shouldBe tags
       }
     }
 
-    "can set a bucket tagging configuration" in withFixture(settings) { f ⇒
-      val tags = Map("mon:owner" → "me", "mon:application" → "aws2scala")
+    "can set a bucket tagging configuration" in withFixture(settings) { f =>
+      val tags = Map("mon:owner" ->"me", "mon:application" ->"aws2scala")
 
       (f.s3.setBucketTaggingConfiguration(_: String, _: BucketTaggingConfiguration))
-          .expects(where { (name: String, config: BucketTaggingConfiguration) ⇒
+          .expects(where { (name: String, config: BucketTaggingConfiguration) =>
             name == bucketName && config.getTagSet.getAllTags.asScala == tags
           })
 
-      val result = f.asyncClient.setBucketTags(bucketName, tags).futureValue
+      val result = f.asyncClient.setBucketTags(bucketName, tags).futureValue()
       result shouldBe bucketName
     }
 
     "can remove a bucket tagging configuration" - {
-      "using an empty set of tags" in withFixture(settings) { f ⇒
+      "using an empty set of tags" in withFixture(settings) { f =>
         (f.s3.deleteBucketTaggingConfiguration(_: String)).expects(bucketName)
 
-        val result = f.asyncClient.setBucketTags(bucketName, Map.empty[String,String]).futureValue
+        val result = f.asyncClient.setBucketTags(bucketName, Map.empty[String,String]).futureValue()
         result shouldBe bucketName
       }
 
-      "using the delete method" in withFixture(settings) { f ⇒
+      "using the delete method" in withFixture(settings) { f =>
         (f.s3.deleteBucketTaggingConfiguration(_: String)).expects(bucketName)
 
-        val result = f.asyncClient.deleteBucketTags(bucketName).futureValue
+        val result = f.asyncClient.deleteBucketTags(bucketName).futureValue()
         result shouldBe bucketName
       }
     }
 
     "provides an upload object flow that" - {
-      "works" in withFixture(settings) { f ⇒
+      "works" in withFixture(settings) { f =>
         val key = "bar"
         val summary = generateSummary(bucketName, key, 2048)
         val request = new PutObjectRequest("foo", key, "http://example.com/")
         mockUpload(f, bucketName, key, _ == request, summary)
         val result = Source.single(request)
           .via(f.streamingClient.rawUploader)
-          .runWith(Sink.head).futureValue
+          .runWith(Sink.head).futureValue()
 
         result shouldBe summary
       }
 
-      "propagates errors from the upload" in withFixture(settings) { f ⇒
+      "propagates errors from the upload" in withFixture(settings) { f =>
         val key = "bar"
         val request = new PutObjectRequest("foo", key, "http://example.com/")
         val failure = new AmazonS3Exception("Sharks with lasers!")
 
         val upload = {
           val upload = mock[Upload]
-          (upload.waitForUploadResult _).expects().onCall(() ⇒ throw failure)
+          (upload.waitForUploadResult _).expects().onCall(() => throw failure)
           upload
         }
 
@@ -180,13 +180,13 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
 
         Await.ready(result, 1.second)
 
-        result.eitherValue should matchPattern { case Some(Left(ex)) if ex == failure ⇒ }
+        result.eitherValue should matchPattern { case Some(Left(ex)) if ex == failure => }
       }
 
-      "propagates timeouts from the upload check" in withFixture(settings) { f ⇒
+      "propagates timeouts from the upload check" in withFixture(settings) { f =>
         val key = "bar"
         val request = new PutObjectRequest("foo", key, "http://example.com/")
-        val count = Stream.from(1)
+        val count = LazyList.from(1)
 
         val upload = {
           val upload = mock[Upload]("upload")
@@ -201,10 +201,10 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
 
         (f.transferManager.upload(_: PutObjectRequest)).expects(request).returning(upload)
         (f.s3.listObjects(_: ListObjectsRequest))
-          .expects(where { r: ListObjectsRequest ⇒
+          .expects(where { r: ListObjectsRequest =>
             r.getBucketName == bucketName && r.getPrefix == key
           })
-          .onCall { _: ListObjectsRequest ⇒
+          .onCall { _: ListObjectsRequest =>
             val listing = mock[ObjectListing](s"listing-${count.head}")
             (listing.getObjectSummaries _).expects().returning(List.empty[S3ObjectSummary].asJava).noMoreThanOnce()
             (listing.getNextMarker _).expects().returning(null).noMoreThanOnce()
@@ -218,17 +218,17 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
 
         Await.ready(result, 1.second)
 
-        result.eitherValue should matchPattern { case Some(Left(_: TimeoutException)) ⇒ }
+        result.eitherValue should matchPattern { case Some(Left(_: TimeoutException)) => }
       }
     }
 
     "can upload to a bucket" - {
-      "an array of bytes" in withFixture(settings) { f ⇒
+      "an array of bytes" in withFixture(settings) { f =>
         val key = "bytes.data"
         val content = Array[Byte](0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
         val summary = generateSummary(bucketName, key, content.length)
 
-        val requestMatcher = { r: PutObjectRequest ⇒
+        val requestMatcher = { r: PutObjectRequest =>
           r.getBucketName == bucketName &&
             r.getKey == key &&
             Option(r.getInputStream).isDefined &&
@@ -238,16 +238,16 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
         }
         mockUpload(f, bucketName, key, requestMatcher, summary)
 
-        val result = f.asyncClient.upload(bucketName, key, content).futureValue
+        val result = f.asyncClient.upload(bucketName, key, content).futureValue()
         result shouldBe summary
       }
 
-      "a string" in withFixture(settings) { f ⇒
+      "a string" in withFixture(settings) { f =>
         val key = "string.txt"
         val content = "some data"
         val summary = generateSummary(bucketName, key, content.getBytes.length)
 
-        val requestMatcher = { r: PutObjectRequest ⇒
+        val requestMatcher = { r: PutObjectRequest =>
           r.getBucketName == bucketName &&
             r.getKey == key &&
             Option(r.getInputStream).isDefined &&
@@ -257,16 +257,16 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
         }
         mockUpload(f, bucketName, key, requestMatcher, summary)
 
-        val result = f.asyncClient.upload(bucketName, key, content).futureValue
+        val result = f.asyncClient.upload(bucketName, key, content).futureValue()
         result shouldBe summary
       }
 
-      "a file" in withFixture(settings) { f ⇒
+      "a file" in withFixture(settings) { f =>
         val key = "file.txt"
         val file = new File("file.txt")
         val summary = generateSummary(bucketName, key, 42)
 
-        val requestMatcher = { r: PutObjectRequest ⇒
+        val requestMatcher = { r: PutObjectRequest =>
           r.getBucketName == bucketName &&
             r.getKey == key &&
             Option(r.getInputStream).isEmpty &&
@@ -276,50 +276,50 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
 
         mockUpload(f, bucketName, key, requestMatcher, summary)
 
-        val result = f.asyncClient.upload(bucketName, key, file).futureValue
+        val result = f.asyncClient.upload(bucketName, key, file).futureValue()
         result shouldBe summary
       }
     }
 
     "can download from a bucket" - {
-      "an array of bytes" in withFixture(settings) { f ⇒
+      "an array of bytes" in withFixture(settings) { f =>
         val key = "bytes.data"
         val content = Array[Byte](0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 
         (f.s3.getObject(_: GetObjectRequest))
-          .expects(where { request: GetObjectRequest ⇒ request.getBucketName == bucketName && request.getKey == key })
+          .expects(where { request: GetObjectRequest => request.getBucketName == bucketName && request.getKey == key })
           .returning {
             val obj = new S3Object
             obj.setObjectContent(new ByteArrayInputStream(content))
             obj
           }
 
-        val result = f.asyncClient.download[Array[Byte]](bucketName, key).futureValue
+        val result = f.asyncClient.download[Array[Byte]](bucketName, key).futureValue()
         result shouldBe content
       }
 
-      "a string" in withFixture(settings) { f ⇒
+      "a string" in withFixture(settings) { f =>
         val key = "string.txt"
         val content = "a string"
 
         (f.s3.getObject(_: GetObjectRequest))
-          .expects(where { request: GetObjectRequest ⇒ request.getBucketName == bucketName && request.getKey == key })
+          .expects(where { request: GetObjectRequest => request.getBucketName == bucketName && request.getKey == key })
           .returning {
             val obj = new S3Object
             obj.setObjectContent(new ByteArrayInputStream(content.getBytes))
             obj
           }
 
-        val result = f.asyncClient.download[String](bucketName, key).futureValue
+        val result = f.asyncClient.download[String](bucketName, key).futureValue()
         result shouldBe content
       }
 
-      "to a file" in withFixture(settings) { f ⇒
+      "to a file" in withFixture(settings) { f =>
         val key = "file.txt"
         val file = new File("file.txt")
 
         (f.transferManager.download(_: GetObjectRequest, _: File))
-          .expects(where { (request: GetObjectRequest, dest: File) ⇒
+          .expects(where { (request: GetObjectRequest, dest: File) =>
             request.getBucketName == bucketName &&
               request.getKey == key &&
               dest == file
@@ -330,18 +330,18 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
             dl
           }
 
-        val result = f.asyncClient.downloadTo(bucketName, key, file).futureValue
+        val result = f.asyncClient.downloadTo(bucketName, key, file).futureValue()
         result shouldBe file
       }
     }
 
-    "can copy objects" in withFixture(settings) { f ⇒
+    "can copy objects" in withFixture(settings) { f =>
       val sourceKey = "source.txt"
       val destKey = "dest.txt"
       val summary = generateSummary(bucketName, destKey, 42)
 
       (f.s3.copyObject(_: CopyObjectRequest))
-        .expects(where { r: CopyObjectRequest ⇒
+        .expects(where { r: CopyObjectRequest =>
           r.getSourceBucketName == bucketName &&
             r.getSourceKey == sourceKey &&
             r.getDestinationBucketName == bucketName &&
@@ -350,7 +350,7 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
         })
         .returning(new CopyObjectResult)
       (f.s3.listObjects(_: ListObjectsRequest))
-        .expects(where { r: ListObjectsRequest ⇒
+        .expects(where { r: ListObjectsRequest =>
           r.getBucketName == bucketName && r.getPrefix == destKey
         })
         .returning {
@@ -360,21 +360,21 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
           listing
         }
 
-      val result = f.asyncClient.copy(bucketName, sourceKey, destKey).futureValue
+      val result = f.asyncClient.copy(bucketName, sourceKey, destKey).futureValue()
       result shouldBe summary
     }
 
     "can list objects in a bucket" - {
-      "without a prefix and paging" in withFixture(settings) { f ⇒
+      "without a prefix and paging" in withFixture(settings) { f =>
         val marker = "marker"
-        val summaries = Seq.tabulate(20) { i ⇒ mock[S3ObjectSummary](s"object$i") }
+        val summaries = Seq.tabulate(20) { i => mock[S3ObjectSummary](s"object$i") }
         (f.s3.listObjects(_: ListObjectsRequest))
-          .expects(where { request: ListObjectsRequest ⇒
+          .expects(where { request: ListObjectsRequest =>
             request.getBucketName == bucketName &&
               request.getPrefix == null &&
               (request.getMarker == null || request.getMarker == marker)
           })
-          .onCall { request: ListObjectsRequest ⇒
+          .onCall { request: ListObjectsRequest =>
             val firstRequest = request.getMarker == null
             val chunk = if (firstRequest) summaries.take(10) else summaries.drop(10)
             val nextMarker = if (firstRequest) marker else null
@@ -385,15 +385,15 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
           }
           .twice()
 
-        val result = f.asyncClient.listObjects(bucketName).futureValue
+        val result = f.asyncClient.listObjects(bucketName).futureValue()
         result shouldBe summaries
       }
 
-      "with a prefix" in withFixture(settings) { f ⇒
-        val summaries = Seq.tabulate(10) { i ⇒ mock[S3ObjectSummary](s"object$i") }
+      "with a prefix" in withFixture(settings) { f =>
+        val summaries = Seq.tabulate(10) { i => mock[S3ObjectSummary](s"object$i") }
         val prefix = "foo"
         (f.s3.listObjects(_: ListObjectsRequest))
-          .expects(where { request: ListObjectsRequest ⇒
+          .expects(where { request: ListObjectsRequest =>
             request.getBucketName == bucketName &&
               request.getPrefix == prefix &&
               request.getMarker == null
@@ -405,22 +405,22 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
             listing
           }
 
-        val result = f.asyncClient.listObjects(bucketName, prefix).futureValue
+        val result = f.asyncClient.listObjects(bucketName, prefix).futureValue()
         result shouldBe summaries
       }
     }
 
-    "can get a URL for an object" in withFixture(settings) { f ⇒
+    "can get a URL for an object" in withFixture(settings) { f =>
       val key = "foo.txt"
       val url = new URL(s"https://$bucketName.${settings.region.getServiceEndpoint("s3")}/$key")
 
-      val result = f.asyncClient.getUrl(bucketName, key).futureValue
+      val result = f.asyncClient.getUrl(bucketName, key).futureValue()
       result shouldBe url
     }
 
     "can empty a bucket" in withFixture(settings) { f =>
-      val summaries = Seq.tabulate(10) { i ⇒ val s = new S3ObjectSummary()
-        val key = i+"key"
+      val summaries = Seq.tabulate(10) { i => val s = new S3ObjectSummary()
+        val key = s"${i}key"
         s.setBucketName(bucketName)
         s.setKey(key)
         (f.s3.deleteObject(_:DeleteObjectRequest))
@@ -429,7 +429,7 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
       }
       (f.s3.listObjects(_: ListObjectsRequest))
         .expects(*)
-        .onCall { request: ListObjectsRequest ⇒
+        .onCall { request: ListObjectsRequest =>
           val listing = mock[ObjectListing]("listing")
           if (request.getPrefix == null) {
             (listing.getObjectSummaries _).expects().returning(summaries.asJava)
@@ -447,19 +447,19 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
     }
 
     "can empty and delete a bucket" in {
-      val keyGenerator = Gen.choose(0, 50).map(n ⇒ List.tabulate(n)(i ⇒ s"object$i"))
-      forAll(keyGenerator → "keys") { (keys: List[String]) ⇒
-        withFixture(settings) { f ⇒
+      val keyGenerator = Gen.choose(0, 50).map(n => List.tabulate(n)(i => s"object$i"))
+      forAll(keyGenerator ->"keys") { (keys: List[String]) =>
+        withFixture(settings) { f =>
           val listings = if (keys.isEmpty) List(keys) else keys.grouped(5).toList
-          listings.zipWithIndex.foreach { case (listing, i) ⇒
+          listings.zipWithIndex.foreach { case (listing, i) =>
             val isFirst = i == 0
             val isLast = i == (listings.size - 1)
             (f.s3.listObjects(_: ListObjectsRequest))
-              .expects(where { (request: ListObjectsRequest) ⇒
+              .expects(where { (request: ListObjectsRequest) =>
                 request.getBucketName == bucketName && (
                   Option(request.getMarker) match {
-                    case None ⇒ isFirst
-                    case Some(m) ⇒ i.toString == m
+                    case None => isFirst
+                    case Some(m) => i.toString == m
                   }
                 )
               })
@@ -468,7 +468,7 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
                   override def getBucketName = bucketName
                   override def getNextMarker = if (isLast) null else (i + 1).toString
                   override def getObjectSummaries = {
-                    listing.map { key ⇒
+                    listing.map { key =>
                       val summary = new S3ObjectSummary
                       summary.setBucketName(bucketName)
                       summary.setKey(key)
@@ -478,15 +478,15 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
                 }
               }
           }
-          keys.foreach { key ⇒
+          keys.foreach { key =>
             (f.s3.deleteObject(_: DeleteObjectRequest))
-              .expects(where { (request: DeleteObjectRequest) ⇒
+              .expects(where { (request: DeleteObjectRequest) =>
                 request.getBucketName == bucketName && request.getKey == key
               })
           }
           (f.s3.deleteBucket(_: String)).expects(bucketName)
 
-          val result = f.asyncClient.emptyAndDeleteBucket(bucketName).futureValue
+          val result = f.asyncClient.emptyAndDeleteBucket(bucketName).futureValue()
           result shouldBe bucketName
         }
       }
@@ -494,17 +494,17 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
 
     "can delete and empty a stream buckets" in withFixture(settings) { f =>
       val bucketAndKeyGenerator = for {
-        numBuckets ← Gen.choose(0, 10)
-        keysPerBucket ← Gen.listOfN(numBuckets, Gen.choose(0, 50))
+        numBuckets <- Gen.choose(0, 10)
+        keysPerBucket <- Gen.listOfN(numBuckets, Gen.choose(0, 50))
       } yield {
-        0.until(numBuckets).map { bucketNum ⇒
-          s"bucket$bucketNum" → List.tabulate(keysPerBucket(bucketNum))(i ⇒ s"object$i")
+        0.until(numBuckets).map { bucketNum =>
+          s"bucket$bucketNum" ->List.tabulate(keysPerBucket(bucketNum))(i => s"object$i")
         }.toMap
       }
-      forAll(bucketAndKeyGenerator → "bucketsAndKeys") { (bucketAndKeys: Map[String,List[String]]) ⇒
-        bucketAndKeys.foreach { case (bucketName, keys) ⇒
+      forAll(bucketAndKeyGenerator ->"bucketsAndKeys") { (bucketAndKeys: Map[String,List[String]]) =>
+        bucketAndKeys.foreach { case (bucketName, keys) =>
           (f.s3.listObjects(_: ListObjectsRequest))
-            .expects(where { (request: ListObjectsRequest) ⇒
+            .expects(where { (request: ListObjectsRequest) =>
               request.getBucketName == bucketName &&
                 request.getMarker == null
             })
@@ -512,7 +512,7 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
               new ObjectListing {
                 override def getBucketName = bucketName
                 override def getObjectSummaries = {
-                  keys.map { key ⇒
+                  keys.map { key =>
                     val summary = new S3ObjectSummary
                     summary.setBucketName(bucketName)
                     summary.setKey(key)
@@ -521,9 +521,9 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
                 }
               }
             }
-          keys.foreach { key ⇒
+          keys.foreach { key =>
             (f.s3.deleteObject(_: DeleteObjectRequest))
-              .expects(where { (request: DeleteObjectRequest) ⇒
+              .expects(where { (request: DeleteObjectRequest) =>
                 request.getBucketName == bucketName && request.getKey == key
               })
           }
@@ -535,7 +535,7 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
           Source(bucketNames)
             .via(f.streamingClient.bucketEmptierAndDeleter)
             .runWith(Sink.seq)
-            .futureValue
+            .futureValue()
 
         result shouldBe bucketNames
       }
@@ -544,22 +544,22 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
     "can delete an object" in withFixture(settings) { f =>
       val bucketNameAndKey = BucketNameAndKey(bucketName, "key")
       (f.s3.deleteObject(_:DeleteObjectRequest))
-        .expects(where{r: DeleteObjectRequest ⇒ r.getBucketName == bucketNameAndKey.bucketName &&
+        .expects(where{r: DeleteObjectRequest => r.getBucketName == bucketNameAndKey.bucketName &&
           r.getKey == bucketNameAndKey.key})
       (f.s3.listObjects(_: ListObjectsRequest))
-        .expects(where{r: ListObjectsRequest ⇒
+        .expects(where{r: ListObjectsRequest =>
           r.getBucketName == bucketNameAndKey.bucketName && r.getPrefix == bucketNameAndKey.key})
-        .onCall { _: ListObjectsRequest ⇒
+        .onCall { _: ListObjectsRequest =>
           val listing = mock[ObjectListing]
           (listing.getObjectSummaries _).expects().returning(List.empty[S3ObjectSummary].asJava)
           (listing.getNextMarker _).expects()
           listing
         }
-      val result = f.asyncClient.deleteObject(bucketNameAndKey.bucketName, bucketNameAndKey.key).futureValue
+      val result = f.asyncClient.deleteObject(bucketNameAndKey.bucketName, bucketNameAndKey.key).futureValue()
       result shouldBe bucketNameAndKey
     }
 
-    def mockUpload(fixture: BasicFixture, bucketName: String, key: String, requestMatcher: PutObjectRequest ⇒ Boolean,
+    def mockUpload(fixture: BasicFixture, bucketName: String, key: String, requestMatcher: PutObjectRequest => Boolean,
                    summary: S3ObjectSummary): Unit = {
       val upload = {
         val upload = mock[Upload]("upload")
@@ -574,7 +574,7 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
 
       (fixture.transferManager.upload(_: PutObjectRequest)).expects(where(requestMatcher)).returning(upload)
       (fixture.s3.listObjects(_: ListObjectsRequest))
-        .expects(where { r: ListObjectsRequest ⇒
+        .expects(where { r: ListObjectsRequest =>
           r.getBucketName == bucketName && r.getPrefix == key
         })
         .returning {
@@ -589,7 +589,7 @@ class DefaultS3ClientSpec extends AnyFreeSpec with Materialised with MockFactory
   private def withFixture(settings: AwsSettings)(test: BasicFixture => Assertion): Assertion = {
     val s3 = mock[AbstractAmazonS3]("s3")
     val transferManager = mock[TransferManager]("transferManager")
-    val streamingClient = new DefaultStreamingS3Client(s3, transferManager, settings)(materialiser.executionContext)
+    val streamingClient = new DefaultStreamingS3Client(s3, transferManager, settings)(actorSystem.dispatcher)
     val asyncClient = new DefaultAsyncS3Client(streamingClient)
     test(BasicFixture(s3, transferManager, settings, streamingClient, asyncClient))
   }

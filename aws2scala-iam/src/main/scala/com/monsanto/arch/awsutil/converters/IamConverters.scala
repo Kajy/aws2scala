@@ -2,7 +2,7 @@ package com.monsanto.arch.awsutil.converters
 
 import java.net.URLDecoder
 
-import com.amazonaws.services.identitymanagement.{model ⇒ aws}
+import com.amazonaws.services.identitymanagement.{model => aws}
 import com.monsanto.arch.awsutil.auth.policy.Policy
 import com.monsanto.arch.awsutil.identitymanagement.model._
 
@@ -71,7 +71,7 @@ object IamConverters {
       val awsRequest = new aws.CreateRoleRequest()
         .withRoleName(request.name)
         .withAssumeRolePolicyDocument(request.assumeRolePolicy.toJson)
-      request.path.foreach(p ⇒ awsRequest.setPath(p.pathString))
+      request.path.foreach(p => awsRequest.setPath(p.pathString))
       awsRequest
     }
   }
@@ -105,7 +105,7 @@ object IamConverters {
   implicit class ScalaGetUserRequest(val request: GetUserRequest) extends AnyVal {
     def asAws: aws.GetUserRequest = {
       val awsRequest = new aws.GetUserRequest
-      request.userName.foreach(u ⇒ awsRequest.setUserName(u))
+      request.userName.foreach(u => awsRequest.setUserName(u))
       awsRequest
     }
   }
@@ -113,7 +113,7 @@ object IamConverters {
   implicit class ScalaListAttachedRolePoliciesRequest(val request: ListAttachedRolePoliciesRequest) extends AnyVal {
     def asAws: aws.ListAttachedRolePoliciesRequest = {
       val awsRequest = new aws.ListAttachedRolePoliciesRequest().withRoleName(request.roleName)
-      request.prefix.foreach(p ⇒ awsRequest.setPathPrefix(p.pathString))
+      request.prefix.foreach(p => awsRequest.setPathPrefix(p.pathString))
       awsRequest
     }
   }
@@ -129,7 +129,7 @@ object IamConverters {
   implicit class ScalaListRolesRequest(val request: ListRolesRequest) extends AnyVal {
     def asAws: aws.ListRolesRequest = {
       val awsRequest = new aws.ListRolesRequest
-      request.prefix.foreach(p ⇒ awsRequest.setPathPrefix(p.pathString))
+      request.prefix.foreach(p => awsRequest.setPathPrefix(p.pathString))
       awsRequest
     }
   }
@@ -167,25 +167,25 @@ object IamConverters {
   implicit class AwsPolicyScopeType(val scopeType: aws.PolicyScopeType) extends AnyVal {
     def asScala: ListPoliciesRequest.Scope =
       scopeType match {
-        case aws.PolicyScopeType.All   ⇒ ListPoliciesRequest.Scope.All
-        case aws.PolicyScopeType.AWS   ⇒ ListPoliciesRequest.Scope.AWS
-        case aws.PolicyScopeType.Local ⇒ ListPoliciesRequest.Scope.Local
+        case aws.PolicyScopeType.All   => ListPoliciesRequest.Scope.All
+        case aws.PolicyScopeType.AWS   => ListPoliciesRequest.Scope.AWS
+        case aws.PolicyScopeType.Local => ListPoliciesRequest.Scope.Local
       }
   }
 
   implicit class ScalaPolicyScopeType(val scopeType: ListPoliciesRequest.Scope) extends AnyVal {
     def asAws: aws.PolicyScopeType =
       scopeType match {
-        case ListPoliciesRequest.Scope.All   ⇒ aws.PolicyScopeType.All
-        case ListPoliciesRequest.Scope.AWS   ⇒ aws.PolicyScopeType.AWS
-        case ListPoliciesRequest.Scope.Local ⇒ aws.PolicyScopeType.Local
+        case ListPoliciesRequest.Scope.All   => aws.PolicyScopeType.All
+        case ListPoliciesRequest.Scope.AWS   => aws.PolicyScopeType.AWS
+        case ListPoliciesRequest.Scope.Local => aws.PolicyScopeType.Local
       }
   }
 
   implicit class AwsPolicyVersion(val policyVersion: aws.PolicyVersion) extends AnyVal {
     def asScala: ManagedPolicyVersion =
       ManagedPolicyVersion(
-        Option(policyVersion.getDocument).map(d ⇒ Policy.fromJson(urlDecodeJson(d))),
+        Option(policyVersion.getDocument).map(d => Policy.fromJson(urlDecodeJson(d))),
         policyVersion.getVersionId,
         policyVersion.getIsDefaultVersion.booleanValue(),
         policyVersion.getCreateDate)
@@ -243,7 +243,7 @@ object IamConverters {
   implicit class ScalaUser(val user: User) extends AnyVal {
     def asAws: aws.User = {
       val awsUser = new aws.User(user.path.pathString, user.name, user.id, user.arn.arnString, user.created)
-      user.passwordLastUsed.foreach(d ⇒ awsUser.setPasswordLastUsed(d))
+      user.passwordLastUsed.foreach(d => awsUser.setPasswordLastUsed(d))
       awsUser
     }
   }

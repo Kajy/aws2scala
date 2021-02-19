@@ -19,9 +19,9 @@ class DefaultAsyncSecurityTokenServiceClientSpec extends AnyFreeSpec with MockFa
     "assume roles" - {
       "using the simplified two-argument method" in {
         forAll(
-          arbitrary[RoleArn].map(_.arnString) → "roleArn",
-          CoreGen.assumedRoleSessionName → "sessionName"
-        ) { (roleArn, sessionName) ⇒
+          arbitrary[RoleArn].map(_.arnString) ->"roleArn",
+          CoreGen.assumedRoleSessionName ->"sessionName"
+        ) { (roleArn, sessionName) =>
           val streaming = mock[StreamingSecurityTokenServiceClient]("streaming")
           val async = new DefaultAsyncSecurityTokenServiceClient(streaming)
 
@@ -29,21 +29,21 @@ class DefaultAsyncSecurityTokenServiceClientSpec extends AnyFreeSpec with MockFa
           val expectedResult = StsGen.resultFor(request).reallySample
           val credentials = expectedResult.credentials
 
-          (streaming.roleAssumer _)
+          (() => streaming.roleAssumer)
             .expects()
             .returningFlow(request, expectedResult)
 
-          val result = async.assumeRole(roleArn, sessionName).futureValue
+          val result = async.assumeRole(roleArn, sessionName).futureValue()
           result shouldBe credentials
         }
       }
 
       "using the simplified three-argument method" in {
         forAll(
-          arbitrary[RoleArn].map(_.arnString) → "roleArn",
-          CoreGen.assumedRoleSessionName → "sessionName",
-          StsGen.externalId → "externalId"
-        ) { (roleArn, sessionName, externalId) ⇒
+          arbitrary[RoleArn].map(_.arnString) ->"roleArn",
+          CoreGen.assumedRoleSessionName ->"sessionName",
+          StsGen.externalId ->"externalId"
+        ) { (roleArn, sessionName, externalId) =>
           val streaming = mock[StreamingSecurityTokenServiceClient]("streaming")
           val async = new DefaultAsyncSecurityTokenServiceClient(streaming)
 
@@ -51,27 +51,27 @@ class DefaultAsyncSecurityTokenServiceClientSpec extends AnyFreeSpec with MockFa
           val expectedResult = StsGen.resultFor(request).reallySample
           val credentials = expectedResult.credentials
 
-          (streaming.roleAssumer _)
+          (() => streaming.roleAssumer)
             .expects()
             .returningFlow(request, expectedResult)
 
-          val result = async.assumeRole(roleArn, sessionName, externalId).futureValue
+          val result = async.assumeRole(roleArn, sessionName, externalId).futureValue()
           result shouldBe credentials
         }
       }
 
       "using the full request method" in {
-        forAll { request: AssumeRoleRequest ⇒
+        forAll { request: AssumeRoleRequest =>
           val streaming = mock[StreamingSecurityTokenServiceClient]("streaming")
           val async = new DefaultAsyncSecurityTokenServiceClient(streaming)
 
           val expectedResult = StsGen.resultFor(request).reallySample
 
-          (streaming.roleAssumer _)
+          (() => streaming.roleAssumer)
             .expects()
             .returningFlow(request, expectedResult)
 
-          val result = async.assumeRole(request).futureValue
+          val result = async.assumeRole(request).futureValue()
           result shouldBe expectedResult
         }
       }

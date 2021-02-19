@@ -5,7 +5,7 @@ import java.net.URL
 
 import akka.NotUsed
 import akka.stream.scaladsl.{Flow, Source}
-import com.amazonaws.services.s3.{model ⇒ aws}
+import com.amazonaws.services.s3.{model => aws}
 import com.monsanto.arch.awsutil.StreamingAwsClient
 import com.monsanto.arch.awsutil.s3.model.{Bucket, BucketNameAndKey, CreateBucketRequest}
 

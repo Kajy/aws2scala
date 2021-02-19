@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.identitymanagement.model
 
-import com.amazonaws.services.identitymanagement.{model ⇒ aws}
+import com.amazonaws.services.identitymanagement.{model => aws}
 import com.monsanto.arch.awsutil.converters.IamConverters._
 import com.monsanto.arch.awsutil.identitymanagement.AwsMatcherSupport
 import com.monsanto.arch.awsutil.test_support.AwsEnumerationBehaviours
@@ -9,7 +9,7 @@ import com.monsanto.arch.awsutil.testkit.IamScalaCheckImplicits._
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
-import org.scalatest.prop.TableDrivenPropertyChecks.{Table, forAll ⇒ forAllIn}
+import org.scalatest.prop.TableDrivenPropertyChecks.{Table, forAll => forAllIn}
 
 //noinspection NameBooleanParameters
 class ListPoliciesRequestSpec extends AnyFreeSpec with AwsEnumerationBehaviours with AwsMatcherSupport {
@@ -23,18 +23,18 @@ class ListPoliciesRequestSpec extends AnyFreeSpec with AwsEnumerationBehaviours 
     }
 
     "have a convenience method for list policies with a prefix" in {
-      forAll { path: Path ⇒
+      forAll { path: Path =>
         ListPoliciesRequest.withPrefix(path) shouldBe ListPoliciesRequest(false, path, ListPoliciesRequest.Scope.All)
       }
     }
 
     "convert to the correct AWS object" in {
-      forAll { request: ListPoliciesRequest ⇒
+      forAll { request: ListPoliciesRequest =>
         val awsRequest = request.asAws
         awsRequest should have (
           onlyAttached (request.onlyAttached),
-          'PathPrefix (request.prefix.pathString),
-          'Scope (request.scope.name)
+          Symbol("PathPrefix") (request.prefix.pathString),
+          Symbol("Scope") (request.scope.name)
         )
       }
     }
@@ -44,20 +44,20 @@ class ListPoliciesRequestSpec extends AnyFreeSpec with AwsEnumerationBehaviours 
     val scopes = Table("scope", ListPoliciesRequest.Scope.values: _*)
 
     "have names matching the AWS string" in {
-      forAllIn(scopes) { scope ⇒
+      forAllIn(scopes) { scope =>
         scope.name shouldBe scope.asAws.name()
       }
     }
 
     "round-trip via their name" in {
-      forAllIn(scopes) { scope ⇒
+      forAllIn(scopes) { scope =>
         ListPoliciesRequest.Scope.fromName(scope.name) shouldBe theSameInstanceAs (scope)
       }
     }
 
     "fail to parse arbitrary strings" in {
       val validNames = ListPoliciesRequest.Scope.values.map(_.name).toSet
-      forAll { str: String ⇒
+      forAll { str: String =>
         whenever(!validNames.contains(str)) {
           an [IllegalArgumentException] shouldBe thrownBy (ListPoliciesRequest.Scope.fromName(str))
         }

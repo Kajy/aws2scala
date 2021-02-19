@@ -31,7 +31,7 @@ class RDSClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
         .withCopyTagsToSnapshot(true)
 
       logger.info(s"Creating DB instance: $dbInstanceId")
-      val result = asyncClient.createDBInstance(request).futureValue
+      val result = asyncClient.createDBInstance(request).futureValue()
       result.getDBInstanceIdentifier shouldBe dbInstanceId
       result.getDBInstanceStatus shouldBe "creating"
     }
@@ -40,18 +40,18 @@ class RDSClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
       val theDbInstanceId = new Equality[DBInstance] {
         override def areEqual(a: DBInstance, b: Any) = {
           b match {
-            case id: String ⇒ a.getDBInstanceIdentifier == id
+            case id: String => a.getDBInstanceIdentifier == id
           }
         }
       }
 
       "all of them" in {
-        val result = asyncClient.describeDBInstances().futureValue
+        val result = asyncClient.describeDBInstances().futureValue()
         (result should contain (dbInstanceId)) (decided by theDbInstanceId)
       }
 
       "by identifier" in {
-        val result = asyncClient.describeDBInstance(dbInstanceId).futureValue
+        val result = asyncClient.describeDBInstance(dbInstanceId).futureValue()
         result.getDBInstanceIdentifier shouldBe dbInstanceId
         result.getDBInstanceStatus shouldBe "creating"
       }
@@ -59,7 +59,7 @@ class RDSClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
 
     "can delete DB instances" in {
       logger.info(s"Deleting DB instance: $dbInstanceId")
-      val result = asyncClient.deleteDBInstance(dbInstanceId).futureValue
+      val result = asyncClient.deleteDBInstance(dbInstanceId).futureValue()
       result.getDBInstanceIdentifier shouldBe dbInstanceId
       result.getDBInstanceStatus shouldBe "deleting"
     }

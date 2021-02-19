@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.impl
 
-import java.util.concurrent.{Future ⇒ JFuture}
+import java.util.concurrent.{Future => JFuture}
 
 import akka.stream._
 import akka.stream.stage._
@@ -87,7 +87,7 @@ private[awsutil] class AWSGraphStage[Request <: AmazonWebServiceRequest,Result](
       override def onPull(): Unit = state.doOnPull()
 
       // Always complete on downstream cancellation, cancelling AWS future if any
-      override def onDownstreamFinish(): Unit = {
+      override def onDownstreamFinish(cause: Throwable): Unit = {
         cancelAwsFuture()
         completeStage()
         transition(Finished, "onDownstreamFinish")
@@ -279,12 +279,12 @@ private[awsutil] class AWSGraphStage[Request <: AmazonWebServiceRequest,Result](
       assert(awsFuture.isDefined)
       awsFuture = None
       input match {
-        case Failure(awsError: AmazonClientException) ⇒
+        case Failure(awsError: AmazonClientException) =>
           state.doOnAwsError(awsError)
-        case Failure(cause) ⇒
+        case Failure(cause) =>
           failStage(cause)
           transition(Failed(cause), s"onAwsError(${cause.getMessage})")
-        case Success((request, result)) ⇒
+        case Success((request, result)) =>
           adapter.getToken(result) match {
             case None =>
               state.doOnAsyncResult(result)

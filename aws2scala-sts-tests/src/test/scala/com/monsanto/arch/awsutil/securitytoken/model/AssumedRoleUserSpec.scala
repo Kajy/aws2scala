@@ -9,7 +9,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class AssumedRoleUserSpec extends AnyFreeSpec {
   "a AssumedRoleUser can be round-tripped" - {
     "via its AWS equivalent" in {
-      forAll { assumedRoleUser: AssumedRoleUser ⇒
+      forAll { assumedRoleUser: AssumedRoleUser =>
         assumedRoleUser.asAws.asScala shouldBe assumedRoleUser
       }
     }

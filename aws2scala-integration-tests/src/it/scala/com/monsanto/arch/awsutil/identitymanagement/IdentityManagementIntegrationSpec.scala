@@ -39,7 +39,7 @@ class IdentityManagementIntegrationSpec extends AnyFreeSpec with AwsIntegrationS
 
   "the Identity Management client can" - {
     "get the current user" in {
-      val result = async.getCurrentUser().futureValue
+      val result = async.getCurrentUser().futureValue()
       result.name should not be empty
 
       logger.info(s"Current AWS account is ${result.account}")
@@ -49,7 +49,7 @@ class IdentityManagementIntegrationSpec extends AnyFreeSpec with AwsIntegrationS
 
     "create a role" in {
       val roleName = s"TestRole-$testId"
-      val result = async.createRole(roleName, assumeRolePolicy(testUser), testPath).futureValue
+      val result = async.createRole(roleName, assumeRolePolicy(testUser), testPath).futureValue()
       result.arn shouldBe RoleArn(testUser.account, roleName, testPath)
 
       logger.info(s"Created role ${result.name} with ARN ${result.arn}")
@@ -61,19 +61,19 @@ class IdentityManagementIntegrationSpec extends AnyFreeSpec with AwsIntegrationS
       val roleId = new Equality[Role] {
         override def areEqual(a: Role, b: Any) = {
           b match {
-            case r: Role ⇒ a.id == r.id
-            case _ ⇒ false
+            case r: Role => a.id == r.id
+            case _ => false
           }
         }
       }
 
       "all of them" in {
-        val result = async.listRoles().futureValue
+        val result = async.listRoles().futureValue()
         (result should contain (testRole)) (decided by roleId)
       }
 
       "with a prefix" in {
-        val result = async.listRoles(testPath).futureValue
+        val result = async.listRoles(testPath).futureValue()
         (result should contain (testRole)) (decided by roleId)
       }
     }
@@ -87,7 +87,7 @@ class IdentityManagementIntegrationSpec extends AnyFreeSpec with AwsIntegrationS
           )
         )
       )
-      val result = async.createPolicy(testPolicyName, document, "A test policy", testPathPrefix).futureValue
+      val result = async.createPolicy(testPolicyName, document, "A test policy", testPathPrefix).futureValue()
 
       testPolicyArn = result.arn
 
@@ -95,10 +95,10 @@ class IdentityManagementIntegrationSpec extends AnyFreeSpec with AwsIntegrationS
     }
 
     "get the managed policy" in {
-      val result = async.getPolicy(testPolicyArn).futureValue
+      val result = async.getPolicy(testPolicyArn).futureValue()
       val theArn = testPolicyArn
       result should matchPattern {
-        case ManagedPolicy(`testPolicyName`, _, `theArn`, `testPathPrefix`, "v1", 0, true, Some("A test policy"), _, _) ⇒
+        case ManagedPolicy(`testPolicyName`, _, `theArn`, `testPathPrefix`, "v1", 0, true, Some("A test policy"), _, _) =>
       }
 
       version1Created = result.created
@@ -109,34 +109,34 @@ class IdentityManagementIntegrationSpec extends AnyFreeSpec with AwsIntegrationS
       lazy val policyId = new Equality[ManagedPolicy] {
         override def areEqual(a: ManagedPolicy, b: Any) = {
           b match {
-            case p: ManagedPolicy ⇒ a.id == p.id
-            case _ ⇒ false
+            case p: ManagedPolicy => a.id == p.id
+            case _ => false
           }
         }
       }
 
       "in a list of all policies" in {
-        val result = async.listPolicies().futureValue
+        val result = async.listPolicies().futureValue()
         (result should contain (testPolicy)) (decided by policyId)
       }
 
       "in a list of local policies" in {
-        val result = async.listLocalPolicies().futureValue
+        val result = async.listLocalPolicies().futureValue()
         (result should contain (testPolicy)) (decided by policyId)
       }
 
       "in a list of policies filtered by prefix" in {
-        val result = async.listLocalPolicies().futureValue
+        val result = async.listLocalPolicies().futureValue()
         (result should contain (testPolicy)) (decided by policyId)
       }
     }
 
     "create a new version of the managed policy" in {
-      val result = async.createPolicyVersion(testPolicyArn, documentV2, setAsDefault = false).futureValue
+      val result = async.createPolicyVersion(testPolicyArn, documentV2, setAsDefault = false).futureValue()
 
       result should have (
         'document (None),
-        'versionId ("v2"),
+        Symbol("VersionId") ("v2"),
         'isDefaultVersion (false)
       )
 
@@ -147,7 +147,7 @@ class IdentityManagementIntegrationSpec extends AnyFreeSpec with AwsIntegrationS
     }
 
     "list policy versions" in {
-      val result = async.listPolicyVersions(testPolicyArn).futureValue
+      val result = async.listPolicyVersions(testPolicyArn).futureValue()
 
       result should contain theSameElementsAs
         Seq(
@@ -156,52 +156,52 @@ class IdentityManagementIntegrationSpec extends AnyFreeSpec with AwsIntegrationS
     }
 
     "set the default policy version" in {
-      val result = async.setDefaultPolicyVersion(testPolicyArn, "v2").futureValue
+      val result = async.setDefaultPolicyVersion(testPolicyArn, "v2").futureValue()
       result shouldBe Done
     }
 
     "get a policy version" in {
-      val result = async.getPolicyVersion(testPolicyArn, "v2").futureValue
+      val result = async.getPolicyVersion(testPolicyArn, "v2").futureValue()
 
       result should have (
         'document (Some(documentV2)),
-        'versionId ("v2"),
+        Symbol("VersionId") ("v2"),
         'isDefaultVersion (true),
         'created (version2Created)
       )
     }
 
     "attach a policy to a role" in {
-      val result = async.attachRolePolicy(testRole.name, testPolicyArn).futureValue
+      val result = async.attachRolePolicy(testRole.name, testPolicyArn).futureValue()
       result shouldBe Done
     }
 
     "list the policies attached to a role" in {
-      val result = async.listAttachedRolePolicies(testRole.name).futureValue
+      val result = async.listAttachedRolePolicies(testRole.name).futureValue()
       result should contain (AttachedPolicy(testPolicyArn, testPolicyName))
     }
 
     "detach a policy from a role" in {
-      val result = async.detachRolePolicy(testRole.name, testPolicyArn).futureValue
+      val result = async.detachRolePolicy(testRole.name, testPolicyArn).futureValue()
       result shouldBe Done
     }
 
     "delete a policy version" in {
-      val result = async.deletePolicyVersion(testPolicyArn, "v1").futureValue
+      val result = async.deletePolicyVersion(testPolicyArn, "v1").futureValue()
       result shouldBe Done
 
       logger.info(s"Deleted policy version v1 from ${testPolicyArn.arnString}")
     }
 
     "delete the policy" in {
-      val result = async.deletePolicy(testPolicyArn).futureValue
+      val result = async.deletePolicy(testPolicyArn).futureValue()
       result shouldBe Done
 
       logger.info(s"Deleted policy ${testPolicyArn.name} with ARN ${testPolicyArn.arnString}")
     }
 
     "delete the role" in {
-      val result = async.deleteRole(testRole.name).futureValue
+      val result = async.deleteRole(testRole.name).futureValue()
       result shouldBe Done
 
       logger.info(s"Deleted role ${testRole.name} with ARN ${testRole.arn}")

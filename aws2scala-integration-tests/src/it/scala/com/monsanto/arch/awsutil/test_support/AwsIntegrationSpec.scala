@@ -10,7 +10,7 @@ import org.scalatest.{BeforeAndAfterAll, Suite}
 import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
 
-trait AwsIntegrationSpec extends BeforeAndAfterAll { this: Suite ⇒
+trait AwsIntegrationSpec extends BeforeAndAfterAll { this: Suite =>
   private val actorSystem = ActorSystem(this.getClass.getSimpleName)
   protected val awsClient = AwsClient(AwsSettings.Default)
 

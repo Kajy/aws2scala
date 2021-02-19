@@ -12,7 +12,6 @@ val scalaCheck = "org.scalacheck"     %% "scalacheck"                          %
 val scalaTest  = "org.scalatest"      %% "scalatest"                           % "3.2.4"
 val scalaTestPlus  = "org.scalatestplus"  %% "scalacheck-1-15"                 % "3.2.4.0"
 val sprayJson  = "io.spray"           %% "spray-json"                          % "1.3.6"
-val cftg       = "com.monsanto.arch"  %% "cloud-formation-template-generator"  % "3.10.1"
 
 val compileOnlyOptions = Seq(
   "-deprecation",
@@ -30,8 +29,7 @@ lazy val commonSettings = Seq(
   licenses := Seq("BSD New" → url("http://opensource.org/licenses/BSD-3-Clause")),
 
   // scala compilation
-  scalaVersion := "2.12.13",
- // crossScalaVersions := Seq("2.11.8", "2.12.3"),
+  scalaVersion := "2.13.4",
   releaseCrossBuild := true,
   scalacOptions ++= Seq(
     "-encoding", "UTF-8",
@@ -62,7 +60,7 @@ lazy val commonSettings = Seq(
 
 val AwsDocURL = "http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc"
 
-def createAwsApiMappings(libs: String*) = libs.map(lib ⇒ ("com.amazonaws", s"aws-java-sdk-$lib") → AwsDocURL).toMap
+def createAwsApiMappings(libs: String*) = libs.map(lib => ("com.amazonaws", s"aws-java-sdk-$lib") → AwsDocURL).toMap
 publishTo in ThisBuild := Def.taskDyn[Option[Resolver]] {
   if (isSnapshot.value)
     Def.task(Some("Artifactory Realm" at "https://oss.jfrog.org/oss-snapshot-local/"))
@@ -107,7 +105,8 @@ lazy val testSupport = Project("aws2scala-test-support", file("aws2scala-test-su
     libraryDependencies ++= Seq(
       "com.typesafe.akka"  %% "akka-slf4j"                   % akka,
       scalaCheck,
-      "org.scalamock"      %% "scalamock-scalatest-support"  % "3.6.0",
+     // "org.scalamock"      %% "scalamock-scalatest-support"  % "3.6.0",
+      "org.scalamock"      %% "scalamock" % "4.3.0",
       scalaTest,
       scalaTestPlus,
       "ch.qos.logback"      % "logback-classic"              % "1.2.3"
@@ -169,19 +168,6 @@ lazy val coreTests = Project("aws2scala-core-tests", file("aws2scala-core-tests"
     libraryDependencies ++= Seq(
       sprayJson            % "test",
       awsDependency("s3")  % "test"
-    )
-  )
-
-lazy val cloudFormation = Project("aws2scala-cloudformation", file("aws2scala-cloudformation"))
-  .dependsOn(core, testSupport % "test->test", coreTestSupport % "test")
-  .settings(
-    commonSettings,
-    bintrayPublishingSettings,
-    description := "Client for AWS CloudFormation",
-    libraryDependencies ++= Seq(
-      awsDependency("cloudformation"),
-      sprayJson  % "test",
-      cftg       % "test"
     )
   )
 
@@ -417,21 +403,19 @@ lazy val stsTests = Project("aws2scala-sts-tests", file("aws2scala-sts-tests"))
   )
 
 lazy val integrationTests = Project("aws2scala-integration-tests", file("aws2scala-integration-tests"))
-  .dependsOn(core, testSupport, cloudFormation, ec2, iam, kms, rds, s3, sns, sqs, sts)
+  .dependsOn(core, testSupport, ec2, iam, kms, rds, s3, sns, sqs, sts)
   .configs(IntegrationTest)
   .settings(
     commonSettings,
     noPublishingSettings,
     Defaults.itSettings,
-    description := "Integration test suite for aws2scala",
-    libraryDependencies += cftg % "it"
+    description := "Integration test suite for aws2scala"
   )
 
 lazy val aws2scala = (project in file("."))
   .aggregate(
     testSupport,
     coreMacros, core, coreTestSupport, coreTests, coreTestkit,
-    cloudFormation,
     ec2, ec2Testkit, ec2Tests,
     kms, kmsTestkit, kmsTests,
     iam, iamTestkit, iamTests,

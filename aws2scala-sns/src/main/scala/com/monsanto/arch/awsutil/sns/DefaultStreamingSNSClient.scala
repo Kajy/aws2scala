@@ -2,24 +2,24 @@ package com.monsanto.arch.awsutil.sns
 
 import akka.NotUsed
 import akka.stream.scaladsl.{Flow, Source}
-import com.amazonaws.services.sns.{AmazonSNSAsync, model ⇒ aws}
+import com.amazonaws.services.sns.{AmazonSNSAsync, model => aws}
 import com.monsanto.arch.awsutil.sns.model.AwsConverters._
 import com.monsanto.arch.awsutil.sns.model._
 import com.monsanto.arch.awsutil._
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 private[awsutil] final class DefaultStreamingSNSClient(sns: AmazonSNSAsync) extends StreamingSNSClient {
   override val topicCreator =
     Flow[String]
-      .map(name ⇒ new aws.CreateTopicRequest(name))
+      .map(name => new aws.CreateTopicRequest(name))
       .via(AWSFlow.simple[aws.CreateTopicRequest,aws.CreateTopicResult](sns.createTopicAsync))
       .map(_.getTopicArn)
       .named("SNS.topicCreator")
 
   override val topicDeleter =
     Flow[String]
-      .map(arn ⇒ new aws.DeleteTopicRequest(arn))
+      .map(arn => new aws.DeleteTopicRequest(arn))
       .via(AWSFlow.simple(AWSFlowAdapter.returnInput[aws.DeleteTopicRequest, aws.DeleteTopicResult](sns.deleteTopicAsync)))
       .map(_.getTopicArn)
       .named("SNS.topicDeleter")
@@ -36,12 +36,12 @@ private[awsutil] final class DefaultStreamingSNSClient(sns: AmazonSNSAsync) exte
     Flow[SubscribeRequest]
       .map(_.toAws)
       .via[aws.SubscribeResult,NotUsed](AWSFlow.simple(sns.subscribeAsync))
-      .map(result ⇒ Option(result.getSubscriptionArn).flatMap(s ⇒ if (s.startsWith("arn:")) Some(s) else None))
+      .map(result => Option(result.getSubscriptionArn).flatMap(s => if (s.startsWith("arn:")) Some(s) else None))
       .named("SNS.subscriber")
 
   override val topicAttributesGetter =
     Flow[String]
-      .map(arn ⇒ new aws.GetTopicAttributesRequest(arn))
+      .map(arn => new aws.GetTopicAttributesRequest(arn))
       .via(AWSFlow.simple[aws.GetTopicAttributesRequest,aws.GetTopicAttributesResult](sns.getTopicAttributesAsync))
       .map(_.getAttributes.asScala.toMap)
       .named("SNS.topicAttributeGetter")
@@ -83,10 +83,10 @@ private[awsutil] final class DefaultStreamingSNSClient(sns: AmazonSNSAsync) exte
     Flow[ListSubscriptionsRequest]
       .map(_.toEitherAws)
       .flatMapConcat {
-        case Left(listAllRequest)      ⇒ Source.single(listAllRequest).via(allSubscriptionsLister)
-        case Right(listByTopicRequest) ⇒ Source.single(listByTopicRequest).via(byTopicSubscriptionsLister)
+        case Left(listAllRequest)      => Source.single(listAllRequest).via(allSubscriptionsLister)
+        case Right(listByTopicRequest) => Source.single(listByTopicRequest).via(byTopicSubscriptionsLister)
       }
-      .map( sns ⇒
+      .map( sns =>
         SubscriptionSummary(
           if (sns.getSubscriptionArn.startsWith("arn")) Some(sns.getSubscriptionArn) else None,
           sns.getTopicArn,
@@ -103,7 +103,7 @@ private[awsutil] final class DefaultStreamingSNSClient(sns: AmazonSNSAsync) exte
 
   override val subscriptionAttributesGetter =
     Flow[String]
-      .map(arn ⇒ new aws.GetSubscriptionAttributesRequest(arn))
+      .map(arn => new aws.GetSubscriptionAttributesRequest(arn))
       .via(AWSFlow.simple[aws.GetSubscriptionAttributesRequest,aws.GetSubscriptionAttributesResult](sns.getSubscriptionAttributesAsync))
       .map(_.getAttributes.asScala.toMap)
       .named("SNS.subscriptionAttributesGetter")
@@ -117,7 +117,7 @@ private[awsutil] final class DefaultStreamingSNSClient(sns: AmazonSNSAsync) exte
 
   override val unsubscriber =
     Flow[String]
-      .map(arn ⇒ new aws.UnsubscribeRequest(arn))
+      .map(arn => new aws.UnsubscribeRequest(arn))
       .via(AWSFlow.simple(AWSFlowAdapter.returnInput[aws.UnsubscribeRequest,aws.UnsubscribeResult](sns.unsubscribeAsync)))
       .map(_.getSubscriptionArn)
       .named("SNS.unsubscriber")
@@ -131,7 +131,7 @@ private[awsutil] final class DefaultStreamingSNSClient(sns: AmazonSNSAsync) exte
 
   override val platformApplicationAttributesGetter =
     Flow[String]
-      .map(arn ⇒ new aws.GetPlatformApplicationAttributesRequest().withPlatformApplicationArn(arn))
+      .map(arn => new aws.GetPlatformApplicationAttributesRequest().withPlatformApplicationArn(arn))
       .via[aws.GetPlatformApplicationAttributesResult,NotUsed](AWSFlow.simple(sns.getPlatformApplicationAttributesAsync))
       .map(_.getAttributes.asScala.toMap)
       .named("SNS.platformApplicationAttributeGetter")
@@ -145,7 +145,7 @@ private[awsutil] final class DefaultStreamingSNSClient(sns: AmazonSNSAsync) exte
 
   override val platformApplicationDeleter =
     Flow[String]
-      .map(arn ⇒ new aws.DeletePlatformApplicationRequest().withPlatformApplicationArn(arn))
+      .map(arn => new aws.DeletePlatformApplicationRequest().withPlatformApplicationArn(arn))
       .via(AWSFlow.simple(AWSFlowAdapter.returnInput[aws.DeletePlatformApplicationRequest,aws.DeletePlatformApplicationResult](sns.deletePlatformApplicationAsync)))
       .map(_.getPlatformApplicationArn)
       .named("SNS.platformApplicationDeleter")
@@ -155,16 +155,16 @@ private[awsutil] final class DefaultStreamingSNSClient(sns: AmazonSNSAsync) exte
       .map(_.clone())
       .via[aws.ListPlatformApplicationsResult,NotUsed](AWSFlow.pagedByNextToken(sns.listPlatformApplicationsAsync))
       .mapConcat(_.getPlatformApplications.asScala.toList)
-      .map(sns ⇒ PlatformApplication(sns.getPlatformApplicationArn, sns.getAttributes.asScala.toMap))
+      .map(sns => PlatformApplication(sns.getPlatformApplicationArn, sns.getAttributes.asScala.toMap))
       .named("SNS.platformApplicationLister")
 
   override val platformEndpointCreator =
     Flow[CreatePlatformEndpointRequest]
-      .map { r ⇒
+      .map { r =>
         val request = new aws.CreatePlatformEndpointRequest
         request.setPlatformApplicationArn(r.platformApplicationArn)
         request.setToken(r.token)
-        r.customUserData.foreach(d ⇒ request.setCustomUserData(d))
+        r.customUserData.foreach(d => request.setCustomUserData(d))
         if (r.attributes.nonEmpty) {
           request.setAttributes(r.attributes.asJava)
         }
@@ -176,28 +176,28 @@ private[awsutil] final class DefaultStreamingSNSClient(sns: AmazonSNSAsync) exte
 
   override val platformEndpointAttributesGetter =
     Flow[String]
-      .map(arn ⇒ new aws.GetEndpointAttributesRequest().withEndpointArn(arn))
+      .map(arn => new aws.GetEndpointAttributesRequest().withEndpointArn(arn))
       .via[aws.GetEndpointAttributesResult, NotUsed](AWSFlow.simple(sns.getEndpointAttributesAsync))
       .map(_.getAttributes.asScala.toMap)
       .named("SNS.platformEndpointAttributesGetter")
 
   override val platformEndpointAttributesSetter =
     Flow[SetPlatformEndpointAttributesRequest]
-      .map(r ⇒ new aws.SetEndpointAttributesRequest().withEndpointArn(r.platformEndpointArn).withAttributes(r.attributes.asJava))
+      .map(r => new aws.SetEndpointAttributesRequest().withEndpointArn(r.platformEndpointArn).withAttributes(r.attributes.asJava))
       .via(AWSFlow.simple(AWSFlowAdapter.returnInput[aws.SetEndpointAttributesRequest,aws.SetEndpointAttributesResult](sns.setEndpointAttributesAsync)))
       .map(_.getEndpointArn)
       .named("SNS.platformEndpointAttributesSetter")
 
   override val platformEndpointDeleter =
     Flow[String]
-      .map(arn ⇒ new aws.DeleteEndpointRequest().withEndpointArn(arn))
+      .map(arn => new aws.DeleteEndpointRequest().withEndpointArn(arn))
       .via(AWSFlow.simple(AWSFlowAdapter.returnInput[aws.DeleteEndpointRequest,aws.DeleteEndpointResult](sns.deleteEndpointAsync)))
       .map(_.getEndpointArn)
       .named("SNS.platformEndpointDeleter")
 
   override val platformEndpointLister =
     Flow[String]
-      .map(arn ⇒ new aws.ListEndpointsByPlatformApplicationRequest().withPlatformApplicationArn(arn))
+      .map(arn => new aws.ListEndpointsByPlatformApplicationRequest().withPlatformApplicationArn(arn))
       .via[aws.ListEndpointsByPlatformApplicationResult,NotUsed](AWSFlow.pagedByNextToken(sns.listEndpointsByPlatformApplicationAsync))
       .mapConcat(_.getEndpoints.asScala.toList)
       .map(_.asScala)
@@ -205,15 +205,15 @@ private[awsutil] final class DefaultStreamingSNSClient(sns: AmazonSNSAsync) exte
 
   override val publisher =
     Flow[PublishRequest]
-      .map { r ⇒
+      .map { r =>
         val request = new aws.PublishRequest()
         request.setTargetArn(r.targetArn)
         request.setMessage(r.message)
-        r.subject.foreach(s ⇒ request.setSubject(s))
+        r.subject.foreach(s => request.setSubject(s))
         if (r.attributes.nonEmpty) {
           request.setMessageAttributes(r.attributes.asAws)
         }
-        r.messageStructure.foreach(s ⇒ request.setMessageStructure(s))
+        r.messageStructure.foreach(s => request.setMessageStructure(s))
         request
       }
       .via[aws.PublishResult,NotUsed](AWSFlow.simple(sns.publishAsync))

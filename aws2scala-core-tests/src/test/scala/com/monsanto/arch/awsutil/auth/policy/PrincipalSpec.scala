@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.auth.policy
 
-import com.amazonaws.auth.{policy ⇒ aws}
+import com.amazonaws.auth.{policy => aws}
 import com.monsanto.arch.awsutil.Account
 import com.monsanto.arch.awsutil.converters.CoreConverters._
 import com.monsanto.arch.awsutil.identitymanagement.model.{RoleArn, SamlProviderArn, UserArn}
@@ -11,27 +11,27 @@ import com.monsanto.arch.awsutil.testkit.CoreScalaCheckImplicits._
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
-import org.scalatest.prop.TableDrivenPropertyChecks.{Table, forAll ⇒ forAllIn}
+import org.scalatest.prop.TableDrivenPropertyChecks.{Table, forAll => forAllIn}
 
 class PrincipalSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
   /** Contains all of the services. */
   private val services = Table("service", Principal.Service.values: _*)
   /** Contains all of the services with a matching AWS enumeration value. */
   private val awsEnumeratedServices =
-    Table("service", Principal.Service.values.collect { case x: Principal.Service.AwsEnumerated ⇒ x }: _*)
+    Table("service", Principal.Service.values.collect { case x: Principal.Service.AwsEnumerated => x }: _*)
   /** Contains all web identity providers. */
   private val webIdentityProviders = Table("web identity provider", Principal.WebIdentityProvider.values: _*)
 
   "a Principal" - {
     "can be round-tripped via" - {
       "its AWS equivalent" in {
-        forAll { principal: Principal ⇒
+        forAll { principal: Principal =>
           principal.asAws.asScala shouldBe principal
         }
       }
 
       "its provider and identifier" in {
-        forAll { principal: Principal ⇒
+        forAll { principal: Principal =>
           Principal.fromProviderAndId(principal.provider, principal.id) shouldBe principal
         }
       }
@@ -44,7 +44,7 @@ class PrincipalSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
 
     "will not build from bad providers/IDs" in {
       val isValidProvider = Set("AWS", "Federated", "Service", "*")
-      forAll { (provider: String, id: String) ⇒
+      forAll { (provider: String, id: String) =>
         whenever(!isValidProvider(provider)) {
           an [IllegalArgumentException] shouldBe thrownBy {
             Principal.fromProviderAndId(provider, id)
@@ -55,7 +55,7 @@ class PrincipalSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
 
     "converts" - {
       "AWS account principals that only contain an account number" in {
-        forAll { account: Account ⇒
+        forAll { account: Account =>
           new aws.Principal(account.id).asScala shouldBe Principal.account(account.copy(partition = Partition.Aws))
         }
       }
@@ -73,37 +73,37 @@ class PrincipalSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
       }
 
       "SAML provider principals" in {
-        forAll { principal: Principal.SamlProviderPrincipal ⇒
+        forAll { principal: Principal.SamlProviderPrincipal =>
           principal.asAws should have (
-            'provider ("Federated"),
-            'id (principal.samlProviderArn.arnString)
+            Symbol("provider") ("Federated"),
+            Symbol("id") (principal.samlProviderArn.arnString)
           )
         }
       }
 
       "IAM user principals" in {
-        forAll { principal: Principal.IamUserPrincipal ⇒
+        forAll { principal: Principal.IamUserPrincipal =>
           principal.asAws should have (
-            'provider ("AWS"),
-            'id (principal.userArn.arnString)
+            Symbol("provider") ("AWS"),
+            Symbol("id") (principal.userArn.arnString)
           )
         }
       }
 
       "IAM role principals" in {
-        forAll { principal: Principal.IamRolePrincipal ⇒
+        forAll { principal: Principal.IamRolePrincipal =>
           principal.asAws should have (
-            'provider ("AWS"),
-            'id (principal.roleArn.arnString)
+            Symbol("provider") ("AWS"),
+            Symbol("id") (principal.roleArn.arnString)
           )
         }
       }
 
       "IAM assumed role principals" in {
-        forAll { principal: Principal.StsAssumedRolePrincipal ⇒
+        forAll { principal: Principal.StsAssumedRolePrincipal =>
           principal.asAws should have (
-            'provider ("AWS"),
-            'id (principal.assumedRoleArn.arnString)
+            Symbol("provider") ("AWS"),
+            Symbol("id") (principal.assumedRoleArn.arnString)
           )
         }
       }
@@ -111,52 +111,52 @@ class PrincipalSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
 
     "has a valid" - {
       "account principal factory method" in {
-        forAll { account: Account ⇒
+        forAll { account: Account =>
           Principal.account(account) should have (
-            'provider ("AWS"),
-            'id (account.arn.arnString)
+            Symbol("provider") ("AWS"),
+            Symbol("id") (account.arn.arnString)
           )
         }
       }
 
       "service principal factory method" in {
-        forAllIn(services) { service ⇒
+        forAllIn(services) { service =>
           Principal.service(service) should have (
-            'provider ("Service"),
-            'id (service.id)
+            Symbol("provider") ("Service"),
+            Symbol("id") (service.id)
           )
         }
       }
 
       "web identity provider principal factory method" in {
-        forAllIn(webIdentityProviders) { provider ⇒
+        forAllIn(webIdentityProviders) { provider =>
           Principal.webProvider(provider) should have (
-            'provider ("Federated"),
-            'id (provider.provider)
+            Symbol("provider") ("Federated"),
+            Symbol("id") (provider.provider)
           )
         }
       }
 
       "SAML provider principal factory method" in {
-        forAll { samlProviderArn: SamlProviderArn ⇒
+        forAll { samlProviderArn: SamlProviderArn =>
           Principal.samlProvider(samlProviderArn) shouldBe Principal.SamlProviderPrincipal(samlProviderArn)
         }
       }
 
       "IAM user principal factory method" in {
-        forAll { userArn: UserArn ⇒
+        forAll { userArn: UserArn =>
           Principal.iamUser(userArn) shouldBe Principal.IamUserPrincipal(userArn)
         }
       }
 
       "IAM role principal factory method" in {
-        forAll { roleArn: RoleArn ⇒
+        forAll { roleArn: RoleArn =>
           Principal.iamRole(roleArn) shouldBe Principal.IamRolePrincipal(roleArn)
         }
       }
 
       "IAM assumed role principal factory method" in {
-        forAll { asssumedRoleArn: AssumedRoleArn ⇒
+        forAll { asssumedRoleArn: AssumedRoleArn =>
           Principal.stsAssumedRole(asssumedRoleArn) shouldBe Principal.StsAssumedRolePrincipal(asssumedRoleArn)
         }
       }
@@ -170,13 +170,13 @@ class PrincipalSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
         (_: aws.Principal.Services).asScala)
 
       "with id values that match the AWS service ID" in {
-        forAllIn(awsEnumeratedServices) { service ⇒
+        forAllIn(awsEnumeratedServices) { service =>
           service.id shouldBe service.asAws.getServiceId
         }
       }
 
       "with a fromId extractor" in {
-        forAllIn(services) { service ⇒
+        forAllIn(services) { service =>
           Principal.Service.fromId.unapply(service.id) shouldBe Some(service)
         }
       }
@@ -190,13 +190,13 @@ class PrincipalSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
         (_: aws.Principal.WebIdentityProviders).asScala)
 
       "with id values" in {
-        forAllIn(webIdentityProviders) { provider ⇒
+        forAllIn(webIdentityProviders) { provider =>
           provider.provider shouldBe provider.asAws.getWebIdentityProvider
         }
       }
 
       "with a fromId" in {
-        forAllIn(webIdentityProviders) { provider ⇒
+        forAllIn(webIdentityProviders) { provider =>
           Principal.WebIdentityProvider.fromProvider.unapply(provider.provider) shouldBe Some(provider)
         }
       }

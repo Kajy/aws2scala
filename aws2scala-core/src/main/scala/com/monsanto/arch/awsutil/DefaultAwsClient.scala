@@ -89,8 +89,8 @@ class DefaultAwsClient private (settings: AwsSettings,
     def apply[T <: StreamingAwsClient](provider: AwsClientProvider[T,_]): T = {
       cache.synchronized {
         cache.get(provider) match {
-          case Some(WeakReference(value)) ⇒ value.asInstanceOf[T]
-          case _ ⇒
+          case Some(WeakReference(value)) => value.asInstanceOf[T]
+          case _ =>
             shutdownHooks.synchronized {
               val (newClient, shutdownHook) = provider.streamingClient(settings, credentialsProvider, executorService)
               shutdownHooks += shutdownHook
@@ -108,8 +108,8 @@ class DefaultAwsClient private (settings: AwsSettings,
     def apply[T <: StreamingAwsClient,U <: AsyncAwsClient](provider: AwsClientProvider[T,U]): U = {
       cache.synchronized {
         cache.get(provider) match {
-          case Some(WeakReference(value)) ⇒ value.asInstanceOf[U]
-          case _ ⇒
+          case Some(WeakReference(value)) => value.asInstanceOf[U]
+          case _ =>
             val streamingClient = streamingClientCache(provider)
             val asyncClient = provider.asyncClient(streamingClient)
             cache.update(provider, WeakReference(asyncClient))

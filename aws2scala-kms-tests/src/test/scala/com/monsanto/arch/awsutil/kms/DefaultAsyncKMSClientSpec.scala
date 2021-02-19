@@ -16,53 +16,53 @@ class DefaultAsyncKMSClientSpec extends AnyFreeSpec with MockFactory with Materi
     "create keys with aliases when" - {
       "only the alias is specified" in {
         forAll(
-          KmsGen.keyAlias → "alias",
-          arbitrary[KeyMetadata] → "metadata"
-        ) { (alias, metadata) ⇒
+          KmsGen.keyAlias ->"alias",
+          arbitrary[KeyMetadata] ->"metadata"
+        ) { (alias, metadata) =>
           val streaming = mock[StreamingKMSClient]("streaming")
           val async = new DefaultAsyncKMSClient(streaming)
 
-          (streaming.keyWithAliasCreator _)
+          (() => streaming.keyWithAliasCreator)
             .expects()
             .returningFlow(
               CreateKeyWithAliasRequest(alias, None, None, KeyUsage.EncryptDecrypt, None),
               metadata)
 
-          val result = async.createKey(alias).futureValue
+          val result = async.createKey(alias).futureValue()
           result shouldBe metadata
         }
       }
 
       "an alias and a description" in {
         forAll(
-          KmsGen.keyAlias → "alias",
-          arbitrary[String] → "description",
-          arbitrary[KeyMetadata] → "metadata"
-        ) { (alias, description, metadata) ⇒
+          KmsGen.keyAlias ->"alias",
+          arbitrary[String] ->"description",
+          arbitrary[KeyMetadata] ->"metadata"
+        ) { (alias, description, metadata) =>
           val streaming = mock[StreamingKMSClient]("streaming")
           val async = new DefaultAsyncKMSClient(streaming)
 
-          (streaming.keyWithAliasCreator _)
+          (() => streaming.keyWithAliasCreator)
             .expects()
             .returningFlow(
               CreateKeyWithAliasRequest(alias, None, Some(description), KeyUsage.EncryptDecrypt, None),
               metadata)
 
-          val result = async.createKey(alias, description).futureValue
+          val result = async.createKey(alias, description).futureValue()
           result shouldBe metadata
         }
       }
 
       "an arbitrary request" in {
-        forAll { (request: CreateKeyWithAliasRequest, metadata: KeyMetadata) ⇒
+        forAll { (request: CreateKeyWithAliasRequest, metadata: KeyMetadata) =>
           val streaming = mock[StreamingKMSClient]("streaming")
           val async = new DefaultAsyncKMSClient(streaming)
 
-          (streaming.keyWithAliasCreator _)
+          (() => streaming.keyWithAliasCreator)
             .expects()
             .returningFlow(request, metadata)
 
-          val result = async.createKey(request).futureValue
+          val result = async.createKey(request).futureValue()
           result shouldBe metadata
         }
       }

@@ -22,13 +22,13 @@ object PolicyArn {
     /** Extracts an `PolicyArn` object from the given ARN string. */
     def unapply(arnString: String): Option[PolicyArn] =
       arnString match {
-        case Arn.fromArnString(accountArn: PolicyArn) ⇒ Some(accountArn)
-        case _                                        ⇒ None
+        case Arn.fromArnString(accountArn: PolicyArn) => Some(accountArn)
+        case _                                        => None
       }
   }
 
   private[identitymanagement] val policyArnPF: PartialFunction[Arn.ArnParts, PolicyArn] = {
-    case (_, Arn.Namespace.IAM, None, Some(account), PolicyResourceRegex(Path.fromPathString(path), name)) ⇒
+    case (_, Arn.Namespace.IAM, None, Some(account), PolicyResourceRegex(Path.fromPathString(path), name)) =>
       PolicyArn(account, name, path)
   }
 

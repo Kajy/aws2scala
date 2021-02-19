@@ -19,8 +19,8 @@ object CoreScalaCheckImplicits {
   implicit lazy val arbAccount: Arbitrary[Account] =
     Arbitrary{
       for {
-        partition ← arbitrary[Partition]
-        id ← CoreGen.accountId
+        partition <- arbitrary[Partition]
+        id <- CoreGen.accountId
       } yield Account(id, partition)
     }
 
@@ -34,45 +34,45 @@ object CoreScalaCheckImplicits {
     val idGen = Gen.option(Gen.nonEmptyListOf(UtilGen.asciiChar).map(_.mkString))
     Arbitrary {
       for {
-        version ← arbitrary[Option[Policy.Version]]
-        id ← idGen
-        statements ← UtilGen.nonEmptyListOfSqrtN(arbitrary[Statement])
+        version <- arbitrary[Option[Policy.Version]]
+        id <- idGen
+        statements <- UtilGen.nonEmptyListOfSqrtN(arbitrary[Statement])
       } yield Policy(version, id, statements)
     }
   }
 
   implicit lazy val shrinkPolicy: Shrink[Policy] =
-    Shrink { policy ⇒
-      Shrink.shrink(policy.id).filter(_.forall(_.nonEmpty)).map(x ⇒ policy.copy(id = x)) append
-        Shrink.shrink(policy.statements).filter(_.nonEmpty).map(x ⇒ policy.copy(statements = x))
+    Shrink { policy =>
+      Shrink.shrink(policy.id).filter(_.forall(_.nonEmpty)).map(x => policy.copy(id = x)) lazyAppendedAll
+        Shrink.shrink(policy.statements).filter(_.nonEmpty).map(x => policy.copy(statements = x))
     }
 
   implicit lazy val arbStatement: Arbitrary[Statement] =
     Arbitrary {
       for {
-        id ← Gen.option(Gen.identifier)
-        principals ← arbitrary[Set[Principal]]
-        effect ← arbitrary[Statement.Effect]
-        actions ← arbitrary[Seq[Action]]
-        resources ← arbitrary[Seq[Resource]]
-        conditions ← arbitrary[Set[Condition]]
+        id <- Gen.option(Gen.identifier)
+        principals <- arbitrary[Set[Principal]]
+        effect <- arbitrary[Statement.Effect]
+        actions <- arbitrary[Seq[Action]]
+        resources <- arbitrary[Seq[Resource]]
+        conditions <- arbitrary[Set[Condition]]
       } yield Statement(id, principals, effect, actions, resources, conditions)
     }
 
   implicit lazy val shrinkStatement: Shrink[Statement] =
-    Shrink { statement ⇒
-      Shrink.shrink(statement.id).filter(_.forall(_.nonEmpty)).map(x ⇒ statement.copy(id = x)) append
-        Shrink.shrink(statement.principals).map(x ⇒ statement.copy(principals = x)) append
-        Shrink.shrink(statement.actions).map(x ⇒ statement.copy(actions = x)) append
-        Shrink.shrink(statement.resources).map(x ⇒ statement.copy(resources = x)) append
-        Shrink.shrink(statement.conditions).map(x ⇒ statement.copy(conditions = x))
+    Shrink { statement =>
+      Shrink.shrink(statement.id).filter(_.forall(_.nonEmpty)).map(x => statement.copy(id = x)) lazyAppendedAll
+        Shrink.shrink(statement.principals).map(x => statement.copy(principals = x)) lazyAppendedAll
+        Shrink.shrink(statement.actions).map(x => statement.copy(actions = x)) lazyAppendedAll
+        Shrink.shrink(statement.resources).map(x => statement.copy(resources = x)) lazyAppendedAll
+        Shrink.shrink(statement.conditions).map(x => statement.copy(conditions = x))
     }
 
   implicit val arbStatements: Arbitrary[Seq[Statement]] =
     Arbitrary(UtilGen.nonEmptyListOfSqrtN(arbitrary[Statement]))
 
   implicit val shrinkStatements: Shrink[Seq[Statement]] =
-    Shrink(statements ⇒ Shrink.shrinkContainer[Seq,Statement].shrink(statements).filter(_.nonEmpty))
+    Shrink(statements => Shrink.shrinkContainer[Seq,Statement].shrink(statements).filter(_.nonEmpty))
 
   implicit lazy val arbStatementEffect: Arbitrary[Statement.Effect] =
     Arbitrary(Gen.oneOf(Statement.Effect.values))
@@ -94,8 +94,8 @@ object CoreScalaCheckImplicits {
   implicit lazy val arbPrincipals: Arbitrary[Set[Principal]] =
     Arbitrary {
       Gen.frequency(
-        1 → Gen.const(Statement.allPrincipals),
-        19 → UtilGen.listOfSqrtN(arbitrary[Principal]).map(_.toSet)
+        1 ->Gen.const(Statement.allPrincipals),
+        19 ->UtilGen.listOfSqrtN(arbitrary[Principal]).map(_.toSet)
       )
     }
 
@@ -134,11 +134,11 @@ object CoreScalaCheckImplicits {
 
   implicit lazy val shrinkPrincipal: Shrink[Principal] =
     Shrink {
-      case samlProvider: Principal.SamlProviderPrincipal ⇒ Shrink.shrink(samlProvider)
-      case userPrincipal: Principal.IamUserPrincipal ⇒ Shrink.shrink(userPrincipal)
-      case rolePrincipal: Principal.IamRolePrincipal ⇒ Shrink.shrink(rolePrincipal)
-      case assumedRolePrincipal: Principal.StsAssumedRolePrincipal ⇒ Shrink.shrink(assumedRolePrincipal)
-      case _ ⇒ Stream.empty
+      case samlProvider: Principal.SamlProviderPrincipal => Shrink.shrink(samlProvider)
+      case userPrincipal: Principal.IamUserPrincipal => Shrink.shrink(userPrincipal)
+      case rolePrincipal: Principal.IamRolePrincipal => Shrink.shrink(rolePrincipal)
+      case assumedRolePrincipal: Principal.StsAssumedRolePrincipal => Shrink.shrink(assumedRolePrincipal)
+      case _ => LazyList.empty.toStream
     }
 
   implicit lazy val arbPrincipalService: Arbitrary[Principal.Service] =
@@ -166,44 +166,44 @@ object CoreScalaCheckImplicits {
     Arbitrary {
       val arn =
         for {
-          vendor ← arbitrary[Option[Arn.Namespace]]
-          region ← arbitrary[Option[Region]]
-          namespace ← Gen.option(CoreGen.accountId)
-          relativeId ← Gen.option(Gen.identifier)
+          vendor <- arbitrary[Option[Arn.Namespace]]
+          region <- arbitrary[Option[Region]]
+          namespace <- Gen.option(CoreGen.accountId)
+          relativeId <- Gen.option(Gen.identifier)
         } yield s"arn:aws:${vendor.getOrElse("*")}:${region.map(_.name).getOrElse("*")}:${namespace.getOrElse("*")}:${relativeId.getOrElse("*")}"
       for {
-        key ← Gen.oneOf(Gen.const("aws:SourceArn"), Gen.identifier)
-        comparisonType ← arbitrary[Condition.ArnComparisonType]
-        comparisonValues ← UtilGen.nonEmptyListOfSqrtN(arn)
-        ifExists ← arbitrary[Boolean]
+        key <- Gen.oneOf(Gen.const("aws:SourceArn"), Gen.identifier)
+        comparisonType <- arbitrary[Condition.ArnComparisonType]
+        comparisonValues <- UtilGen.nonEmptyListOfSqrtN(arn)
+        ifExists <- arbitrary[Boolean]
       } yield Condition.ArnCondition(key, comparisonType, comparisonValues.distinct, ifExists)
     }
 
   implicit lazy val arbBinaryCondition: Arbitrary[Condition.BinaryCondition] =
     Arbitrary {
       for {
-        key ← Gen.identifier
-        values ← UtilGen.nonEmptyListOfSqrtN(arbitrary[Array[Byte]].map(ByteString(_)))
-        ifExists ← arbitrary[Boolean]
+        key <- Gen.identifier
+        values <- UtilGen.nonEmptyListOfSqrtN(arbitrary[Array[Byte]].map(ByteString(_)))
+        ifExists <- arbitrary[Boolean]
       } yield Condition.BinaryCondition(key, values.distinct, ifExists)
     }
 
   implicit lazy val arbBooleanCondition: Arbitrary[Condition.BooleanCondition] =
     Arbitrary {
       for {
-        key ← Gen.identifier
-        value ← arbitrary[Boolean]
-        ifExists ← arbitrary[Boolean]
+        key <- Gen.identifier
+        value <- arbitrary[Boolean]
+        ifExists <- arbitrary[Boolean]
       } yield Condition.BooleanCondition(key, value, ifExists)
     }
 
   implicit lazy val arbDateCondition: Arbitrary[Condition.DateCondition] =
     Arbitrary {
       for {
-        key ← Gen.identifier
-        comparisonType ← arbitrary[Condition.DateComparisonType]
-        values ← UtilGen.nonEmptyListOfSqrtN(arbitrary[Date])
-        ifExists ← arbitrary[Boolean]
+        key <- Gen.identifier
+        comparisonType <- arbitrary[Condition.DateComparisonType]
+        values <- UtilGen.nonEmptyListOfSqrtN(arbitrary[Date])
+        ifExists <- arbitrary[Boolean]
       } yield Condition.DateCondition(key, comparisonType, values.distinct, ifExists)
     }
 
@@ -211,42 +211,42 @@ object CoreScalaCheckImplicits {
     Arbitrary {
       val cidrBlock =
         for {
-          address ← Gen.listOfN(4, Gen.choose(0, 255)).map(_.mkString("."))
-          size ← Gen.choose(0,32)
+          address <- Gen.listOfN(4, Gen.choose(0, 255)).map(_.mkString("."))
+          size <- Gen.choose(0,32)
         } yield s"$address/$size"
       for {
-        key ← Gen.identifier
-        comparisonType ← arbitrary[Condition.IpAddressComparisonType]
-        cidrBlocks ← UtilGen.nonEmptyListOfSqrtN(cidrBlock)
-        ifExists ← arbitrary[Boolean]
+        key <- Gen.identifier
+        comparisonType <- arbitrary[Condition.IpAddressComparisonType]
+        cidrBlocks <- UtilGen.nonEmptyListOfSqrtN(cidrBlock)
+        ifExists <- arbitrary[Boolean]
       } yield Condition.IpAddressCondition(key, comparisonType, cidrBlocks.distinct, ifExists)
     }
 
   implicit lazy val arbNullCondition: Arbitrary[Condition.NullCondition] =
     Arbitrary {
       for {
-        key ← Gen.identifier
-        value ← arbitrary[Boolean]
+        key <- Gen.identifier
+        value <- arbitrary[Boolean]
       } yield Condition.NullCondition(key, value)
     }
 
   implicit lazy val arbNumericCondition: Arbitrary[Condition.NumericCondition] =
     Arbitrary {
       for {
-        key ← Gen.identifier
-        comparisonType ← arbitrary[Condition.NumericComparisonType]
-        values ← UtilGen.nonEmptyListOfSqrtN(arbitrary[Double])
-        ifExists ← arbitrary[Boolean]
+        key <- Gen.identifier
+        comparisonType <- arbitrary[Condition.NumericComparisonType]
+        values <- UtilGen.nonEmptyListOfSqrtN(arbitrary[Double])
+        ifExists <- arbitrary[Boolean]
       } yield Condition.NumericCondition(key, comparisonType, values.distinct, ifExists)
     }
 
   implicit lazy val arbStringCondition: Arbitrary[Condition.StringCondition] =
     Arbitrary {
       for {
-        key ← Gen.identifier
-        comparisonType ← arbitrary[Condition.StringComparisonType]
-        values ← UtilGen.nonEmptyListOfSqrtN(arbitrary[String].suchThat(_.forall(_ != '\uffff')))
-        ifExists ← arbitrary[Boolean]
+        key <- Gen.identifier
+        comparisonType <- arbitrary[Condition.StringComparisonType]
+        values <- UtilGen.nonEmptyListOfSqrtN(arbitrary[String].suchThat(_.forall(_ != '\uffff')))
+        ifExists <- arbitrary[Boolean]
       } yield Condition.StringCondition(key, comparisonType, values.distinct, ifExists)
     }
 
@@ -267,18 +267,18 @@ object CoreScalaCheckImplicits {
           arbitrary[Condition.StringCondition]
         )
       for {
-        innerCondition ← innerConditionGen
-        setOperation ← arbitrary[Condition.SetOperation]
+        innerCondition <- innerConditionGen
+        setOperation <- arbitrary[Condition.SetOperation]
       } yield Condition.MultipleKeyValueCondition(setOperation, innerCondition)
     }
 
   implicit lazy val arbConditions: Arbitrary[Set[Condition]] =
     Arbitrary {
-      for (conditions ← UtilGen.listOfSqrtN(arbitrary[Condition])) yield {
-        conditions.foldLeft(Set.empty[Condition]) { (set, condition) ⇒
-          set.find(c ⇒ c.comparisonType == condition.comparisonType && c.key == condition.key) match {
-            case Some(_) ⇒ set
-            case None    ⇒ set + condition
+      for (conditions <- UtilGen.listOfSqrtN(arbitrary[Condition])) yield {
+        conditions.foldLeft(Set.empty[Condition]) { (set, condition) =>
+          set.find(c => c.comparisonType == condition.comparisonType && c.key == condition.key) match {
+            case Some(_) => set
+            case None    => set + condition
           }
         }
       }
@@ -302,11 +302,11 @@ object CoreScalaCheckImplicits {
   implicit lazy val arbResource: Arbitrary[Resource] =
     Arbitrary {
       for {
-        partition ← arbitrary[Partition]
-        account ← Gen.option(CoreGen.accountId).map(_.map(id ⇒ Account(id, partition)))
-        region ← arbitrary[Option[Region]]
-        namespace ← arbitrary[Arn.Namespace]
-        resourceStr ← Gen.identifier
+        partition <- arbitrary[Partition]
+        account <- Gen.option(CoreGen.accountId).map(_.map(id => Account(id, partition)))
+        region <- arbitrary[Option[Region]]
+        namespace <- arbitrary[Arn.Namespace]
+        resourceStr <- Gen.identifier
       } yield {
         val arn =
           new Arn(partition, namespace, region, account) {
@@ -319,8 +319,8 @@ object CoreScalaCheckImplicits {
   implicit lazy val arbResources: Arbitrary[Seq[Resource]] =
     Arbitrary {
       Gen.frequency(
-        1 → Gen.const(Statement.allResources),
-        19 → UtilGen.nonEmptyListOfSqrtN(arbitrary[Resource])
+        1 ->Gen.const(Statement.allResources),
+        19 ->UtilGen.nonEmptyListOfSqrtN(arbitrary[Resource])
       )
     }
 
@@ -330,96 +330,96 @@ object CoreScalaCheckImplicits {
   implicit def arbActions: Arbitrary[Seq[Action]] =
     Arbitrary {
       Gen.frequency(
-        1 → Gen.const(Statement.allActions),
-        19 → UtilGen.listOfSqrtN(arbitrary[Action]).map(_.distinct))
+        1 ->Gen.const(Statement.allActions),
+        19 ->UtilGen.listOfSqrtN(arbitrary[Action]).map(_.distinct))
     }
 
   implicit lazy val arbPath: Arbitrary[Path] = {
     val elementChar: Gen[Char] = Gen.oneOf(((0x21 to 0x2e) ++ (0x30 to 0x7f)).map(_.toChar))
     val element = UtilGen.stringOf(elementChar, 1, 512)
     Arbitrary {
-      Gen.sized { n ⇒
+      Gen.sized { n =>
         val max = Math.sqrt(n).toInt
         for {
-          n ← Gen.choose(0, max)
-          elements ← Gen.listOfN(n, element)
+          n <- Gen.choose(0, max)
+          elements <- Gen.listOfN(n, element)
         } yield Path(elements)
       }
     }
   }
 
   implicit lazy val shrinkPath: Shrink[Path] =
-    Shrink { path ⇒
+    Shrink { path =>
       Shrink.shrink(path.elements).filter(_.forall(_.nonEmpty)).map(Path.apply)
     }
 
   implicit lazy val arbSamlProviderArn: Arbitrary[SamlProviderArn] =
     Arbitrary {
       for {
-        account ← arbitrary[Account]
-        name ← CoreGen.samlProviderName
+        account <- arbitrary[Account]
+        name <- CoreGen.samlProviderName
       } yield SamlProviderArn(account, name)
     }
 
   implicit lazy val shrinkSamlProviderArn: Shrink[SamlProviderArn] =
-    Shrink { arn ⇒
-      Shrink.shrink(arn.account).map(x ⇒ arn.copy(account = x)) append
-        Shrink.shrink(arn.name).filter(_.nonEmpty).map(x ⇒ arn.copy(name = x))
+    Shrink { arn =>
+      Shrink.shrink(arn.account).map(x => arn.copy(account = x)) lazyAppendedAll
+        Shrink.shrink(arn.name).filter(_.nonEmpty).map(x => arn.copy(name = x))
     }
 
   implicit lazy val arbUserArn: Arbitrary[UserArn] =
     Arbitrary {
       for {
-        account ← arbitrary[Account]
-        name ← CoreGen.iamName
-        path ← arbitrary[Path]
+        account <- arbitrary[Account]
+        name <- CoreGen.iamName
+        path <- arbitrary[Path]
       } yield UserArn(account, name, path)
     }
 
   implicit lazy val shrinkUserArn: Shrink[UserArn] =
-    Shrink { arn ⇒
-      Shrink.shrink(arn.account).map(x ⇒ arn.copy(account = x)) append
-        Shrink.shrink(arn.name).filter(_.nonEmpty).map(x ⇒ arn.copy(name = x)) append
-        Shrink.shrink(arn.path).map(x ⇒ arn.copy(path = x))
+    Shrink { arn =>
+      Shrink.shrink(arn.account).map(x => arn.copy(account = x)) lazyAppendedAll
+        Shrink.shrink(arn.name).filter(_.nonEmpty).map(x => arn.copy(name = x)) lazyAppendedAll
+        Shrink.shrink(arn.path).map(x => arn.copy(path = x))
     }
 
   implicit lazy val arbRoleArn: Arbitrary[RoleArn] =
     Arbitrary {
       for {
-        account ← arbitrary[Account]
-        name ← CoreGen.iamName
-        path ← arbitrary[Path]
+        account <- arbitrary[Account]
+        name <- CoreGen.iamName
+        path <- arbitrary[Path]
       } yield RoleArn(account, name, path)
     }
 
   implicit lazy val shrinkRoleArn: Shrink[RoleArn] =
-    Shrink { arn ⇒
-      Shrink.shrink(arn.account).map(x ⇒ arn.copy(account = x)) append
-        Shrink.shrink(arn.name).filter(_.nonEmpty).map(x ⇒ arn.copy(name = x)) append
-        Shrink.shrink(arn.path).map(x ⇒ arn.copy(path = x))
+    Shrink { arn =>
+      Shrink.shrink(arn.account).map(x => arn.copy(account = x)) lazyAppendedAll
+        Shrink.shrink(arn.name).filter(_.nonEmpty).map(x => arn.copy(name = x)) lazyAppendedAll
+        Shrink.shrink(arn.path).map(x => arn.copy(path = x))
     }
 
   implicit lazy val arbAssumedRoleArn: Arbitrary[AssumedRoleArn] =
     Arbitrary {
       for {
-        account ← arbitrary[Account]
-        roleName ← CoreGen.iamName
-        sessionName ← CoreGen.assumedRoleSessionName
+        account <- arbitrary[Account]
+        roleName <- CoreGen.iamName
+        sessionName <- CoreGen.assumedRoleSessionName
       } yield AssumedRoleArn(account, roleName, sessionName)
     }
 
   implicit lazy val shrinkAssumedRoleArn: Shrink[AssumedRoleArn] =
-    Shrink { arn ⇒
-      Shrink.shrink(arn.account).map(x ⇒ arn.copy(account = x)) append
-        Shrink.shrink(arn.roleName).filter(_.nonEmpty).map(x ⇒ arn.copy(roleName = x)) append
-        Shrink.shrink(arn.sessionName).filter(_.length > 1).map(x ⇒ arn.copy(sessionName = x))
+    Shrink { arn =>
+      Shrink.shrink(arn.account).map(x => arn.copy(account = x)) lazyAppendedAll
+        Shrink.shrink(arn.roleName).filter(_.nonEmpty).map(x => arn.copy(roleName = x)) lazyAppendedAll
+        Shrink.shrink(arn.sessionName).filter(_.length > 1).map(x => arn.copy(sessionName = x))
     }
 
   implicit lazy val arbPolicyVersion: Arbitrary[Policy.Version] =
     Arbitrary(
       Gen.frequency(
-        19 → Gen.const(Policy.Version.`2012-10-17`),
-        1 → Gen.const(Policy.Version.`2008-10-17`)
+        19 ->Gen.const(Policy.Version.`2012-10-17`),
+        1 ->Gen.const(Policy.Version.`2008-10-17`)
       )
     )
 }

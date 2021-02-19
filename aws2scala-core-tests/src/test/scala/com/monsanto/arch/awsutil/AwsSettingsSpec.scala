@@ -42,11 +42,11 @@ class AwsSettingsSpec extends AnyFreeSpec {
     }
 
     "the s3 settings" - {
-      def objectHeaderSetting(path: String, headersFrom: AwsSettings ⇒ Map[String,AnyRef]): Unit = {
+      def objectHeaderSetting(path: String, headersFrom: AwsSettings => Map[String,AnyRef]): Unit = {
         "that are sane" in {
           val settings = new AwsSettings(S3AltConfig)
           headersFrom(settings) shouldBe Map(
-            Headers.SERVER_SIDE_ENCRYPTION → ObjectMetadata.AES_256_SERVER_SIDE_ENCRYPTION
+            Headers.SERVER_SIDE_ENCRYPTION ->ObjectMetadata.AES_256_SERVER_SIDE_ENCRYPTION
           )
         }
 
@@ -54,7 +54,7 @@ class AwsSettingsSpec extends AnyFreeSpec {
           val config = ConfigFactory.parseString(s"$path.bool = true").withFallback(MinimalConfig)
           val settings = new AwsSettings(config)
           headersFrom(settings) shouldBe Map(
-            "bool" → "true"
+            "bool" ->"true"
           )
         }
 
@@ -62,7 +62,7 @@ class AwsSettingsSpec extends AnyFreeSpec {
           val config = ConfigFactory.parseString(s"$path.number = 2").withFallback(MinimalConfig)
           val settings = new AwsSettings(config)
           headersFrom(settings) shouldBe Map(
-            "number" → 2
+            "number" ->2
           )
         }
 
@@ -84,11 +84,11 @@ class AwsSettingsSpec extends AnyFreeSpec {
       }
 
       "may contain default copy-object headers" - {
-        behave like objectHeaderSetting("awsutil.s3.default-copy-object-headers", s ⇒ s.s3.defaultCopyObjectHeaders)
+        behave like objectHeaderSetting("awsutil.s3.default-copy-object-headers", s => s.s3.defaultCopyObjectHeaders)
       }
 
       "may contain default put-object headers" - {
-        behave like objectHeaderSetting("awsutil.s3.default-put-object-headers", s ⇒ s.s3.defaultPutObjectHeaders)
+        behave like objectHeaderSetting("awsutil.s3.default-put-object-headers", s => s.s3.defaultPutObjectHeaders)
       }
 
       "requires a upload check interval to be" - {
@@ -188,13 +188,13 @@ object AwsSettingsSpec {
 
   val S3AltDefaultBucketPolicy: JsObject =
     JsObject(
-      "Version" → JsString("2012-10-17"),
-      "Statement" → JsArray(
+      "Version" ->JsString("2012-10-17"),
+      "Statement" ->JsArray(
         JsObject(
-          "Sid" → JsString("DenyNonServerSideEncryptedObjectUploads"),
-          "Effect" → JsString("Deny"),
-          "Principal" → JsString("*"),
-          "Action" → JsString("s3:PutObject"),
-          "Resource" → JsString(s"arn:aws:s3:::@BUCKET_NAME@/*"),
-          "Condition" → JsObject("StringNotEquals" → JsObject("s3:x-amz-server-side-encryption" → JsArray(JsString("AES256"), JsString("aws-kms")))))))
+          "Sid" ->JsString("DenyNonServerSideEncryptedObjectUploads"),
+          "Effect" ->JsString("Deny"),
+          "Principal" ->JsString("*"),
+          "Action" ->JsString("s3:PutObject"),
+          "Resource" ->JsString(s"arn:aws:s3:::@BUCKET_NAME@/*"),
+          "Condition" ->JsObject("StringNotEquals" ->JsObject("s3:x-amz-server-side-encryption" ->JsArray(JsString("AES256"), JsString("aws-kms")))))))
 }

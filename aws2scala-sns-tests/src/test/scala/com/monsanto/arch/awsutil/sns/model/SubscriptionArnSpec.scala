@@ -11,20 +11,20 @@ class SubscriptionArnSpec extends AnyFreeSpec {
 
   "a SubscriptionArn should" - {
     "provide the correct resource" in {
-      forAll { arn: SubscriptionArn ⇒
+      forAll { arn: SubscriptionArn =>
         arn.resource shouldBe s"${arn.topicName}:${arn.subscriptionId}"
       }
     }
 
     "produce the correct ARN" in {
-      forAll { arn: SubscriptionArn ⇒
+      forAll { arn: SubscriptionArn =>
         arn.arnString shouldBe
           s"arn:${arn.account.partition}:sns:${arn.region.name}:${arn.account.id}:${arn.topicName}:${arn.subscriptionId}"
       }
     }
 
     "can round-trip via an ARN" in {
-      forAll { arn: SubscriptionArn ⇒
+      forAll { arn: SubscriptionArn =>
         SubscriptionArn.fromArnString(arn.arnString) shouldBe arn
       }
     }

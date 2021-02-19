@@ -21,10 +21,10 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.concurrent.duration.DurationInt
 
-trait IntegrationCleanup { this: AnyFreeSpec with StrictLogging with AwsIntegrationSpec ⇒
+trait IntegrationCleanup { this: AnyFreeSpec with StrictLogging with AwsIntegrationSpec =>
   implicit protected def materialiser: Materializer
   private val oneHourAgo = new Date(System.currentTimeMillis() - IntegrationCleanup.OneHourMillis)
   private implicit val patienceConfig = ScalaFutures.PatienceConfig(5.minutes, 5.seconds)
@@ -38,10 +38,10 @@ trait IntegrationCleanup { this: AnyFreeSpec with StrictLogging with AwsIntegrat
           .filter(_.creationDate.before(oneHourAgo))
           .map(_.name)
           .buffer(100, OverflowStrategy.backpressure)
-          .map { b ⇒ logger.info(s"Removing old bucket: $b"); b }
+          .map { b => logger.info(s"Removing old bucket: $b"); b }
           .via(s3.bucketEmptierAndDeleter)
           .runWith(Sink.count)
-          .futureValue
+          .futureValue()
       logger.info(s"Deleted $deletedCount old buckets")
     }
   }
@@ -52,16 +52,16 @@ trait IntegrationCleanup { this: AnyFreeSpec with StrictLogging with AwsIntegrat
       val deletedCount =
         Source.single(Seq(StackStatus.CREATE_COMPLETE, StackStatus.DELETE_FAILED))
           .via(cloudFormation.stackLister)
-          .filter { summary ⇒
+          .filter { summary =>
             summary.getCreationTime.before(oneHourAgo) && summary.getStackName.startsWith(prefix)
           }
           .map(_.getStackName)
           .buffer(100, OverflowStrategy.backpressure)
-          .map { n ⇒ logger.info(s"Removing old stack: $n"); n }
-          .map(n ⇒ DeleteStackRequest(n, Seq.empty))
+          .map { n => logger.info(s"Removing old stack: $n"); n }
+          .map(n => DeleteStackRequest(n, Seq.empty))
           .via(cloudFormation.stackDeleter)
           .runWith(Sink.count)
-          .futureValue
+          .futureValue()
       logger.info(s"Deleted $deletedCount old stacks")
     }
   }
@@ -72,17 +72,17 @@ trait IntegrationCleanup { this: AnyFreeSpec with StrictLogging with AwsIntegrat
       val deletedCount =
         Source.single(new DescribeDBInstancesRequest)
           .via(rds.rawDbInstanceDescriber)
-          .filter { dbInstance ⇒
+          .filter { dbInstance =>
             dbInstance.getDBInstanceStatus == "available" &&
               dbInstance.getInstanceCreateTime.before(oneHourAgo) &&
               dbInstance.getDBInstanceIdentifier.startsWith(prefix)
           }
           .map(_.getDBInstanceIdentifier)
           .buffer(100, OverflowStrategy.backpressure)
-          .map { n ⇒ logger.info(s"Removing old DB instance: $n"); (n, None) }
+          .map { n => logger.info(s"Removing old DB instance: $n"); (n, None) }
           .via(rds.dbInstanceDeleter)
           .runWith(Sink.count)
-          .futureValue
+          .futureValue()
       logger.info(s"Deleted $deletedCount old DB instances")
     }
   }
@@ -97,16 +97,16 @@ trait IntegrationCleanup { this: AnyFreeSpec with StrictLogging with AwsIntegrat
           .filter(_.arn.isDefined)
           .map(_.arn.get)
           .filter {
-            case Timestamp(ts) ⇒
+            case Timestamp(ts) =>
               val created = new Date(ts.toLong)
               created.before(oneHourAgo)
-            case _ ⇒ false
+            case _ => false
           }
           .buffer(100, OverflowStrategy.backpressure)
-          .map { arn ⇒ logger.info(s"Removing old SNS subscription: $arn"); arn }
+          .map { arn => logger.info(s"Removing old SNS subscription: $arn"); arn }
           .via(sns.unsubscriber)
           .runWith(Sink.count)
-          .futureValue
+          .futureValue()
       logger.info(s"Deleted $deletedCount old SNS subscriptions")
     }
   }
@@ -118,16 +118,16 @@ trait IntegrationCleanup { this: AnyFreeSpec with StrictLogging with AwsIntegrat
       val deletedCount =
         sns.topicLister
           .filter {
-            case Timestamp(ts) ⇒
+            case Timestamp(ts) =>
               val created = new Date(ts.toLong)
               created.before(oneHourAgo)
-            case _ ⇒ false
+            case _ => false
           }
           .buffer(100, OverflowStrategy.backpressure)
-          .map { arn ⇒ logger.info(s"Removing old SNS topic: $arn"); arn }
+          .map { arn => logger.info(s"Removing old SNS topic: $arn"); arn }
           .via(sns.topicDeleter)
           .runWith(Sink.count)
-          .futureValue
+          .futureValue()
       logger.info(s"Deleted $deletedCount old SNS topics")
     }
   }
@@ -140,16 +140,16 @@ trait IntegrationCleanup { this: AnyFreeSpec with StrictLogging with AwsIntegrat
         sns.platformApplicationLister
           .map(_.arn)
           .filter {
-            case Timestamp(ts) ⇒
+            case Timestamp(ts) =>
               val created = new Date(ts.toLong)
               created.before(oneHourAgo)
-            case _ ⇒ false
+            case _ => false
           }
           .buffer(100, OverflowStrategy.backpressure)
-          .map { arn ⇒ logger.info(s"Removing old SNS platform application: $arn"); arn }
+          .map { arn => logger.info(s"Removing old SNS platform application: $arn"); arn }
           .via(sns.platformApplicationDeleter)
           .runWith(Sink.count)
-          .futureValue
+          .futureValue()
       logger.info(s"Deleted $deletedCount old SNS platform applications")
     }
   }
@@ -161,7 +161,7 @@ trait IntegrationCleanup { this: AnyFreeSpec with StrictLogging with AwsIntegrat
       try {
         val queueUrls = sqs.listQueues(prefix).getQueueUrls.asScala
         val deletedCount =
-          queueUrls.map { queueUrl ⇒
+          queueUrls.map { queueUrl =>
             val createdSeconds = sqs.getQueueAttributes(queueUrl, Seq("CreatedTimestamp").asJava).getAttributes.get("CreatedTimestamp").toInt
             val createdAt = new Date(createdSeconds * 1000L)
             if (createdAt.before(oneHourAgo)) {
@@ -183,24 +183,24 @@ trait IntegrationCleanup { this: AnyFreeSpec with StrictLogging with AwsIntegrat
       val deletedCount =
         Source.single(ListRolesRequest.withPrefix(prefix))
           .via(iam.roleLister)
-          .filter(role ⇒ role.created.before(oneHourAgo))
+          .filter(role => role.created.before(oneHourAgo))
           .buffer(100, OverflowStrategy.backpressure)
-          .map { role ⇒ logger.info(s"Found old IAM role: ${role.name}"); role }
-          .flatMapConcat { role ⇒
+          .map { role => logger.info(s"Found old IAM role: ${role.name}"); role }
+          .flatMapConcat { role =>
             Source.single(ListAttachedRolePoliciesRequest(role.name))
               .via(iam.attachedRolePolicyLister)
-              .map { policy ⇒
+              .map { policy =>
                 logger.info(s"Detaching ${policy.name} from ${role.name}")
                 DetachRolePolicyRequest(role.name, policy.arn)
               }
               .via(iam.rolePolicyDetacher)
-              .fold(0)((count, _) ⇒ count + 1)
-              .map { count ⇒ logger.info(s"Detached $count policies from ${role.name}"); role.name }
+              .fold(0)((count, _) => count + 1)
+              .map { count => logger.info(s"Detached $count policies from ${role.name}"); role.name }
           }
-          .map { roleName ⇒ logger.info(s"Removing old IAM role: $roleName"); roleName }
+          .map { roleName => logger.info(s"Removing old IAM role: $roleName"); roleName }
           .via(iam.roleDeleter)
           .runWith(Sink.count)
-          .futureValue
+          .futureValue()
       logger.info(s"Deleted $deletedCount old IAM roles")
     }
   }
@@ -211,25 +211,25 @@ trait IntegrationCleanup { this: AnyFreeSpec with StrictLogging with AwsIntegrat
       val deletedCount =
         Source.single(ListPoliciesRequest.withPrefix(prefix))
           .via(iam.policyLister)
-          .filter(policy ⇒ policy.created.before(oneHourAgo))
+          .filter(policy => policy.created.before(oneHourAgo))
           .buffer(100, OverflowStrategy.backpressure)
-          .map { policy ⇒ logger.info(s"Found old IAM policy: ${policy.name}"); policy }
-          .flatMapConcat { policy ⇒
+          .map { policy => logger.info(s"Found old IAM policy: ${policy.name}"); policy }
+          .flatMapConcat { policy =>
             Source.single(policy.arn)
               .via(iam.policyVersionLister)
               .filterNot(_.isDefaultVersion)
-              .map { policyVersion ⇒
+              .map { policyVersion =>
                 logger.info(s"Deleting ${policyVersion.versionId} from ${policy.name}")
                 DeletePolicyVersionRequest(policy.arn, policyVersion.versionId)
               }
               .via(iam.policyVersionDeleter)
-              .fold(0)((count, _) ⇒ count + 1)
-              .map { count ⇒ logger.info(s"Deleted $count versions from ${policy.name}"); policy }
+              .fold(0)((count, _) => count + 1)
+              .map { count => logger.info(s"Deleted $count versions from ${policy.name}"); policy }
           }
-          .map { policy ⇒ logger.info(s"Removing old IAM policy: ${policy.name}"); policy.arn }
+          .map { policy => logger.info(s"Removing old IAM policy: ${policy.name}"); policy.arn }
           .via(iam.policyDeleter)
           .runWith(Sink.count)
-          .futureValue
+          .futureValue()
       logger.info(s"Deleted $deletedCount old IAM policies")
     }
   }

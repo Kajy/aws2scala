@@ -11,13 +11,13 @@ class KeyArnSpec extends AnyFreeSpec {
 
   "a KeyArn should" - {
     "provide the correct resource" in {
-      forAll { arn: KeyArn ⇒
+      forAll { arn: KeyArn =>
         arn.resource shouldBe s"key/${arn.id}"
       }
     }
 
     "produce the correct ARN" in {
-      forAll { arn: KeyArn ⇒
+      forAll { arn: KeyArn =>
         val partition = arn.account.partition.id
         val account = arn.account.id
         val region = arn.region.name
@@ -27,7 +27,7 @@ class KeyArnSpec extends AnyFreeSpec {
     }
 
     "can round-trip via an ARN" in {
-      forAll { arn: KeyArn ⇒
+      forAll { arn: KeyArn =>
         KeyArn.fromArnString(arn.arnString) shouldBe arn
       }
     }

@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.auth.policy
 
-import com.amazonaws.auth.{policy ⇒ aws}
+import com.amazonaws.auth.{policy => aws}
 
 sealed abstract class TestAction(_name: String) extends Action(_name) with aws.Action {
   override def getActionName: String = name
@@ -15,11 +15,11 @@ object TestAction {
 
   def registerActions(): Unit = {
     Action.registerActions(
-      TestAction1 → TestAction1,
-      TestAction2 → TestAction2,
-      TestAction3 → TestAction3,
-      TestAction4 → TestAction4,
-      TestAction5 → TestAction5
+      TestAction1 ->TestAction1,
+      TestAction2 ->TestAction2,
+      TestAction3 ->TestAction3,
+      TestAction4 ->TestAction4,
+      TestAction5 ->TestAction5
     )
   }
 }

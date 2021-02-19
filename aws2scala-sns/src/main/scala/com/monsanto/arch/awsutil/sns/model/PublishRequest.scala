@@ -57,13 +57,13 @@ object PublishRequest {
 
   /** Allows creating a `PublishRequest` object for a platform endpoint with a JSON payload and some message attributes. */
   def apply(platformEndpoint: PlatformEndpoint, jsonMessage: String): PublishRequest =
-    PublishRequest(platformEndpoint.arn, toJsonMessage(Map(platformEndpoint.platform.name → jsonMessage)), None,
+    PublishRequest(platformEndpoint.arn, toJsonMessage(Map(platformEndpoint.platform.name ->jsonMessage)), None,
       Some("json"), Map.empty)
 
   /** Allows creating a `PublishRequest` object for a platform endpoint with a JSON payload and some message attributes. */
   def apply(platformEndpoint: PlatformEndpoint, jsonMessage: String,
             attributes: Map[String,MessageAttributeValue]): PublishRequest =
-    PublishRequest(platformEndpoint.arn, toJsonMessage(Map(platformEndpoint.platform.name → jsonMessage)), None,
+    PublishRequest(platformEndpoint.arn, toJsonMessage(Map(platformEndpoint.platform.name ->jsonMessage)), None,
       Some("json"), attributes)
 
   private val jsonFactory = new JsonFactory()
@@ -73,7 +73,7 @@ object PublishRequest {
     val generator = jsonFactory.createGenerator(writer)
     try {
       generator.writeStartObject()
-      message.foreach { entry ⇒
+      message.foreach { entry =>
         generator.writeStringField(entry._1, entry._2)
       }
       generator.writeEndObject()

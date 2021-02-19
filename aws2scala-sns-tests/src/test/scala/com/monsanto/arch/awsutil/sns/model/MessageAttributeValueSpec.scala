@@ -9,16 +9,16 @@ class MessageAttributeValueSpec extends AnyFreeSpec {
   "a MessageAttributeValue" - {
     "can be built from" - {
       "strings" in {
-        forAll { value: String ⇒
+        forAll { value: String =>
           val result = MessageAttributeValue(value)
-          result should matchPattern { case MessageAttributeValue.StringValue(`value`) ⇒ }
+          result should matchPattern { case MessageAttributeValue.StringValue(`value`) => }
         }
       }
 
       "byte arrays" in {
-        forAll { value: Array[Byte] ⇒
+        forAll { value: Array[Byte] =>
           val result = MessageAttributeValue(value)
-          result should matchPattern { case MessageAttributeValue.BinaryValue(`value`) ⇒ }
+          result should matchPattern { case MessageAttributeValue.BinaryValue(`value`) => }
         }
       }
     }
@@ -26,7 +26,7 @@ class MessageAttributeValueSpec extends AnyFreeSpec {
 
   "the MessageAttributeValue.AwsAdapter type class supports" - {
     "strings" in {
-      forAll { value: String ⇒
+      forAll { value: String =>
         val result = MessageAttributeValue(value).asAws
         result.getDataType shouldBe "String"
         result.getBinaryValue shouldBe null
@@ -35,7 +35,7 @@ class MessageAttributeValueSpec extends AnyFreeSpec {
     }
 
     "byte arrays" in {
-      forAll { value: Array[Byte] ⇒
+      forAll { value: Array[Byte] =>
         val result = MessageAttributeValue(value).asAws
         result.getDataType shouldBe "Binary"
         result.getBinaryValue.array() shouldBe value

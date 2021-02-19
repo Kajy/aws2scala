@@ -29,10 +29,10 @@ object S3 extends AwsClientProvider[StreamingS3Client, AsyncS3Client] {
   private class S3ShutdownHook(transferManagerRef: WeakReference[TransferManager]) extends ShutdownHook with StrictLogging {
     override def shutdown() = {
       transferManagerRef.get match {
-        case Some(transferManager) ⇒
+        case Some(transferManager) =>
           logger.debug(s"Shutting down S3 transfer manager and client")
           transferManager.shutdownNow(true)
-        case None ⇒
+        case None =>
           logger.debug("S3 transfer manager appears to have been garbage collected.")
       }
     }

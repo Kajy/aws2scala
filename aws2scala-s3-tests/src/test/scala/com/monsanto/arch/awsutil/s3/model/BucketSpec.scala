@@ -1,11 +1,12 @@
 package com.monsanto.arch.awsutil.s3.model
 
+import akka.actor.ActorSystem
+
 import java.io.File
 import java.util.Date
-
-import akka.stream.Materializer
+import akka.actor.ActorSystem
 import com.amazonaws.services.s3.model.S3ObjectSummary
-import com.amazonaws.services.s3.{model ⇒ aws}
+import com.amazonaws.services.s3.{model => aws}
 import com.monsanto.arch.awsutil.s3.{AsyncS3Client, UploadSource}
 import com.monsanto.arch.awsutil.test_support.AdaptableScalaFutures._
 import com.monsanto.arch.awsutil.test_support.Materialised
@@ -28,101 +29,101 @@ class BucketSpec extends AnyFreeSpec with MockFactory with Materialised {
   "a Bucket instance can" - {
     "delete itself" in {
       implicit val client = mock[AsyncS3Client]
-      (client.deleteBucket(_: String)(_: Materializer)).expects(bucketName, materialiser).returning(Future.successful(bucketName))
+      (client.deleteBucket(_: String)(_: ActorSystem)).expects(bucketName, actorSystem).returning(Future.successful(bucketName))
 
-      bucket.delete().futureValue shouldBe unit
+      bucket.delete().futureValue() shouldBe unit
     }
 
     "check if it really exists" in {
       implicit val client = mock[AsyncS3Client]
-      (client.doesBucketExist(_: String)(_: Materializer))
-        .expects(bucketName, materialiser)
+      (client.doesBucketExist(_: String)(_: ActorSystem))
+        .expects(bucketName, actorSystem)
         .returning(Future.successful(true))
 
-      bucket.exists().futureValue shouldBe true
+      bucket.exists().futureValue() shouldBe true
     }
 
     "can get its policy" in {
       implicit val client = mock[AsyncS3Client]
       val policy = Some("policy text")
-      (client.getBucketPolicy(_: String)(_: Materializer))
-        .expects(bucketName, materialiser)
+      (client.getBucketPolicy(_: String)(_: ActorSystem))
+        .expects(bucketName, actorSystem)
         .returning(Future.successful(policy))
 
-      bucket.getPolicy().futureValue shouldBe policy
+      bucket.getPolicy().futureValue() shouldBe policy
     }
 
     "can set its policy" - {
       "using a plain string" in {
         implicit val client = mock[AsyncS3Client]
         val policy = "policy text"
-        (client.setBucketPolicy(_: String, _: Option[String])(_: Materializer))
-          .expects(bucketName, Some(policy), materialiser)
+        (client.setBucketPolicy(_: String, _: Option[String])(_: ActorSystem))
+          .expects(bucketName, Some(policy), actorSystem)
           .returning(Future.successful(bucketName))
 
-        bucket.setPolicy(policy).futureValue shouldBe unit
+        bucket.setPolicy(policy).futureValue() shouldBe unit
       }
 
       "using an option" in {
         implicit val client = mock[AsyncS3Client]
         val policy = "policy text"
-        (client.setBucketPolicy(_: String, _: Option[String])(_: Materializer))
-          .expects(bucketName, Some(policy), materialiser)
+        (client.setBucketPolicy(_: String, _: Option[String])(_: ActorSystem))
+          .expects(bucketName, Some(policy), actorSystem)
           .returning(Future.successful(bucketName))
 
-        bucket.setPolicy(Some(policy)).futureValue shouldBe unit
+        bucket.setPolicy(Some(policy)).futureValue() shouldBe unit
       }
     }
 
     "can remove its policy" - {
       "using setPolicy" in {
         implicit val client = mock[AsyncS3Client]
-        (client.setBucketPolicy(_: String, _: Option[String])(_: Materializer))
-          .expects(bucketName, None, materialiser)
+        (client.setBucketPolicy(_: String, _: Option[String])(_: ActorSystem))
+          .expects(bucketName, None, actorSystem)
           .returning(Future.successful(bucketName))
 
-        bucket.setPolicy(None).futureValue shouldBe unit
+        bucket.setPolicy(None).futureValue() shouldBe unit
       }
 
       "using deletePolicy" in {
         implicit val client = mock[AsyncS3Client]
-        (client.setBucketPolicy(_: String, _: Option[String])(_: Materializer))
-          .expects(bucketName, None, materialiser)
+        (client.setBucketPolicy(_: String, _: Option[String])(_: ActorSystem))
+          .expects(bucketName, None, actorSystem)
           .returning(Future.successful(bucketName))
 
-        bucket.deletePolicy().futureValue shouldBe unit
+        bucket.deletePolicy().futureValue() shouldBe unit
       }
     }
 
     "can get its tags" in {
-      val tags = Map("key" → "value")
+      val tags = Map("key" ->"value")
 
       implicit val client = mock[AsyncS3Client]
-      (client.getBucketTags(_: String)(_: Materializer))
-        .expects(bucketName, materialiser)
+      (client.getBucketTags(_: String)(_: ActorSystem))
+        .expects(bucketName, actorSystem)
         .returning(Future.successful(tags))
 
-      bucket.getTags().futureValue shouldBe tags
+      bucket.getTags().futureValue() shouldBe tags
     }
 
     "can set its tags" in {
-      val tags = Map("key" → "value")
+      val tags = Map("key" ->"value")
 
       implicit val client = mock[AsyncS3Client]
-      (client.setBucketTags(_: String, _: Map[String,String])(_: Materializer))
-        .expects(bucketName, tags, materialiser)
+      (client.setBucketTags(_: String, _: Map[String,String])(_: ActorSystem))
+        .expects(bucketName, tags, actorSystem)
         .returning(Future.successful(bucketName))
 
-      bucket.setTags(tags).futureValue shouldBe unit
+      bucket.setTags(tags).futureValue() shouldBe unit
     }
 
     "can delete its tags" in {
       implicit val client = mock[AsyncS3Client]
-      (client.deleteBucketTags(_: String)(_: Materializer))
-        .expects(bucketName, materialiser)
+      (client.deleteBucketTags(_: String)(_: ActorSystem))
+        .expects(bucketName, actorSystem)
         .returning(Future.successful(bucketName))
 
-      bucket.deleteTags().futureValue shouldBe unit
+      bucket.deleteTags().futureValue() shouldBe unit
     }
 
     "list objects within itself" - {
@@ -130,45 +131,45 @@ class BucketSpec extends AnyFreeSpec with MockFactory with Materialised {
         implicit val client = mock[AsyncS3Client]
         val storageClasses = IndexedSeq(StorageClass.Glacier, StorageClass.ReducedRedundancy, StorageClass.Standard,
           StorageClass.StandardInfrequentAccess)
-        val nextStorageClass = Stream.from(0).map(i ⇒ storageClasses(i % storageClasses.size)).iterator
-        val objects = Seq.tabulate(10) { i ⇒
+        val nextStorageClass = LazyList.from(0).map(i => storageClasses(i % storageClasses.size)).iterator
+        val objects = Seq.tabulate(10) { i =>
           Object(bucketName, s"object$i", "some-etag", new Date(), bucket.owner, i, nextStorageClass.next())
         }
-        (client.listObjects(_: String)(_: Materializer))
-          .expects(bucketName, materialiser)
+        (client.listObjects(_: String)(_: ActorSystem))
+          .expects(bucketName, actorSystem)
           .returning(Future.successful(objects.map(toAws)))
 
-        bucket.list().futureValue shouldBe objects
+        bucket.list().futureValue() shouldBe objects
       }
 
       "with a prefix" in {
         implicit val client = mock[AsyncS3Client]
         val prefix = "prefix"
-        val objects = Seq.tabulate(10) { i ⇒
+        val objects = Seq.tabulate(10) { i =>
           Object(bucketName, s"$prefix$i", "some-etag", new Date(), bucket.owner, i, StorageClass.Standard)
         }
-        (client.listObjects(_: String, _: String)(_: Materializer))
-          .expects(bucketName, prefix, materialiser)
+        (client.listObjects(_: String, _: String)(_: ActorSystem))
+          .expects(bucketName, prefix, actorSystem)
           .returning(Future.successful(objects.map(toAws)))
 
-        bucket.list(prefix).futureValue shouldBe objects
+        bucket.list(prefix).futureValue() shouldBe objects
       }
     }
 
     "empty a bucket " in {
       implicit val client = mock[AsyncS3Client]
-      (client.emptyBucket(_:String)(_:Materializer))
-        .expects(bucketName,materialiser)
+      (client.emptyBucket(_:String)(_: ActorSystem))
+        .expects(bucketName, actorSystem)
         .returning(Future.successful(bucketName))
-      bucket.empty().futureValue shouldBe unit
+      bucket.empty().futureValue() shouldBe unit
     }
 
     "delete and empty a bucket " in {
       implicit val client = mock[AsyncS3Client]
-      (client.emptyAndDeleteBucket(_:String)(_:Materializer))
-        .expects(bucketName,materialiser)
+      (client.emptyAndDeleteBucket(_:String)(_: ActorSystem))
+        .expects(bucketName, actorSystem)
         .returning(Future.successful(bucketName))
-      bucket.emptyAndDelete().futureValue shouldBe unit
+      bucket.emptyAndDelete().futureValue() shouldBe unit
     }
 
     "upload" - {
@@ -180,11 +181,11 @@ class BucketSpec extends AnyFreeSpec with MockFactory with Materialised {
         val uploadedObject = Object(bucketName, key, "ETAG", new Date(), bucket.owner, content.getBytes.length,
           StorageClass.Standard)
 
-        (client.upload(_: String, _: String, _: String)(_: UploadSource[String], _: Materializer))
-          .expects(bucketName, key, content, UploadSource.stringSource, materialiser)
+        (client.upload(_: String, _: String, _: String)(_: UploadSource[String], _: ActorSystem))
+          .expects(bucketName, key, content, UploadSource.stringSource, actorSystem)
           .returning(Future.successful(toAws(uploadedObject)))
 
-        bucket.upload(key, content).futureValue shouldBe uploadedObject
+        bucket.upload(key, content).futureValue() shouldBe uploadedObject
       }
 
       "an array of bytes" in {
@@ -195,11 +196,11 @@ class BucketSpec extends AnyFreeSpec with MockFactory with Materialised {
         val uploadedObject = Object(bucketName, key, "ETAG", new Date(), bucket.owner, content.length,
           StorageClass.Standard)
 
-        (client.upload(_: String, _: String, _: Array[Byte])(_: UploadSource[Array[Byte]], _:Materializer))
-          .expects(bucketName, key, content, UploadSource.bytesSource, materialiser)
+        (client.upload(_: String, _: String, _: Array[Byte])(_: UploadSource[Array[Byte]], _: ActorSystem))
+          .expects(bucketName, key, content, UploadSource.bytesSource, actorSystem)
           .returning(Future.successful(toAws(uploadedObject)))
 
-        bucket.upload(key, content).futureValue shouldBe uploadedObject
+        bucket.upload(key, content).futureValue() shouldBe uploadedObject
       }
 
       "a file" in {
@@ -209,11 +210,11 @@ class BucketSpec extends AnyFreeSpec with MockFactory with Materialised {
 
         val uploadedObject = Object(bucketName, key, "ETAG", new Date(), bucket.owner, 42, StorageClass.Standard)
 
-        (client.upload(_: String, _: String, _: File)(_: UploadSource[File], _:Materializer))
-          .expects(bucketName, key, file, UploadSource.fileSource, materialiser)
+        (client.upload(_: String, _: String, _: File)(_: UploadSource[File], _: ActorSystem))
+          .expects(bucketName, key, file, UploadSource.fileSource, actorSystem)
           .returning(Future.successful(toAws(uploadedObject)))
 
-        bucket.upload(key, file).futureValue shouldBe uploadedObject
+        bucket.upload(key, file).futureValue() shouldBe uploadedObject
       }
     }
   }
@@ -227,13 +228,13 @@ class BucketSpec extends AnyFreeSpec with MockFactory with Materialised {
       val baseMax = 63 - subLen
       val gen =
         for {
-          baseName ← UtilGen.stringOf(lowerDigitChar, baseMin, baseMax)
-          index ← Gen.choose(1, positive(baseName.length - 1))
+          baseName <- UtilGen.stringOf(lowerDigitChar, baseMin, baseMax)
+          index <- Gen.choose(1, positive(baseName.length - 1))
         } yield {
           val (start, end) = baseName.splitAt(index)
           s"$start$sub$end"
         }
-      gen.suchThat { name ⇒
+      gen.suchThat { name =>
         val subIndex = name.indexOf(sub)
         name.length > 3 && subIndex != 0 && subIndex != (name.length - subLen)
       }
@@ -243,7 +244,7 @@ class BucketSpec extends AnyFreeSpec with MockFactory with Materialised {
       val baseMin = (3 - prefixLength).max(1)
       val baseMax = 63 - prefixLength
       val gen = UtilGen.stringOf(lowerDigitChar, baseMin, baseMax).map(prefix + _)
-      gen.suchThat { name ⇒
+      gen.suchThat { name =>
         name.length > 3 && name.startsWith(prefix)
       }
     }
@@ -252,7 +253,7 @@ class BucketSpec extends AnyFreeSpec with MockFactory with Materialised {
       val baseMin = (3 - suffixLength).max(1)
       val baseMax = 63 - suffixLength
       val gen = UtilGen.stringOf(lowerDigitChar, baseMin, baseMax).map(_ + suffix)
-      gen.suchThat { name ⇒
+      gen.suchThat { name =>
         name.length > 3 && name.endsWith(suffix)
       }
     }
@@ -260,19 +261,19 @@ class BucketSpec extends AnyFreeSpec with MockFactory with Materialised {
 
     "accepts" - {
       "simple names" in {
-        forAll(UtilGen.stringOf(lowerDigitChar, 3, 63)) { name ⇒
+        forAll(UtilGen.stringOf(lowerDigitChar, 3, 63)) { name =>
           Bucket.validName(name) shouldBe true
         }
       }
 
       "names with hyphens" in {
-        forAll(nameContaining("-")) { name ⇒
+        forAll(nameContaining("-")) { name =>
           Bucket.validName(name) shouldBe true
         }
       }
 
       "names with full stops" in {
-        forAll(nameContaining(".")) { name ⇒
+        forAll(nameContaining(".")) { name =>
           Bucket.validName(name) shouldBe true
         }
       }
@@ -281,21 +282,21 @@ class BucketSpec extends AnyFreeSpec with MockFactory with Materialised {
     "rejects" - {
       "short names" in {
         val shortName = UtilGen.stringOf(lowerDigitChar, 0, 2)
-        forAll(shortName) { name ⇒
+        forAll(shortName) { name =>
           Bucket.validName(name) shouldBe false
         }
       }
 
       "long names" in {
         val longName = UtilGen.stringOf(lowerDigitChar, 64, 1024)
-        forAll(longName) { name ⇒
+        forAll(longName) { name =>
           Bucket.validName(name) shouldBe false
         }
       }
 
       "names with upper-case characters" in {
         val upperCharName = UtilGen.stringOf(lowerDigitChar, 3, 63).map(_.toUpperCase).suchThat(_.exists(_.isUpper))
-        forAll(upperCharName) { name ⇒
+        forAll(upperCharName) { name =>
           Bucket.validName(name) shouldBe false
         }
       }
@@ -304,56 +305,56 @@ class BucketSpec extends AnyFreeSpec with MockFactory with Materialised {
         val badChars = Seq('_', ',', '\'', '"', '$', '%', '!', '?')
         val badCharName =
           for {
-            badChar ← Gen.oneOf(badChars).map(_.toString)
-            name ← Gen.oneOf(
+            badChar <- Gen.oneOf(badChars).map(_.toString)
+            name <- Gen.oneOf(
               nameContaining(badChar),
               nameStartingWith(badChar),
               nameEndingWith(badChar)
             )
           } yield name
-        forAll(badCharName) { name ⇒
+        forAll(badCharName) { name =>
           Bucket.validName(name) shouldBe false
         }
       }
 
       "names that start with a full stop" in {
-        forAll(nameStartingWith(".")) { name ⇒
+        forAll(nameStartingWith(".")) { name =>
           Bucket.validName(name) shouldBe false
         }
       }
 
       "names that end with a full stop" in {
-        forAll(nameEndingWith(".")) { name ⇒
+        forAll(nameEndingWith(".")) { name =>
           Bucket.validName(name) shouldBe false
         }
       }
 
       "names containing two full stops in a row" in {
-        forAll(nameContaining("..")) { name ⇒
+        forAll(nameContaining("..")) { name =>
           Bucket.validName(name) shouldBe false
         }
       }
 
       "names that begin with a hyphen" in {
-        forAll(nameStartingWith("-")) { name ⇒
+        forAll(nameStartingWith("-")) { name =>
           Bucket.validName(name) shouldBe false
         }
       }
 
       "names that end with a hyphen" in {
-        forAll(nameEndingWith("-")) { name ⇒
+        forAll(nameEndingWith("-")) { name =>
           Bucket.validName(name) shouldBe false
         }
       }
 
       "labels that begin with a hyphen" in {
-        forAll(nameContaining(".-")) { name ⇒
+        forAll(nameContaining(".-")) { name =>
           Bucket.validName(name) shouldBe false
         }
       }
 
       "labels that end with a hyphen" in {
-        forAll(nameEndingWith("-.")) { name ⇒
+        forAll(nameEndingWith("-.")) { name =>
           Bucket.validName(name) shouldBe false
         }
       }
@@ -361,13 +362,13 @@ class BucketSpec extends AnyFreeSpec with MockFactory with Materialised {
       "names that look like IP addresses" in {
         val ipName =
           Gen.listOfN(4, Gen.choose(0, 255)).map(_.mkString("."))
-            .suchThat { ip ⇒
+            .suchThat { ip =>
               Try {
                 val octets = ip.split('.').map(_.toInt)
-                octets.length == 4 && octets.forall(b ⇒ b >= 0 && b < 256)
+                octets.length == 4 && octets.forall(b => b >= 0 && b < 256)
               }.getOrElse(false)
             }
-        forAll(ipName) { name ⇒
+        forAll(ipName) { name =>
           Bucket.validName(name) shouldBe false
         }
       }

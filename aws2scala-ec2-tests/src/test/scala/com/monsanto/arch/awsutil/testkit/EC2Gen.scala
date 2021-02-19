@@ -12,12 +12,12 @@ import org.scalacheck.Gen
 
 object Ec2Gen {
   val filterSeq: Gen[Seq[Filter]] =
-    Gen.sized { size ⇒
+    Gen.sized { size =>
       val maxSize = Math.sqrt(size).toInt
       for {
-        n ← Gen.choose(0, maxSize)
-        filters ← Gen.listOfN(n, arbitrary[Filter])
-          .retryUntil { filters ⇒
+        n <- Gen.choose(0, maxSize)
+        filters <- Gen.listOfN(n, arbitrary[Filter])
+          .retryUntil { filters =>
             val names = filters.map(_.name)
             names.distinct == names
           }
@@ -26,7 +26,7 @@ object Ec2Gen {
 
   val keyFingerprint: Gen[String] =
     Gen.listOfN(20, UtilGen.lowerHexChar)
-      .map(chars ⇒ chars.grouped(2).map(_.mkString).mkString(":"))
+      .map(chars => chars.grouped(2).map(_.mkString).mkString(":"))
 
   val keyName: Gen[String] = UtilGen.stringOf(UtilGen.asciiChar, 1, 255).suchThat(_.nonEmpty)
 
@@ -70,11 +70,11 @@ object Ec2Gen {
   val vpcId: Gen[String] = id("vpc")
 
   private def shortId(prefix: String): Gen[String] =
-    Gen.listOfN(8, UtilGen.lowerHexChar).map(chars ⇒ s"$prefix-${chars.mkString}")
+    Gen.listOfN(8, UtilGen.lowerHexChar).map(chars => s"$prefix-${chars.mkString}")
 
   private def id(prefix: String): Gen[String] =
     for {
-      size ← Gen.oneOf(8,17)
-      id ← Gen.listOfN(size, UtilGen.lowerHexChar).map(_.mkString)
+      size <- Gen.oneOf(8,17)
+      id <- Gen.listOfN(size, UtilGen.lowerHexChar).map(_.mkString)
     } yield s"$prefix-$id"
 }

@@ -25,13 +25,13 @@ object QueueArn {
     /** Extracts a `QueueArn` object from the given ARN string. */
     def unapply(arnString: String): Option[QueueArn] =
       arnString match {
-        case Arn.fromArnString(arn: QueueArn) ⇒ Some(arn)
-        case _                                ⇒ None
+        case Arn.fromArnString(arn: QueueArn) => Some(arn)
+        case _                                => None
       }
   }
 
   private[awsutil] val queueArnPF: PartialFunction[Arn.ArnParts, QueueArn] = {
-    case (_, Arn.Namespace.AmazonSQS, Some(region), Some(account), QueueResourceRegex(name)) ⇒
+    case (_, Arn.Namespace.AmazonSQS, Some(region), Some(account), QueueResourceRegex(name)) =>
       QueueArn(account, region, name)
   }
 

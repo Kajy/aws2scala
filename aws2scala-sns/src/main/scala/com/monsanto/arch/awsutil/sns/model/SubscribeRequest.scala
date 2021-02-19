@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.sns.model
 
-import com.amazonaws.services.sns.model.{SubscribeRequest ⇒ AwsSubscribeRequest}
+import com.amazonaws.services.sns.model.{SubscribeRequest => AwsSubscribeRequest}
 
 /** Contains the information for a subscribe request.
   *

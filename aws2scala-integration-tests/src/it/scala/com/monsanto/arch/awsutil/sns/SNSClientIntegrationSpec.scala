@@ -16,7 +16,7 @@ import org.scalatest.concurrent.Eventually._
 import org.scalatest.concurrent.PatienceConfiguration.{Interval, Timeout}
 import spray.json.{JsArray, JsObject, JsString, JsonParser}
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
 
@@ -42,7 +42,7 @@ class SNSClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
   "the default SNS client" - {
     "can create a topic" in {
       logger.info(s"Creating topic with name $testName")
-      val result = model.SNS.createTopic(testName).futureValue
+      val result = model.SNS.createTopic(testName).futureValue()
       result.name shouldBe testName
 
       testTopic = result
@@ -51,17 +51,17 @@ class SNSClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
     }
 
     "can list topics" in {
-      val result = model.SNS.listTopics().futureValue
+      val result = model.SNS.listTopics().futureValue()
       result should contain (testTopic)
     }
 
     "can add a permission" in {
       extractStatementIds(testTopic.policy) should not contain "test"
 
-      val result = testTopic.addPermission("test", Seq(testTopic.owner), Seq(SNSAction.GetTopicAttributes)).futureValue
+      val result = testTopic.addPermission("test", Seq(testTopic.owner), Seq(SNSAction.GetTopicAttributes)).futureValue()
       result shouldBe Done
 
-      val updatedTopic = testTopic.refresh().futureValue
+      val updatedTopic = testTopic.refresh().futureValue()
       extractStatementIds(updatedTopic.policy) should contain ("test")
 
       testTopic = updatedTopic
@@ -70,10 +70,10 @@ class SNSClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
     "can remove a permission" in {
       extractStatementIds(testTopic.policy) should contain ("test")
 
-      val result = testTopic.removePermission("test").futureValue
+      val result = testTopic.removePermission("test").futureValue()
       result shouldBe Done
 
-      val updatedTopic = testTopic.refresh().futureValue
+      val updatedTopic = testTopic.refresh().futureValue()
       extractStatementIds(updatedTopic.policy) should not contain "test"
 
       testTopic = updatedTopic
@@ -81,7 +81,7 @@ class SNSClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
 
     "can subscribe to the topic with an endpoint" - {
       "requiring confirmation" in {
-        val result = async.subscribe(testTopic.arn, "http", "http://example.com").futureValue
+        val result = async.subscribe(testTopic.arn, "http", "http://example.com").futureValue()
         result shouldBe None
       }
 
@@ -93,27 +93,27 @@ class SNSClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
         logger.info("Setting policy to allow SNS to post to the queue")
         val policy =
           JsObject(
-            "Version" → JsString("2012-10-17"),
-            "Statement" → JsArray(
+            "Version" ->JsString("2012-10-17"),
+            "Statement" ->JsArray(
               JsObject(
-                "Sid" → JsString(s"$testPrefix-$testId-policy"),
-                "Effect" → JsString("Allow"),
-                "Principal" → JsString("*"),
-                "Action" → JsString("sqs:SendMessage"),
-                "Resource" → JsString(sqsQueueArn),
-                "Condition" → JsObject(
-                  "ArnEquals" → JsObject("aws:SourceArn" → JsString(testTopic.arn))
+                "Sid" ->JsString(s"$testPrefix-$testId-policy"),
+                "Effect" ->JsString("Allow"),
+                "Principal" ->JsString("*"),
+                "Action" ->JsString("sqs:SendMessage"),
+                "Resource" ->JsString(sqsQueueArn),
+                "Condition" ->JsObject(
+                  "ArnEquals" ->JsObject("aws:SourceArn" ->JsString(testTopic.arn))
                 )
               )
             )
           ).compactPrint
-        sqs.setQueueAttributes(sqsQueueUrl, Map("Policy" → policy).asJava)
+        sqs.setQueueAttributes(sqsQueueUrl, Map("Policy" ->policy).asJava)
         logger.info("Policy set, proceeding with subscription test")
 
-        val result = async.subscribe(testTopic.arn, "sqs", sqsQueueArn).futureValue
+        val result = async.subscribe(testTopic.arn, "sqs", sqsQueueArn).futureValue()
         result shouldBe defined
 
-        testSubscription = Subscription(result.get).futureValue
+        testSubscription = Subscription(result.get).futureValue()
 
         logger.info(s"Subscription ARN is ${testSubscription.arn}")
       }
@@ -125,13 +125,13 @@ class SNSClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
         testTopic.owner)
 
       "all subscriptions" in {
-        val result = async.listSubscriptions().futureValue
+        val result = async.listSubscriptions().futureValue()
         result should contain (httpSubscription)
         result should contain (sqsSubscription)
       }
 
       "subscriptions to the test topic" in {
-        val result = async.listSubscriptions(testTopic.arn).futureValue
+        val result = async.listSubscriptions(testTopic.arn).futureValue()
         result should have size 2
         result should contain (httpSubscription)
         result should contain (sqsSubscription)
@@ -139,29 +139,29 @@ class SNSClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
     }
 
     "can get a subscription’s attributes" in {
-      val result = async.getSubscriptionAttributes(testSubscription.arn).futureValue
+      val result = async.getSubscriptionAttributes(testSubscription.arn).futureValue()
       result shouldBe testSubscription.attributes
     }
 
     "can set a subscription attribute" in {
       testSubscription.rawMessageDelivery shouldBe false
 
-      val result = async.setSubscriptionAttribute(testSubscription.arn, "RawMessageDelivery", "true").futureValue
+      val result = async.setSubscriptionAttribute(testSubscription.arn, "RawMessageDelivery", "true").futureValue()
       result shouldBe Done
     }
 
     "can verify the subscription attribute was set" in {
-      val result = async.getSubscriptionAttribute(testSubscription.arn, "RawMessageDelivery").futureValue
+      val result = async.getSubscriptionAttribute(testSubscription.arn, "RawMessageDelivery").futureValue()
       result shouldBe Some("true")
     }
 
     "can publish to a topic" in {
-      val result = async.publish(testTopic.arn, "This is a message").futureValue
+      val result = async.publish(testTopic.arn, "This is a message").futureValue()
       result should not be empty
     }
 
     "can create a platform application" in {
-      testPlatformApplication = model.SNS.createPlatformApplication(testName, Platform.MPNS()).futureValue
+      testPlatformApplication = model.SNS.createPlatformApplication(testName, Platform.MPNS()).futureValue()
       logger.info(s"Created platform application with ARN: ${testPlatformApplication.arn}")
 
       testPlatformApplication.name shouldBe testName
@@ -169,7 +169,7 @@ class SNSClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
     }
 
     "can find the platform in a listing" in {
-      val result = async.listPlatformApplications().futureValue
+      val result = async.listPlatformApplications().futureValue()
       result should contain (testPlatformApplication)
     }
 
@@ -178,38 +178,38 @@ class SNSClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
       lazy val eventTopicArn = Some(testTopic.arn)
 
       "the endpoint created event topic" in {
-        val result = testPlatformApplication.setEventEndpointCreated(eventTopicArn).futureValue
+        val result = testPlatformApplication.setEventEndpointCreated(eventTopicArn).futureValue()
         result shouldBe Done
 
         eventually(Timeout(1.second), Interval(200.milliseconds)) {
-          val topic = async.getPlatformApplicationAttribute(applicationArn, "EventEndpointCreated").futureValue
+          val topic = async.getPlatformApplicationAttribute(applicationArn, "EventEndpointCreated").futureValue()
           topic shouldBe eventTopicArn
         }
       }
 
       "the endpoint updated event topic" in {
-        val result = testPlatformApplication.setEventEndpointUpdated(eventTopicArn).futureValue
+        val result = testPlatformApplication.setEventEndpointUpdated(eventTopicArn).futureValue()
         result shouldBe Done
 
         eventually(Timeout(1.second), Interval(200.milliseconds)) {
-          val topic = async.getPlatformApplicationAttribute(applicationArn, "EventEndpointUpdated").futureValue
+          val topic = async.getPlatformApplicationAttribute(applicationArn, "EventEndpointUpdated").futureValue()
           topic shouldBe eventTopicArn
         }
       }
 
       "the endpoint deleted event topic" in {
-        val result = testPlatformApplication.setEventEndpointDeleted(eventTopicArn).futureValue
+        val result = testPlatformApplication.setEventEndpointDeleted(eventTopicArn).futureValue()
         result shouldBe Done
 
         eventually(Timeout(1.second), Interval(200.milliseconds)) {
-          val topic = async.getPlatformApplicationAttribute(applicationArn, "EventEndpointDeleted").futureValue
+          val topic = async.getPlatformApplicationAttribute(applicationArn, "EventEndpointDeleted").futureValue()
           topic shouldBe eventTopicArn
         }
       }
     }
 
     "can create a platform endpoint" in {
-      val result = testPlatformApplication.createEndpoint("http://example.com", testName).futureValue
+      val result = testPlatformApplication.createEndpoint("http://example.com", testName).futureValue()
       result.arn should include (testName)
       result.enabled shouldBe true
       result.customUserData shouldBe Some(testName)
@@ -220,17 +220,17 @@ class SNSClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
     }
 
     "list the platform endpoints for the application" in {
-      val result = async.listPlatformEndpoints(testPlatformApplication.arn).futureValue
+      val result = async.listPlatformEndpoints(testPlatformApplication.arn).futureValue()
       result should contain (testPlatformEndpoint)
     }
 
     "modify the platform endpoint’s attributes" in {
       //noinspection NameBooleanParameters
-      val result = testPlatformEndpoint.setEnabled(false).futureValue
+      val result = testPlatformEndpoint.setEnabled(false).futureValue()
       result shouldBe Done
 
       eventually(Timeout(1.second), Interval(200.milliseconds)) {
-        val enabled = async.getPlatformApplicationAttribute(testPlatformApplication.arn, "Enabled").futureValue
+        val enabled = async.getPlatformApplicationAttribute(testPlatformApplication.arn, "Enabled").futureValue()
         enabled shouldBe Some("true")
       }
     }
@@ -243,11 +243,11 @@ class SNSClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
     }
 
     "can delete the platform endpoint" in {
-      val result = testPlatformEndpoint.delete().futureValue
+      val result = testPlatformEndpoint.delete().futureValue()
       result shouldBe Done
 
       eventually(Timeout(5.seconds), Interval(200.milliseconds)) {
-        val result = async.listPlatformEndpoints(testPlatformApplication.arn).futureValue
+        val result = async.listPlatformEndpoints(testPlatformApplication.arn).futureValue()
         result shouldBe empty
       }
 
@@ -255,23 +255,23 @@ class SNSClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
     }
 
     "can delete the platform application" in {
-      val result = async.deletePlatformApplication(testPlatformApplication.arn).futureValue
+      val result = async.deletePlatformApplication(testPlatformApplication.arn).futureValue()
       result shouldBe Done
 
       logger.info(s"Deleted platform application with ARN: ${testPlatformApplication.arn}")
     }
 
     "unsubscribe" in {
-      val deleteResult = async.unsubscribe(testSubscription.arn).futureValue
+      val deleteResult = async.unsubscribe(testSubscription.arn).futureValue()
       deleteResult shouldBe Done
 
-      val listResult = async.listSubscriptions(testTopic.arn).futureValue
+      val listResult = async.listSubscriptions(testTopic.arn).futureValue()
       listResult should have size 1
     }
 
     "can delete the topic" in {
       logger.info(s"Removing topic ${testTopic.name} (${testTopic.arn})")
-      val result = testTopic.delete().futureValue
+      val result = testTopic.delete().futureValue()
       result shouldBe Done
       logger.info(s"Removed topic ${testTopic.name}")
     }

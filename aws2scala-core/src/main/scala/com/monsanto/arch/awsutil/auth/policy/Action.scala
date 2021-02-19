@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.auth.policy
 
-import com.amazonaws.auth.{policy ⇒ aws}
+import com.amazonaws.auth.{policy => aws}
 
 import scala.collection.concurrent
 
@@ -12,17 +12,17 @@ abstract class Action(val name: String)
 
 object Action {
   private[awsutil] val toScalaConversions: concurrent.Map[aws.Action,Action] =
-    concurrent.TrieMap(AllActions → AllActions)
+    concurrent.TrieMap(AllActions ->AllActions)
   private[awsutil] val toAwsConversions: concurrent.Map[Action,aws.Action] =
-    concurrent.TrieMap(AllActions → AllActions)
+    concurrent.TrieMap(AllActions ->AllActions)
   private[awsutil] val nameToScalaConversion: concurrent.Map[String,Action] =
-    concurrent.TrieMap("*" → AllActions)
+    concurrent.TrieMap("*" ->AllActions)
 
   private[awsutil] def registerActions(actions: (aws.Action,Action)*): Unit = {
     toScalaConversions ++= actions
     toAwsConversions ++= actions.map(_.swap)
     nameToScalaConversion ++=
-      actions.map(entry ⇒ (entry._1.getActionName, entry._2))
+      actions.map(entry => (entry._1.getActionName, entry._2))
   }
 
   /** Handy constant for matching all actions. */

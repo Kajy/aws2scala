@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.securitytoken.model
 
-import com.amazonaws.services.securitytoken.{model ⇒ aws}
+import com.amazonaws.services.securitytoken.{model => aws}
 import com.monsanto.arch.awsutil.securitytoken.model.AwsConverters._
 import com.monsanto.arch.awsutil.testkit.StsScalaCheckImplicits._
 import org.scalatest.freespec.AnyFreeSpec
@@ -11,7 +11,7 @@ class CredentialsSpec extends AnyFreeSpec {
   "Credentials" - {
     "can be round-tripped" - {
       "from its AWS equivalent" in {
-        forAll { credentials: Credentials ⇒
+        forAll { credentials: Credentials =>
           val awsCredentials = new aws.Credentials(credentials.accessKeyId, credentials.secretAccessKey,
             credentials.sessionToken, credentials.expiration)
           awsCredentials.asScala.asAws shouldBe awsCredentials
@@ -19,7 +19,7 @@ class CredentialsSpec extends AnyFreeSpec {
       }
 
       "via its AWS equivalent" in {
-        forAll { credentials: Credentials ⇒
+        forAll { credentials: Credentials =>
           credentials.asAws.asScala shouldBe credentials
         }
       }
@@ -27,19 +27,19 @@ class CredentialsSpec extends AnyFreeSpec {
 
     "functions as a credentials provider" - {
       "providing session credentials" in {
-        forAll { credentials: Credentials ⇒
+        forAll { credentials: Credentials =>
           val sessionCredentials = credentials.getCredentials
 
           sessionCredentials should have (
-            'AWSAccessKeyId (credentials.accessKeyId),
-            'AWSSecretKey (credentials.secretAccessKey),
-            'sessionToken (credentials.sessionToken)
+            Symbol("AWSAccessKeyId") (credentials.accessKeyId),
+            Symbol("AWSSecretKey") (credentials.secretAccessKey),
+            Symbol("sessionToken") (credentials.sessionToken)
           )
         }
       }
 
       "doing nothing on refresh" in {
-        forAll { credentials: Credentials ⇒
+        forAll { credentials: Credentials =>
           credentials.refresh()
         }
       }

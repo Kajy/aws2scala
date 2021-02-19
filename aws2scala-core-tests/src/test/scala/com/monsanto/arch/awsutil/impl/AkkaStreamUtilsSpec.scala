@@ -12,8 +12,8 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class AkkaStreamUtilsSpec extends AnyFreeSpec with Materialised {
   "an EnhancesSinkObject" - {
     "provides a count sink" in {
-      forAll(Gen.listOf(Gen.choose(0, 100))) { nums ⇒
-        val count = Source(nums).runWith(Sink.count).futureValue
+      forAll(Gen.listOf(Gen.choose(0, 100))) { nums =>
+        val count = Source(nums).runWith(Sink.count).futureValue()
         count shouldBe nums.size
       }
     }

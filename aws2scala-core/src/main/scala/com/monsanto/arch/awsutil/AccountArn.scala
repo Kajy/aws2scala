@@ -15,12 +15,12 @@ object AccountArn {
     /** Extracts an `AccountArn` object from the given ARN string. */
     def unapply(arnString: String): Option[AccountArn] =
       arnString match {
-        case Arn.fromArnString(accountArn: AccountArn) ⇒ Some(accountArn)
-        case _                                         ⇒ None
+        case Arn.fromArnString(accountArn: AccountArn) => Some(accountArn)
+        case _                                         => None
       }
   }
 
   private[awsutil] val accountArnPF: PartialFunction[Arn.ArnParts, AccountArn] = {
-    case (_, Arn.Namespace.IAM, None, Some(account), "root") ⇒ AccountArn(account)
+    case (_, Arn.Namespace.IAM, None, Some(account), "root") => AccountArn(account)
   }
 }

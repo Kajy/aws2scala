@@ -1,7 +1,7 @@
 package com.monsanto.arch.awsutil.sns.model
 
 import akka.Done
-import akka.stream.Materializer
+import akka.actor.ActorSystem
 import akka.stream.scaladsl.{Flow, Keep, Sink, Source}
 import com.monsanto.arch.awsutil.sns.StreamingSNSClient
 
@@ -39,55 +39,55 @@ case class PlatformApplication private[awsutil] (arn: String,
   def platform: Platform = PlatformApplicationArn.fromArnString(arn).platform
 
   /** Updates the enabled attribute for the platform application. */
-  def setEnabled(enabled: Boolean)(implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+  def setEnabled(enabled: Boolean)(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     setAttribute("Enabled", Some(enabled.toString))
 
   /** Updates the topic that will be notified when new endpoints are created for this application. */
   def setEventEndpointCreated(topicArn: Option[String])
-                             (implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+                             (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     setAttribute("EventEndpointCreated", topicArn)
 
   /** Updates the topic that will be notified when endpoints are deleted from this application. */
   def setEventEndpointDeleted(topicArn: Option[String])
-                             (implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+                             (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     setAttribute("EventEndpointDeleted", topicArn)
 
   /** Updates the topic that will be notified when endpoints are updated in this application. */
   def setEventEndpointUpdated(topicArn: Option[String])
-                             (implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+                             (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     setAttribute("EventEndpointUpdated", topicArn)
 
   /** Updates the topic that will be notified when direct push notifications to an endpoint fail. */
   def setEventDeliveryFailure(topicArn: Option[String])
-                             (implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+                             (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     setAttribute("EventDeliveryFailure", topicArn)
 
   /** Updates the IAM role ARN used to give Amazon SNS write access to log successful delivery notifications in
     *  CloudWatch.
     */
   def setSuccessFeedbackRoleArn(roleArn: Option[String])
-                               (implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+                               (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     setAttribute("SuccessFeedbackRoleArn", roleArn)
 
   /** Updates the IAM role ARN used to give Amazon SNS write access to log failed delivery notifications in
     * CloudWatch.
     */
   def setFailureFeedbackRoleArn(roleArn: Option[String])
-                               (implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+                               (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     setAttribute("FailureFeedbackRoleArn", roleArn)
 
   /** The sample rate percentage for logging successfully delivered messages to CloudWatch (must be between 0 and 100
     * inclusive).
     */
   def setSuccessFeedbackSampleRate(percentage: Int)
-                                  (implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+                                  (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     setAttribute("SuccessFeedbackSampleRate", Some(percentage.toString))
 
   /** Updates the credentials that Amazon SNS will use when communicating with the push notification platform. */
   def setCredentials(credentials: PlatformApplicationCredentials)
-                    (implicit sns: StreamingSNSClient, m: Materializer): Future[Done] = {
+                    (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] = {
     require(credentials.platform == platform, "New credentials must match the application’s platform.")
-    setAttributes(Map("PlatformPrincipal" → credentials.principal, "PlatformCredential" → credentials.credential))
+    setAttributes(Map("PlatformPrincipal" ->credentials.principal, "PlatformCredential" ->credentials.credential))
   }
 
   /** Sets the attribute of the platform application to the given value.
@@ -97,7 +97,7 @@ case class PlatformApplication private[awsutil] (arn: String,
     * @return either this instance or a new instance containing refreshed data depending on the `updateRefreshStrategy`
     */
   def setAttribute(name: String, value: Option[String])
-                  (implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+                  (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     Source.single(SetPlatformApplicationAttributesRequest(arn, name, value))
       .via(sns.platformApplicationAttributesSetter)
       .runWith(Sink.ignore)
@@ -108,7 +108,7 @@ case class PlatformApplication private[awsutil] (arn: String,
     * @return either this instance or a new instance containing refreshed data depending on the `updateRefreshStrategy`
     */
   def setAttributes(attributes: Map[String,String])
-                   (implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+                   (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     Source.single(SetPlatformApplicationAttributesRequest(arn, attributes))
       .via(sns.platformApplicationAttributesSetter)
       .runWith(Sink.ignore)
@@ -122,7 +122,7 @@ case class PlatformApplication private[awsutil] (arn: String,
     *              ''push notification URI''
     * @return a snapshot of the newly created platform endpoint
     */
-  def createEndpoint(token: String)(implicit sns: StreamingSNSClient, m: Materializer): Future[PlatformEndpoint] =
+  def createEndpoint(token: String)(implicit sns: StreamingSNSClient, as: ActorSystem): Future[PlatformEndpoint] =
     Source.single(CreatePlatformEndpointRequest(arn, token))
       .via(sns.platformEndpointCreator)
       .runWith(PlatformEndpoint.toPlatformEndpoint)
@@ -138,7 +138,7 @@ case class PlatformApplication private[awsutil] (arn: String,
     * @return a snapshot of the newly created platform endpoint
     */
   def createEndpoint(token: String, customUserData: String)
-                    (implicit sns: StreamingSNSClient, m: Materializer): Future[PlatformEndpoint] =
+                    (implicit sns: StreamingSNSClient, as: ActorSystem): Future[PlatformEndpoint] =
     Source.single(CreatePlatformEndpointRequest(arn, token, customUserData))
       .via(sns.platformEndpointCreator)
       .runWith(PlatformEndpoint.toPlatformEndpoint)
@@ -154,7 +154,7 @@ case class PlatformApplication private[awsutil] (arn: String,
     * @return a snapshot of the newly created platform endpoint
     */
   def createEndpoint(token: String, attributes: Map[String,String])
-                    (implicit sns: StreamingSNSClient, m: Materializer): Future[PlatformEndpoint] =
+                    (implicit sns: StreamingSNSClient, as: ActorSystem): Future[PlatformEndpoint] =
     Source.single(CreatePlatformEndpointRequest(arn, token, attributes))
       .via(sns.platformEndpointCreator)
       .runWith(PlatformEndpoint.toPlatformEndpoint)
@@ -171,23 +171,23 @@ case class PlatformApplication private[awsutil] (arn: String,
     * @return a snapshot of the newly created platform endpoint
     */
   def createEndpoint(token: String, customUserData: String, attributes: Map[String,String])
-                    (implicit sns: StreamingSNSClient, m: Materializer): Future[PlatformEndpoint] =
+                    (implicit sns: StreamingSNSClient, as: ActorSystem): Future[PlatformEndpoint] =
     Source.single(CreatePlatformEndpointRequest(arn, token, customUserData, attributes))
       .via(sns.platformEndpointCreator)
       .runWith(PlatformEndpoint.toPlatformEndpoint)
 
   /** Lists all of the endpoints registered with this application. */
-  def listEndpoints()(implicit sns: StreamingSNSClient, m: Materializer): Future[Seq[PlatformEndpoint]] =
+  def listEndpoints()(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Seq[PlatformEndpoint]] =
     Source.single(arn)
       .via(sns.platformEndpointLister)
       .runWith(Sink.seq)
 
   /** Returns a new `PlatformApplication` instance with values refreshed from AWs. */
-  def refresh()(implicit sns: StreamingSNSClient, m: Materializer): Future[PlatformApplication] =
+  def refresh()(implicit sns: StreamingSNSClient, as: ActorSystem): Future[PlatformApplication] =
     PlatformApplication(arn)
 
   /** Requests deletion of this platform application. */
-  def delete()(implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+  def delete()(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     Source.single(arn)
       .via(sns.platformApplicationDeleter)
       .runWith(Sink.ignore)
@@ -195,16 +195,16 @@ case class PlatformApplication private[awsutil] (arn: String,
 
 object PlatformApplication {
   /** Given a platform application ARN, get its attributes from AWS and return a new `PlatformApplication` instance. */
-  def apply(arn: String)(implicit sns: StreamingSNSClient, m: Materializer): Future[PlatformApplication] =
+  def apply(arn: String)(implicit sns: StreamingSNSClient, as: ActorSystem): Future[PlatformApplication] =
     Source.single(arn).runWith(toPlatformApplication)
 
   /** Returns a sink that given a platform application ARN will build a corresponding `PlatformApplication` instance. */
   private[sns] def toPlatformApplication(implicit sns: StreamingSNSClient) =
     Flow[String]
-      .flatMapConcat { arn ⇒
+      .flatMapConcat { arn =>
         Source.single(arn)
           .via(sns.platformApplicationAttributesGetter)
-          .map(attrs ⇒ PlatformApplication(arn, attrs))
+          .map(attrs => PlatformApplication(arn, attrs))
       }
       .toMat(Sink.head)(Keep.right)
       .named("PlatformApplication.toPlatformApplication")

@@ -8,7 +8,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
 class GrantSpec extends AnyFreeSpec {
   "a Grant can be round-tripped via its AWS equivalent" in {
-    forAll { grant: Grant ⇒
+    forAll { grant: Grant =>
       grant.asAws.asScala shouldBe grant
     }
   }

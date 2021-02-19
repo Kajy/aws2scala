@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.sns.model
 
-import akka.stream.Materializer
+import akka.actor.ActorSystem
 import akka.stream.scaladsl.Source
 import com.monsanto.arch.awsutil.sns.StreamingSNSClient
 
@@ -28,6 +28,6 @@ case class SubscriptionSummary(arn: Option[String],
   /** Returns a fully-realised [[com.monsanto.arch.awsutil.sns.model.Subscription Subscription]] instance of this
     * summary.  In the case that this is a pending subscription, the future will contain `None`.
     */
-  def asSubscription()(implicit sns: StreamingSNSClient, m: Materializer): Future[Option[Subscription]] =
+  def asSubscription()(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Option[Subscription]] =
     Source.single(arn).runWith(Subscription.toSubscriptionOption)
 }

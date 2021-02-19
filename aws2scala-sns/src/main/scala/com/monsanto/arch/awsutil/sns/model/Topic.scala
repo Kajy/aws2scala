@@ -1,7 +1,7 @@
 package com.monsanto.arch.awsutil.sns.model
 
 import akka.Done
-import akka.stream.Materializer
+import akka.actor.ActorSystem
 import akka.stream.scaladsl.{Flow, Keep, Sink, Source}
 import com.monsanto.arch.awsutil.auth.policy.action.SNSAction
 import com.monsanto.arch.awsutil.sns.StreamingSNSClient
@@ -39,7 +39,7 @@ case class Topic private[awsutil] (attributes: Map[String,String]) {
   def name: String = TopicArn.fromArnString(arn).name
 
   /** Requests that AWS delete the topic. */
-  def delete()(implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+  def delete()(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     Source.single(arn).via(sns.topicDeleter).runWith(Sink.ignore)
 
   /** Provides a custom representation that shows only the topic ARN. */
@@ -47,17 +47,17 @@ case class Topic private[awsutil] (attributes: Map[String,String]) {
 
   /** Updates the display name on the topic and returns a new snapshot of the topic from AWS. */
   def setDisplayName(displayName: String)
-                    (implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+                    (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     setAttribute("DisplayName", Some(displayName))
 
   /** Updates the policy on the topic and returns a new snapshot of the topic from AWS. */
   def setPolicy(policy: String)
-               (implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+               (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     setAttribute("Policy", Some(policy))
 
   /** Updates the delivery policy on the topic and returns a new snapshot of the topic from AWS. */
   def setDeliveryPolicy(deliveryPolicy: Option[String])
-                       (implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+                       (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     setAttribute("DeliveryPolicy", deliveryPolicy)
 
   /** Sets the value of an arbitrary attribute of this topic.
@@ -67,7 +67,7 @@ case class Topic private[awsutil] (attributes: Map[String,String]) {
     * @return a new snapshot of the
     */
   def setAttribute(attributeName: String, attributeValue: Option[String])
-                          (implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+                          (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     Source.single(SetTopicAttributesRequest(arn, attributeName, attributeValue))
       .via(sns.topicAttributeSetter)
       .runWith(Sink.ignore)
@@ -82,7 +82,7 @@ case class Topic private[awsutil] (attributes: Map[String,String]) {
     * @return a new topic snapshot with the resulting policy change
     */
   def addPermission(label: String, awsAccountIds: Seq[String], actions: Seq[SNSAction])
-                   (implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+                   (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     Source.single(AddPermissionRequest(arn, label, awsAccountIds, actions))
       .via(sns.permissionAdder)
       .runWith(Sink.ignore)
@@ -92,16 +92,16 @@ case class Topic private[awsutil] (attributes: Map[String,String]) {
     * @param label the unique identifier of the statement you want to remove
     */
   def removePermission(label: String)
-                      (implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+                      (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     Source.single(RemovePermissionRequest(arn, label))
       .via(sns.permissionRemover)
       .runWith(Sink.ignore)
 
   /** Returns a new snapshot of this topic from AWS. */
-  def refresh()(implicit sns: StreamingSNSClient, m: Materializer): Future[Topic] = Topic(arn)
+  def refresh()(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Topic] = Topic(arn)
 
   /** Lists all of the subscriptions to this topic. */
-  def listSubscriptions()(implicit sns: StreamingSNSClient, m: Materializer): Future[Seq[SubscriptionSummary]] =
+  def listSubscriptions()(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Seq[SubscriptionSummary]] =
     Source.single(ListSubscriptionsRequest.forTopic(arn))
       .via(sns.subscriptionLister)
       .runWith(Sink.seq)
@@ -112,7 +112,7 @@ case class Topic private[awsutil] (attributes: Map[String,String]) {
     * @return the ARN of the subscription if the service was able to create a subscription immediately.
     */
   def subscribe(subscriptionEndpoint: SubscriptionEndpoint)
-               (implicit sns: StreamingSNSClient, m: Materializer): Future[Option[Subscription]] =
+               (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Option[Subscription]] =
     Source.single(SubscribeRequest(arn, subscriptionEndpoint.protocol.asAws, subscriptionEndpoint.endpoint))
       .via(sns.subscriber)
       .runWith(Subscription.toSubscriptionOption)
@@ -124,7 +124,7 @@ case class Topic private[awsutil] (attributes: Map[String,String]) {
     * @param token a short-lived token sent to an endpoint during the `Subscribe` action
     * @return a snapshot of the new subscription
     */
-  def confirmSubscription(token: String)(implicit sns: StreamingSNSClient, m: Materializer): Future[Subscription] =
+  def confirmSubscription(token: String)(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Subscription] =
     Source.single(ConfirmSubscriptionRequest(arn, token))
       .via(sns.subscriptionConfirmer)
       .runWith(Subscription.toSubscription)
@@ -138,7 +138,7 @@ case class Topic private[awsutil] (attributes: Map[String,String]) {
     * @return a snapshot of the new subscription
     */
   def confirmSubscription(token: String, authenticateOnUnsubscribe: Boolean)
-                         (implicit sns: StreamingSNSClient, m: Materializer): Future[Subscription] =
+                         (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Subscription] =
     Source.single(ConfirmSubscriptionRequest(arn, token, Some(authenticateOnUnsubscribe)))
       .via(sns.subscriptionConfirmer)
       .runWith(Subscription.toSubscription)
@@ -151,7 +151,7 @@ case class Topic private[awsutil] (attributes: Map[String,String]) {
     * @param message the message to send
     * @return the unique identifier of the published message
     */
-  def publish(message: String)(implicit m: Materializer, sns: StreamingSNSClient): Future[String] =
+  def publish(message: String)(implicit as: ActorSystem, sns: StreamingSNSClient): Future[String] =
     Source.single(PublishRequest(arn, message))
       .via(sns.publisher)
       .runWith(Sink.head)
@@ -166,7 +166,7 @@ case class Topic private[awsutil] (attributes: Map[String,String]) {
     * @return the unique identifier of the published message
     */
   def publish(message: String, subject: String)
-             (implicit m: Materializer, sns: StreamingSNSClient): Future[String] =
+             (implicit as: ActorSystem, sns: StreamingSNSClient): Future[String] =
     Source.single(PublishRequest(arn, message, subject))
       .via(sns.publisher)
       .runWith(Sink.head)
@@ -181,7 +181,7 @@ case class Topic private[awsutil] (attributes: Map[String,String]) {
     * @return the unique identifier of the published message
     */
   def publish(message: String, attributes: Map[String,MessageAttributeValue])
-             (implicit m: Materializer, sns: StreamingSNSClient): Future[String] =
+             (implicit as: ActorSystem, sns: StreamingSNSClient): Future[String] =
     Source.single(PublishRequest(arn, message, attributes))
       .via(sns.publisher)
       .runWith(Sink.head)
@@ -197,7 +197,7 @@ case class Topic private[awsutil] (attributes: Map[String,String]) {
     * @return the unique identifier of the published message
     */
   def publish(message: String, subject: String, attributes: Map[String,MessageAttributeValue])
-             (implicit m: Materializer, sns: StreamingSNSClient): Future[String] =
+             (implicit as: ActorSystem, sns: StreamingSNSClient): Future[String] =
     Source.single(PublishRequest(arn, message, subject, attributes))
       .via(sns.publisher)
       .runWith(Sink.head)
@@ -210,7 +210,7 @@ case class Topic private[awsutil] (attributes: Map[String,String]) {
     * @return the unique identifier of the published message
     */
   def publish(message: Map[String,String])
-             (implicit m: Materializer, sns: StreamingSNSClient): Future[String] =
+             (implicit as: ActorSystem, sns: StreamingSNSClient): Future[String] =
     Source.single(PublishRequest(arn, message))
       .via(sns.publisher)
       .runWith(Sink.head)
@@ -224,7 +224,7 @@ case class Topic private[awsutil] (attributes: Map[String,String]) {
     * @return the unique identifier of the published message
     */
   def publish(message: Map[String,String], subject: String)
-             (implicit m: Materializer, sns: StreamingSNSClient): Future[String] =
+             (implicit as: ActorSystem, sns: StreamingSNSClient): Future[String] =
     Source.single(PublishRequest(arn, message, subject))
       .via(sns.publisher)
       .runWith(Sink.head)
@@ -238,7 +238,7 @@ case class Topic private[awsutil] (attributes: Map[String,String]) {
     * @return the unique identifier of the published message
     */
   def publish(message: Map[String,String], attributes: Map[String,MessageAttributeValue])
-             (implicit m: Materializer, sns: StreamingSNSClient): Future[String] =
+             (implicit as: ActorSystem, sns: StreamingSNSClient): Future[String] =
     Source.single(PublishRequest(arn, message, attributes))
       .via(sns.publisher)
       .runWith(Sink.head)
@@ -253,7 +253,7 @@ case class Topic private[awsutil] (attributes: Map[String,String]) {
     * @return the unique identifier of the published message
     */
   def publish(message: Map[String,String], subject: String, attributes: Map[String,MessageAttributeValue])
-             (implicit m: Materializer, sns: StreamingSNSClient): Future[String] =
+             (implicit as: ActorSystem, sns: StreamingSNSClient): Future[String] =
     Source.single(PublishRequest(arn, message, subject, attributes))
       .via(sns.publisher)
       .runWith(Sink.head)
@@ -263,10 +263,10 @@ object Topic {
   private[sns] def toTopic(implicit sns: StreamingSNSClient) =
     Flow[String]
       .via(sns.topicAttributesGetter)
-      .map(attrs ⇒ Topic(attrs))
+      .map(attrs => Topic(attrs))
       .toMat(Sink.head)(Keep.right)
 
-  def apply(topicArn: String)(implicit sns: StreamingSNSClient, m: Materializer): Future[Topic] = {
+  def apply(topicArn: String)(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Topic] = {
     // though this looks superfluous, it does impose a check that the topic ARN can parse
     val arn = TopicArn.fromArnString(topicArn).arnString
     Source.single(arn).runWith(toTopic)

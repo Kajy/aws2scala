@@ -168,7 +168,7 @@ class AWSFlowAdapterSpec extends AnyFreeSpec with MockFactory {
 
       "get and return the request" in {
         val (voidFuture, jFuture) = prepareFuture()
-        (voidFuture.get _).expects()
+        (() => voidFuture.get).expects()
         jFuture.get() shouldBe request
       }
 

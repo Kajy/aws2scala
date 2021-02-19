@@ -19,7 +19,7 @@ import org.scalatest._
 import org.scalatest.freespec.AnyFreeSpec
 import spray.json.JsonWriter
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class DefaultCloudFormationClientSpec extends AnyFreeSpec with MockFactory with Materialised with AwsMockUtils {
   val stackName = s"aws2scala-it-cf-${UUID.randomUUID()}"
@@ -76,12 +76,12 @@ class DefaultCloudFormationClientSpec extends AnyFreeSpec with MockFactory with 
         .expects(request, *)
         .withAwsSuccess(new CreateStackResult().withStackId(stackId))
 
-      val result = f.asyncClient.createStack(request).futureValue
+      val result = f.asyncClient.createStack(request).futureValue()
       result shouldBe stackId
     }
 
     "can list all stacks" in withListStacksFixture(Seq.empty) { f =>
-      val result = f.asyncClient.listStacks().futureValue
+      val result = f.asyncClient.listStacks().futureValue()
       result shouldBe f.stackSummaries
     }
 
@@ -89,13 +89,13 @@ class DefaultCloudFormationClientSpec extends AnyFreeSpec with MockFactory with 
       val filter = Seq(StackStatus.CREATE_COMPLETE, StackStatus.CREATE_IN_PROGRESS)
 
       "stack status objects" in withListStacksFixture(filter) { f =>
-        val stackSummaries = f.asyncClient.listStacks(filter).futureValue
+        val stackSummaries = f.asyncClient.listStacks(filter).futureValue()
         stackSummaries shouldBe f.stackSummaries
       }
 
       "strings" in withListStacksFixture(filter) { f =>
         val stringFilter: Seq[String] = filter.map(_.toString)
-        val stackSummaries = f.asyncClient.listStacks(stringFilter).futureValue
+        val stackSummaries = f.asyncClient.listStacks(stringFilter).futureValue()
         stackSummaries shouldBe f.stackSummaries
       }
     }
@@ -111,10 +111,10 @@ class DefaultCloudFormationClientSpec extends AnyFreeSpec with MockFactory with 
           .withStackStatus(StackStatus.CREATE_COMPLETE)
       }
       (f.awsClient.describeStacksAsync(_: DescribeStacksRequest, _: AsyncHandler[DescribeStacksRequest, DescribeStacksResult]))
-        .expects(whereRequest(request ⇒ request.getStackName == null && request.getNextToken == null))
+        .expects(whereRequest(request => request.getStackName == null && request.getNextToken == null))
         .withAwsSuccess(new DescribeStacksResult().withStacks(stacks: _*))
 
-      val result = f.asyncClient.describeStacks().futureValue
+      val result = f.asyncClient.describeStacks().futureValue()
       result shouldBe stacks
     }
 
@@ -125,10 +125,10 @@ class DefaultCloudFormationClientSpec extends AnyFreeSpec with MockFactory with 
         .withStackName(stackName)
         .withStackStatus(StackStatus.CREATE_COMPLETE)
       (f.awsClient.describeStacksAsync(_: DescribeStacksRequest, _: AsyncHandler[DescribeStacksRequest, DescribeStacksResult]))
-        .expects(whereRequest(request ⇒ request.getStackName == stackId && request.getNextToken == null))
+        .expects(whereRequest(request => request.getStackName == stackId && request.getNextToken == null))
         .withAwsSuccess(new DescribeStacksResult().withStacks(Seq(stack): _*))
 
-      val result = f.asyncClient.describeStack(stackId).futureValue
+      val result = f.asyncClient.describeStack(stackId).futureValue()
       result shouldBe stack
     }
 
@@ -141,10 +141,10 @@ class DefaultCloudFormationClientSpec extends AnyFreeSpec with MockFactory with 
           .withTimestamp(new Date())
       }
       (f.awsClient.describeStackEventsAsync(_: DescribeStackEventsRequest, _: AsyncHandler[DescribeStackEventsRequest, DescribeStackEventsResult]))
-        .expects(whereRequest(request ⇒ request.getStackName == stackName && request.getNextToken == null))
+        .expects(whereRequest(request => request.getStackName == stackName && request.getNextToken == null))
         .withAwsSuccess(new DescribeStackEventsResult().withStackEvents(stackEvents: _*))
 
-      val result = f.asyncClient.describeStackEvents(stackName).futureValue
+      val result = f.asyncClient.describeStackEvents(stackName).futureValue()
       result shouldBe stackEvents
     }
 
@@ -164,7 +164,7 @@ class DefaultCloudFormationClientSpec extends AnyFreeSpec with MockFactory with 
 
       "from a body" in withFixture { f =>
         (f.awsClient.validateTemplateAsync(_: ValidateTemplateRequest, _: AsyncHandler[ValidateTemplateRequest,ValidateTemplateResult]))
-          .expects(whereRequest(request ⇒ request.getTemplateBody == body && request.getTemplateURL == null))
+          .expects(whereRequest(request => request.getTemplateBody == body && request.getTemplateURL == null))
           .withAwsSuccess(
             new ValidateTemplateResult()
               .withDescription(TemplateDescription)
@@ -172,14 +172,14 @@ class DefaultCloudFormationClientSpec extends AnyFreeSpec with MockFactory with 
               .withCapabilities(Capability.CAPABILITY_IAM)
               .withCapabilitiesReason(capabilitiesReason))
 
-        val validatedTemplate = f.asyncClient.validateTemplateBody(body).futureValue
+        val validatedTemplate = f.asyncClient.validateTemplateBody(body).futureValue()
         validatedTemplate shouldBe expectedValidatedTemplate
       }
 
       "from a bucket" in withFixture { f =>
         val s3url = new URL("https://s3.amazonaws.com/some-bucket/template.json")
         (f.awsClient.validateTemplateAsync(_: ValidateTemplateRequest, _: AsyncHandler[ValidateTemplateRequest,ValidateTemplateResult]))
-          .expects(whereRequest(request ⇒ request.getTemplateBody == null && request.getTemplateURL == s3url.toString))
+          .expects(whereRequest(request => request.getTemplateBody == null && request.getTemplateURL == s3url.toString))
           .withAwsSuccess(
               new ValidateTemplateResult()
                 .withDescription(TemplateDescription)
@@ -187,13 +187,13 @@ class DefaultCloudFormationClientSpec extends AnyFreeSpec with MockFactory with 
                 .withCapabilities(Capability.CAPABILITY_IAM)
                 .withCapabilitiesReason(capabilitiesReason))
 
-        val validatedTemplate = f.asyncClient.validateTemplateURL(s3url).futureValue
+        val validatedTemplate = f.asyncClient.validateTemplateURL(s3url).futureValue()
         validatedTemplate shouldBe expectedValidatedTemplate
       }
     }
 
-    "can list stack resources" in withFixture { f ⇒
-      val stackResourceSummaries = Seq.tabulate(20) { i ⇒
+    "can list stack resources" in withFixture { f =>
+      val stackResourceSummaries = Seq.tabulate(20) { i =>
         new StackResourceSummary()
           .withLogicalResourceId(s"resource$i")
       }
@@ -202,7 +202,7 @@ class DefaultCloudFormationClientSpec extends AnyFreeSpec with MockFactory with 
         .expects(whereRequest(_.getStackName == stackName))
         .withAwsSuccess(new ListStackResourcesResult().withStackResourceSummaries(stackResourceSummaries.asJavaCollection))
 
-      val result = f.asyncClient.listStackResources(stackName).futureValue
+      val result = f.asyncClient.listStackResources(stackName).futureValue()
       result shouldBe stackResourceSummaries
     }
 
@@ -211,7 +211,7 @@ class DefaultCloudFormationClientSpec extends AnyFreeSpec with MockFactory with 
         .expects(whereRequest(_.getStackName == stackName))
         .withVoidAwsSuccess()
 
-      val result = f.asyncClient.deleteStack(stackName).futureValue
+      val result = f.asyncClient.deleteStack(stackName).futureValue()
       result shouldBe Done
     }
   }

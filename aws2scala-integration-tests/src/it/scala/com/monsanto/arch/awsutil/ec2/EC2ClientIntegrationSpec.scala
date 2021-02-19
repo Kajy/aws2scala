@@ -1,7 +1,7 @@
 package com.monsanto.arch.awsutil.ec2
 
 import akka.stream.scaladsl.{Sink, Source}
-import com.amazonaws.services.cloudformation.model.{Output ⇒ _, _}
+import com.amazonaws.services.cloudformation.model.{Output => _, _}
 import com.monsanto.arch.awsutil.cloudformation.AsyncCloudFormationClient.Implicits._
 import com.monsanto.arch.awsutil.cloudformation.CloudFormation
 import com.monsanto.arch.awsutil.cloudformation.model.DeleteStackRequest
@@ -17,7 +17,7 @@ import org.scalactic.source.Position
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers._
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.concurrent.duration.DurationInt
 
 @IntegrationTest
@@ -40,30 +40,30 @@ class EC2ClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
 
   "the EC2 client" - {
     "can create a key" in {
-      keyPair = asyncEC2.createKeyPair(keyName).futureValue
+      keyPair = asyncEC2.createKeyPair(keyName).futureValue()
       keyPair.name shouldBe keyName
     }
 
     "can find a key" - {
       "in a listing" in {
-        val result = asyncEC2.describeKeyPairs().futureValue
+        val result = asyncEC2.describeKeyPairs().futureValue()
 
         result should contain (keyPairInfo)
       }
 
       "in a filtered listing" in {
-        val result = asyncEC2.describeKeyPairs(Map("fingerprint" → Seq(keyPair.fingerprint))).futureValue
+        val result = asyncEC2.describeKeyPairs(Map("fingerprint" ->Seq(keyPair.fingerprint))).futureValue()
         result should contain (keyPairInfo)
       }
 
       "by name" in {
-        val result = asyncEC2.describeKeyPair(keyName).futureValue
+        val result = asyncEC2.describeKeyPair(keyName).futureValue()
         result shouldBe Some(keyPairInfo)
       }
     }
 
     "can handle not finding a key pair" in {
-      val result = asyncEC2.describeKeyPair(s"$keyName-not-found").futureValue
+      val result = asyncEC2.describeKeyPair(s"$keyName-not-found").futureValue()
       result shouldBe None
     }
 
@@ -72,9 +72,9 @@ class EC2ClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
         .withOnFailure(OnFailure.DELETE)
         .withTemplateBody(EC2ClientIntegrationSpec.MinimalEC2Template)
         .withStackName(stackName)
-        .withParameters(Map("KeyName" → keyName))
+        .withParameters(Map("KeyName" ->keyName))
         .withTags(TestDefaults.Tags)
-      stackID = asyncCloudFormation.createStack(createStackRequest).futureValue
+      stackID = asyncCloudFormation.createStack(createStackRequest).futureValue()
       logger.info(s"Creating stack $stackName")
 
       val completedStatuses = Set(StackStatus.CREATE_COMPLETE, StackStatus.DELETE_COMPLETE)
@@ -82,14 +82,14 @@ class EC2ClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
       val stack =
         Source.tick(5.seconds, 5.seconds, Some(stackName))
           .via(streamingCloudFormation.stackDescriber)
-          .map { s ⇒
+          .map { s =>
             logger.info(s"Stack status is now ${s.stackStatus}")
             s
           }
-          .filter(s ⇒ completedStatuses(s.stackStatus))
+          .filter(s => completedStatuses(s.stackStatus))
           .take(1)
           .runWith(Sink.head)
-          .futureValue(StackPatience,Position.here)
+          .futureValue()(StackPatience,Position.here)
 
       stack.stackStatus shouldBe StackStatus.CREATE_COMPLETE
 
@@ -108,31 +108,31 @@ class EC2ClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
       val theInstanceId = new Equality[Instance] {
         override def areEqual(a: Instance, b: Any): Boolean = {
           b match {
-            case id: String ⇒ a.id == id
+            case id: String => a.id == id
           }
         }
       }
 
       "all of them" in {
-        val result = asyncEC2.describeInstances().futureValue
+        val result = asyncEC2.describeInstances().futureValue()
         (result should contain (instanceId)) (decided by theInstanceId)
       }
 
       "using a filter" in {
-        val filter = Map("key-name" → Seq(keyName))
-        val result = asyncEC2.describeInstances(filter).futureValue
+        val filter = Map("key-name" ->Seq(keyName))
+        val result = asyncEC2.describeInstances(filter).futureValue()
         (result should contain (instanceId)) (decided by theInstanceId)
       }
 
       "by ID" in {
-        val result = asyncEC2.describeInstance(instanceId).futureValue
+        val result = asyncEC2.describeInstance(instanceId).futureValue()
         result shouldBe defined
         result.get.id shouldBe instanceId
       }
     }
 
     "can handle not finding an instance" in {
-      val result = asyncEC2.describeKeyPair("i-ffffffff").futureValue
+      val result = asyncEC2.describeKeyPair("i-ffffffff").futureValue()
       result shouldBe None
     }
 
@@ -141,10 +141,10 @@ class EC2ClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
 
       val deleteComplete = Source.single(DeleteStackRequest(stackName, Seq.empty))
         .via(streamingCloudFormation.stackDeleter)
-        .flatMapConcat { _ ⇒
+        .flatMapConcat { _ =>
           Source.tick(5.seconds, 5.seconds, Some(stackID))
             .via(streamingCloudFormation.stackDescriber)
-            .map { s ⇒
+            .map { s =>
               logger.info(s"Stack status is now ${s.stackStatus}")
               s
             }
@@ -152,7 +152,7 @@ class EC2ClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
             .take(1)
         }
         .runWith(Sink.head)
-        .futureValue(StackPatience,Position.here)
+        .futureValue()(StackPatience,Position.here)
 
       deleteComplete.getStackName shouldBe stackName
 
@@ -160,10 +160,10 @@ class EC2ClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
     }
 
     "can delete a key" in {
-      val deleteResult = asyncEC2.deleteKeyPair(keyName).futureValue
+      val deleteResult = asyncEC2.deleteKeyPair(keyName).futureValue()
       deleteResult shouldBe keyName
 
-      val findResult = asyncEC2.describeKeyPairs(Map("key-name" → Seq(keyName))).futureValue
+      val findResult = asyncEC2.describeKeyPairs(Map("key-name" ->Seq(keyName))).futureValue()
       findResult shouldBe empty
     }
 
@@ -174,7 +174,7 @@ class EC2ClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with 
 object EC2ClientIntegrationSpec {
   val InstanceIDOutputKey = "TestInstanceID"
   val InstanceName = "TestInstance"
-  val Tags = TestDefaults.Tags.map(tag ⇒ AmazonTag(tag._1, tag._2)).toSeq
+  val Tags = TestDefaults.Tags.map(tag => AmazonTag(tag._1, tag._2)).toSeq
 
   val MinimalEC2Template = {
     val keyName = `AWS::EC2::KeyPair::KeyName_Parameter`("KeyName",

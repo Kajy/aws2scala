@@ -16,9 +16,9 @@ object StsGen {
 
   def resultFor(request: AssumeRoleRequest): Gen[AssumeRoleResult] =
     for {
-      roleId ← IamGen.roleId
-      credentials ← arbitrary[Credentials]
-      packedPolicySize ← if (request.policy.isDefined) packedPolicySize.map(Some(_)) else Gen.const(None)
+      roleId <- IamGen.roleId
+      credentials <- arbitrary[Credentials]
+      packedPolicySize <- if (request.policy.isDefined) packedPolicySize.map(Some(_)) else Gen.const(None)
     } yield {
       val roleArn = RoleArn.fromArnString(request.roleArn)
       val assumedRoleArn = AssumedRoleArn(roleArn.account, roleArn.name, request.roleSessionName)

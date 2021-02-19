@@ -13,16 +13,16 @@ case class SubscriptionAttributes(arn: SubscriptionArn,
                                   effectiveDeliveryPolicy: Option[SubscriptionDeliveryPolicy]) {
   def asMap: Map[String,String] =
     Map(
-      "SubscriptionArn" → arn.arnString,
-      "Protocol" → endpoint.protocol.asAws,
-      "Endpoint" → endpoint.endpoint,
-      "TopicArn" → TopicArn(arn.account, arn.region, arn.topicName).arnString,
-      "Owner" → arn.account.id,
-      "ConfirmationWasAuthenticated" → confirmationWasAuthenticated.toString,
-      "RawMessageDelivery" → rawMessageDelivery.toString,
-      "DeliveryPolicy" → deliveryPolicy.map(_.toJson.compactPrint).orNull,
-      "EffectiveDeliveryPolicy" → effectiveDeliveryPolicy.map(_.toJson.compactPrint).orNull
-    ).filter(e ⇒ Option(e._2).isDefined)
+      "SubscriptionArn" ->arn.arnString,
+      "Protocol" ->endpoint.protocol.asAws,
+      "Endpoint" ->endpoint.endpoint,
+      "TopicArn" ->TopicArn(arn.account, arn.region, arn.topicName).arnString,
+      "Owner" ->arn.account.id,
+      "ConfirmationWasAuthenticated" ->confirmationWasAuthenticated.toString,
+      "RawMessageDelivery" ->rawMessageDelivery.toString,
+      "DeliveryPolicy" ->deliveryPolicy.map(_.toJson.compactPrint).orNull,
+      "EffectiveDeliveryPolicy" ->effectiveDeliveryPolicy.map(_.toJson.compactPrint).orNull
+    ).filter(e => Option(e._2).isDefined)
 }
 
 object SubscriptionAttributes {

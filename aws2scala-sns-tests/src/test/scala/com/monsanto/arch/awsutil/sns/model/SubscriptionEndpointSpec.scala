@@ -9,7 +9,7 @@ import org.scalacheck.{Arbitrary, Shrink}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks.forAll
-import org.scalatest.prop.TableDrivenPropertyChecks.{Table, forAll ⇒ forAllIn}
+import org.scalatest.prop.TableDrivenPropertyChecks.{Table, forAll => forAllIn}
 
 class SubscriptionEndpointSpec extends AnyFreeSpec {
   "an HttpEndpoint" - {
@@ -23,13 +23,13 @@ class SubscriptionEndpointSpec extends AnyFreeSpec {
         URI.create("https://example.com")
       )
 
-      forAllIn(badUris) { uri ⇒
+      forAllIn(badUris) { uri =>
         an [IllegalArgumentException] shouldBe thrownBy (HttpEndpoint(uri))
       }
     }
 
     "should have a valid endpoint value" in {
-      forAll { endpoint: HttpEndpoint ⇒
+      forAll { endpoint: HttpEndpoint =>
         URI.create(endpoint.endpoint) shouldBe endpoint.uri
       }
     }
@@ -48,13 +48,13 @@ class SubscriptionEndpointSpec extends AnyFreeSpec {
         URI.create("http://example.com")
       )
 
-      forAllIn(badUris) { uri ⇒
+      forAllIn(badUris) { uri =>
         an [IllegalArgumentException] shouldBe thrownBy (HttpsEndpoint(uri))
       }
     }
 
     "should have a valid endpoint value" in {
-      forAll { endpoint: HttpsEndpoint ⇒
+      forAll { endpoint: HttpsEndpoint =>
         URI.create(endpoint.endpoint) shouldBe endpoint.uri
       }
     }
@@ -88,7 +88,7 @@ class SubscriptionEndpointSpec extends AnyFreeSpec {
 
   private def theCorrectProtocol[T <: SubscriptionEndpoint: Arbitrary: Shrink](protocol: Protocol): Unit = {
     "have the correct protocol" in {
-      forAll { endpoint: T ⇒
+      forAll { endpoint: T =>
         endpoint.protocol shouldBe protocol
       }
     }

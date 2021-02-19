@@ -9,7 +9,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class ResourceSpec extends AnyFreeSpec {
   "a Resource" - {
     "can be round-tripped via its AWS equivalent" in {
-      forAll { resource: Resource ⇒
+      forAll { resource: Resource =>
         resource.asAws.asScala shouldBe resource
       }
     }

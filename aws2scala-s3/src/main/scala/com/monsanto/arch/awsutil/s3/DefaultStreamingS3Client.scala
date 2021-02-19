@@ -2,7 +2,7 @@ package com.monsanto.arch.awsutil.s3
 
 import java.io.File
 import java.net.URL
-import java.util.concurrent.{Future ⇒ JFuture}
+import java.util.concurrent.{Future => JFuture}
 
 import akka.NotUsed
 import akka.actor.Cancellable
@@ -11,13 +11,13 @@ import akka.stream.scaladsl.GraphDSL.Implicits._
 import akka.stream.scaladsl._
 import com.amazonaws.handlers.AsyncHandler
 import com.amazonaws.services.s3.transfer.{Download, TransferManager}
-import com.amazonaws.services.s3.{AmazonS3, AmazonS3Client, model ⇒ aws}
+import com.amazonaws.services.s3.{AmazonS3, AmazonS3Client, model => aws}
 import com.monsanto.arch.awsutil.s3.model.AwsConverters._
 import com.monsanto.arch.awsutil.s3.model.{BucketNameAndKey, CreateBucketRequest}
 import com.monsanto.arch.awsutil._
 import com.typesafe.scalalogging.LazyLogging
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.concurrent.duration.{Duration, TimeUnit}
 import scala.concurrent.{Await, ExecutionContext, Future, blocking}
 import scala.util.{Failure, Success}
@@ -52,7 +52,7 @@ private[awsutil] class DefaultStreamingS3Client(s3client: AmazonS3, transferMana
 
   override val bucketLister =
     Source.single(NotUsed.getInstance())
-      .map(_ ⇒ new aws.ListBucketsRequest)
+      .map(_ => new aws.ListBucketsRequest)
       .mapAsync(parallelism)(asAsync(s3client.listBuckets))
       .mapConcat(_.asScala.toList)
       .map(_.asScala)
@@ -63,7 +63,7 @@ private[awsutil] class DefaultStreamingS3Client(s3client: AmazonS3, transferMana
       .map(_.asAws)
       .mapAsync(parallelism)(asAsync(s3client.createBucket(_: aws.CreateBucketRequest)))
       .map(_.getName)
-      .flatMapConcat(name ⇒ bucketLister.filter(_.name == name))
+      .flatMapConcat(name => bucketLister.filter(_.name == name))
       .named("S3.bucketCreator")
 
   override val rawObjectLister =
@@ -73,7 +73,7 @@ private[awsutil] class DefaultStreamingS3Client(s3client: AmazonS3, transferMana
 
   override val objectLister =
     Flow[(String, Option[String])]
-      .map(args ⇒ new aws.ListObjectsRequest(args._1, args._2.orNull, null, null, null))
+      .map(args => new aws.ListObjectsRequest(args._1, args._2.orNull, null, null, null))
       .via(rawObjectLister)
       .named("S3.objectLister")
 
@@ -91,9 +91,9 @@ private[awsutil] class DefaultStreamingS3Client(s3client: AmazonS3, transferMana
   override val bucketTagsGetter =
     Flow[String]
       .mapAsync(parallelism) {
-        asAsync { bucketName ⇒
+        asAsync { bucketName =>
           val tagging = Option(s3client.getBucketTaggingConfiguration(bucketName))
-          tagging.map { config ⇒
+          tagging.map { config =>
             config.getAllTagSets.asScala
               .map(_.getAllTags.asScala.toMap)
               .reduce(_ ++ _)
@@ -105,7 +105,7 @@ private[awsutil] class DefaultStreamingS3Client(s3client: AmazonS3, transferMana
   override val bucketTagsSetter =
     Flow[(String, Map[String,String])]
       .mapAsync(parallelism) {
-        asAsync { args ⇒
+        asAsync { args =>
           val (bucketName, tags) = args
           if (tags.isEmpty) {
             s3client.deleteBucketTaggingConfiguration(bucketName)
@@ -123,36 +123,36 @@ private[awsutil] class DefaultStreamingS3Client(s3client: AmazonS3, transferMana
     Flow[aws.PutObjectRequest]
       .map(applyPutObjectDefaults)
       .mapAsync(parallelism)(asAsync(transferManager.upload))
-      .mapAsync(parallelism) { upload ⇒
+      .mapAsync(parallelism) { upload =>
         Future(blocking(upload.waitForUploadResult()))
       }
-      .map(result ⇒ (result.getBucketName, result.getKey))
+      .map(result => (result.getBucketName, result.getKey))
       .flatMapConcat(pollForObjectSummary)
       .named("S3.rawUploader")
 
   override def uploader[T](implicit uploadable: UploadSource[T]) =
     Flow[(BucketNameAndKey,T)]
-      .map(args ⇒ uploadable(args._1, args._2))
+      .map(args => uploadable(args._1, args._2))
       .via(rawUploader)
       .named("S3.uploader")
 
   override val objectDeleter =
     Flow[BucketNameAndKey]
-      .mapAsync(parallelism)(asAsync{ o ⇒
+      .mapAsync(parallelism)(asAsync{ o =>
         val r = new aws.DeleteObjectRequest(o.bucketName, o.key)
         s3client.deleteObject(r)
         o
       })
-      .flatMapConcat { o ⇒
+      .flatMapConcat { o =>
         Source.tick(Duration.Zero, settings.s3.uploadCheckInterval, (o.bucketName, Some(o.key)))
-          .flatMapConcat { spec ⇒
+          .flatMapConcat { spec =>
             Source.single(spec)
               .via(objectLister)
-              .filter(os ⇒ os.getBucketName  == o.bucketName && os.getKey == o.key)
+              .filter(os => os.getBucketName  == o.bucketName && os.getKey == o.key)
               .fold(Seq.empty[aws.S3ObjectSummary])(_ :+ _)
           }
           .filter(_.isEmpty)
-          .map(_ ⇒ o)
+          .map(_ => o)
           .take(1)
           .takeWithin(settings.s3.uploadCheckTimeout)
       }
@@ -162,7 +162,7 @@ private[awsutil] class DefaultStreamingS3Client(s3client: AmazonS3, transferMana
     Flow[aws.CopyObjectRequest]
       .map(applyCopyObjectDefaults)
       .mapAsync(parallelism) {
-        asAsync { request ⇒
+        asAsync { request =>
           s3client.copyObject(request)
           (request.getDestinationBucketName, request.getDestinationKey)
         }
@@ -172,26 +172,26 @@ private[awsutil] class DefaultStreamingS3Client(s3client: AmazonS3, transferMana
 
   override val copier =
     Flow[(BucketNameAndKey, BucketNameAndKey)]
-      .map { case (source, destination) ⇒
+      .map { case (source, destination) =>
           new aws.CopyObjectRequest(source.bucketName, source.key, destination.bucketName, destination.key)
       }
       .via(rawCopier)
       .named("S3.copier")
 
   override val bucketEmptier = {
-    Flow.fromGraph(GraphDSL.create() { implicit builder ⇒
+    Flow.fromGraph(GraphDSL.create() { implicit builder =>
       val broadcast = builder.add(Broadcast[String](2))
-      val merge = builder.add(ZipWith[String, Unit, String]((x, _) ⇒ x))
+      val merge = builder.add(ZipWith[String, Unit, String]((x, _) => x))
       val deleter = Flow[String]
-        .flatMapConcat { bucketName ⇒
+        .flatMapConcat { bucketName =>
           Source.single((bucketName, None))
             .via(objectLister)
-            .mapAsyncUnordered(parallelism)(asAsync{ o ⇒
+            .mapAsyncUnordered(parallelism)(asAsync{ o =>
               val r = new aws.DeleteObjectRequest(o.getBucketName, o.getKey)
               s3client.deleteObject(r)
               o
             })
-            .fold(())((_,_) ⇒ ())
+            .fold(())((_,_) => ())
         }
       broadcast ~> merge.in0
       broadcast ~> deleter ~> merge.in1
@@ -210,19 +210,19 @@ private[awsutil] class DefaultStreamingS3Client(s3client: AmazonS3, transferMana
 
   override def downloader[T](implicit downloadSink: DownloadSink[T]) =
     Flow[BucketNameAndKey]
-      .map(x ⇒ new aws.GetObjectRequest(x.bucketName, x.key))
+      .map(x => new aws.GetObjectRequest(x.bucketName, x.key))
       .via(rawDownloader)
       .mapAsync(parallelism)(downloadSink.apply)
       .named("S3.downloader")
 
   override val rawFileDownloader =
-    Flow.fromGraph(GraphDSL.create() { implicit b ⇒
+    Flow.fromGraph(GraphDSL.create() { implicit b =>
       val broadcast = b.add(Broadcast[(aws.GetObjectRequest,File)](2))
       val merge = b.add(ZipWith[(aws.GetObjectRequest,File), Download, File]((x, _) => x._2))
       val downloader = Flow[(aws.GetObjectRequest,File)]
-        .map(args ⇒ transferManager.download(args._1, args._2))
-        .mapAsync(parallelism) { download ⇒
-          Future(blocking(download.waitForCompletion())).map(_ ⇒ download)
+        .map(args => transferManager.download(args._1, args._2))
+        .mapAsync(parallelism) { download =>
+          Future(blocking(download.waitForCompletion())).map(_ => download)
         }
       broadcast.out(0) ~> merge.in0
       broadcast.out(1) ~> downloader ~> merge.in1
@@ -231,22 +231,22 @@ private[awsutil] class DefaultStreamingS3Client(s3client: AmazonS3, transferMana
 
   override val fileDownloader =
     Flow[(BucketNameAndKey,File)]
-      .map(args ⇒ (new aws.GetObjectRequest(args._1.bucketName, args._1.key), args._2))
+      .map(args => (new aws.GetObjectRequest(args._1.bucketName, args._1.key), args._2))
       .via(rawFileDownloader)
       .named("S3.fileDownloader")
 
   override val objectUrlGetter =
     s3client match {
-      case concreteClient: AmazonS3Client ⇒
+      case concreteClient: AmazonS3Client =>
         Flow[BucketNameAndKey]
           .mapAsync(parallelism) {
-            asAsync(o ⇒ concreteClient.getUrl(o.bucketName, o.key))
+            asAsync(o => concreteClient.getUrl(o.bucketName, o.key))
           }
           .named("S3.objectUrlGetter")
-      case _ ⇒
+      case _ =>
         logger.warn("Not using concrete Amazon S3 client, getUrl results may be incorrect")
         Flow[BucketNameAndKey]
-          .map { o ⇒
+          .map { o =>
             new URL(s"https://${o.bucketName}.${settings.region.getServiceEndpoint(AmazonS3.ENDPOINT_PREFIX)}/${o.key}")
           }
           .named("S3.pseudoObjectUrlGetter")
@@ -264,7 +264,7 @@ private[awsutil] class DefaultStreamingS3Client(s3client: AmazonS3, transferMana
 
   private def applyDefaultHeaders(metadata: aws.ObjectMetadata, defaults: Map[String,AnyRef]): aws.ObjectMetadata = {
     val defaultedMetadata = Option(metadata).getOrElse(new aws.ObjectMetadata())
-    defaults.foreach { case (key, defaultValue) ⇒
+    defaults.foreach { case (key, defaultValue) =>
       val value = defaultedMetadata.getRawMetadataValue(key)
       if (value == null) {
         defaultedMetadata.setHeader(key, defaultValue)
@@ -279,8 +279,8 @@ private[awsutil] class DefaultStreamingS3Client(s3client: AmazonS3, transferMana
     val listObjectsRequest = new aws.ListObjectsRequest(bucketName, key, null, null, null)
 
     Source.tick(Duration.Zero, settings.s3.uploadCheckInterval, listObjectsRequest)
-      .flatMapConcat(r ⇒ Source.single(r).via(rawObjectLister))
-      .filter(summary ⇒ summary.getBucketName == bucketName && summary.getKey == key)
+      .flatMapConcat(r => Source.single(r).via(rawObjectLister))
+      .filter(summary => summary.getBucketName == bucketName && summary.getKey == key)
       .take(1)
       .completionTimeout(settings.s3.uploadCheckTimeout)
       .named("pollForObjectSummary")
@@ -293,11 +293,11 @@ private[awsutil] class DefaultStreamingS3Client(s3client: AmazonS3, transferMana
     override def apply(request: aws.ListObjectsRequest, handler: AsyncHandler[aws.ListObjectsRequest, aws.ObjectListing]) =  {
       val eventualObjectListing = AsyncCall(request)
       eventualObjectListing.onComplete {
-        case Success(listing) ⇒
+        case Success(listing) =>
           handler.onSuccess(request, listing)
-        case Failure(cause: Exception) ⇒
+        case Failure(cause: Exception) =>
           handler.onError(cause)
-        case Failure(rootCause) ⇒
+        case Failure(rootCause) =>
           // $COVERAGE-OFF$ this should never occur, included to make the match comprehensive
           // note that Failure wraps a `Throwable`, so wrap it here.
           handler.onError(new RuntimeException("Operation failed", rootCause))

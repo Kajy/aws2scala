@@ -14,21 +14,21 @@ class PolicySpec extends AnyFreeSpec with AwsEnumerationBehaviours {
   "a Policy can" - {
     "round trip" - {
       "via its AWS equivalent" in {
-        forAll { policy: Policy ⇒
+        forAll { policy: Policy =>
           //compiler will not accept the 'policyEq' implicit if it is not passed explicitly, not sure why
           policy.asAws.asScala.shouldEqual(policy.copy(version = Some(Policy.Version.`2012-10-17`)))(policyEq)
         }
       }
 
       "via JSON" in {
-        forAll { policy: Policy ⇒
+        forAll { policy: Policy =>
           Policy.fromJson(policy.toJson) shouldBe policy
         }
       }
     }
 
     "will not match bad JSON" in {
-      "{}" should not matchPattern { case Policy.fromJson(_) ⇒ }
+      "{}" should not matchPattern { case Policy.fromJson(_) => }
     }
   }
 
@@ -42,7 +42,7 @@ class PolicySpec extends AnyFreeSpec with AwsEnumerationBehaviours {
     "not build from invalid versions" in {
       val isValidVersion = Policy.Version.values.map(_.id).toSet
 
-      forAll { version: String ⇒
+      forAll { version: String =>
         whenever(!isValidVersion(version)) {
           an [IllegalArgumentException] shouldBe thrownBy {
             Policy.Version.fromId(version)
@@ -59,12 +59,12 @@ class PolicySpec extends AnyFreeSpec with AwsEnumerationBehaviours {
   private implicit val policyEq = new Equality[Policy] {
     override def areEqual(lhs: Policy, rhs: Any): Boolean = {
       rhs match {
-        case Policy(version, id, statements) ⇒
+        case Policy(version, id, statements) =>
           lhs.version == version &&
             lhs.id == id &&
             lhs.statements.size == statements.size  &&
             lhs.statements.zip(statements).forall {
-              case (lhsStatement, rhsStatement) ⇒
+              case (lhsStatement, rhsStatement) =>
                 (rhsStatement.id.isEmpty || lhsStatement.id == rhsStatement.id) &&
                   rhsStatement.principals == lhsStatement.principals &&
                   rhsStatement.effect == lhsStatement.effect &&
@@ -72,7 +72,7 @@ class PolicySpec extends AnyFreeSpec with AwsEnumerationBehaviours {
                   rhsStatement.resources == lhsStatement.resources &&
                   rhsStatement.conditions == lhsStatement.conditions
             }
-        case _ ⇒ false
+        case _ => false
       }
     }
   }

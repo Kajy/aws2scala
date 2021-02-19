@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil
 
-import java.util.concurrent.{Future ⇒ JFuture, TimeUnit}
+import java.util.concurrent.{Future => JFuture, TimeUnit}
 
 import com.amazonaws.AmazonWebServiceRequest
 import com.amazonaws.handlers.AsyncHandler
@@ -58,7 +58,7 @@ object AWSFlowAdapter {
   /** A utility for wrapping an asynchronous AWS call that returns a useless POJO.  This utility will make the result
     * of the call be the request that was passed in.
     */
-  def returnInput[T <: AmazonWebServiceRequest, U](asyncCall: AWSAsyncCall[T,U]): AWSAsyncCall[T,T] = { (request: T, handler: AsyncHandler[T,T]) ⇒
+  def returnInput[T <: AmazonWebServiceRequest, U](asyncCall: AWSAsyncCall[T,U]): AWSAsyncCall[T,T] = { (request: T, handler: AsyncHandler[T,T]) =>
     val ignoreResultHandler = new AsyncHandler[T, U] {
       override def onSuccess(request: T, result: U): Unit = handler.onSuccess(request, request)
       override def onError(exception: Exception): Unit = handler.onError(exception)

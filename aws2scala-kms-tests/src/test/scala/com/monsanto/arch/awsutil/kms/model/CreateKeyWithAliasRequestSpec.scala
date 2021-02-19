@@ -9,14 +9,14 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class CreateKeyWithAliasRequestSpec extends AnyFreeSpec {
   "a CreateKeyWithAliasRequest should" - {
     "convert to a correct AWS CreateKeyRequest object" in {
-      forAll { request: CreateKeyWithAliasRequest ⇒
+      forAll { request: CreateKeyWithAliasRequest =>
         val awsRequest = request.asAws
         awsRequest.getBypassPolicyLockoutSafetyCheck shouldBe
           request.bypassPolicyLockoutSafetyCheck.map(java.lang.Boolean.valueOf).orNull
         request.asAws should have (
-          'Description (request.description.orNull),
-          'KeyUsage (request.keyUsage.name),
-          'Policy (request.policy.map(_.toJson).orNull)
+          Symbol("Description") (request.description.orNull),
+          Symbol("KeyUsage") (request.keyUsage.name),
+          Symbol("Policy") (request.policy.map(_.toJson).orNull)
         )
       }
     }

@@ -8,7 +8,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers._
 
-trait AwsClientProviderBehaviours { this: AnyFreeSpec with MockFactory ⇒
+trait AwsClientProviderBehaviours { this: AnyFreeSpec with MockFactory =>
   def anAwsClientProvider[StreamingClient <: StreamingAwsClient: Manifest, AsyncClient <: AsyncAwsClient: Manifest](provider: AwsClientProvider[StreamingClient,AsyncClient]): Unit = {
     val executorService = mock[ExecutorService]("executorService")
     var streamingClient: Option[StreamingClient] = None

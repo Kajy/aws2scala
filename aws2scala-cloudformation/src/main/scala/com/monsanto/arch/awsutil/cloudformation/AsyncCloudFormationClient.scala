@@ -3,7 +3,7 @@ package com.monsanto.arch.awsutil.cloudformation
 import java.net.URL
 
 import akka.Done
-import akka.stream.Materializer
+import akka.actor.ActorSystem
 import com.amazonaws.services.cloudformation.model._
 import com.monsanto.arch.awsutil.AsyncAwsClient
 import com.monsanto.arch.awsutil.cloudformation.AsyncCloudFormationClient._
@@ -20,7 +20,7 @@ trait AsyncCloudFormationClient extends AsyncAwsClient {
     * @param request an AWS request for creating the stack
     * @return a future with the resulting ID for the new stack
     */
-  def createStack(request: CreateStackRequest)(implicit m: Materializer): Future[String]
+  def createStack(request: CreateStackRequest)(implicit as: ActorSystem): Future[String]
 
   /** Lists all of the stacks that match the given filter.
     *
@@ -29,24 +29,24 @@ trait AsyncCloudFormationClient extends AsyncAwsClient {
     * @return a future containing vector of the summaries of all stacks with the given statuses
     */
   def listStacks[T](statuses: Seq[T] = Seq.empty[StackStatus])
-                   (implicit toStackStatus: StackStatusConvertible[T], m: Materializer): Future[Seq[StackSummary]]
+                   (implicit toStackStatus: StackStatusConvertible[T], as: ActorSystem): Future[Seq[StackSummary]]
 
   /** Describes all of the stacks. */
-  def describeStacks()(implicit m: Materializer): Future[Seq[Stack]]
+  def describeStacks()(implicit as: ActorSystem): Future[Seq[Stack]]
 
   /** Describes the stack with the matching name or ID.  Note that describing a non-existent stack will result in an
     * error.
     */
-  def describeStack(stackNameOrID: String)(implicit m: Materializer): Future[Stack]
+  def describeStack(stackNameOrID: String)(implicit as: ActorSystem): Future[Stack]
 
   /** Returns all of the events for the given stack. */
-  def describeStackEvents(stackNameOrID: String)(implicit m: Materializer): Future[Seq[StackEvent]]
+  def describeStackEvents(stackNameOrID: String)(implicit as: ActorSystem): Future[Seq[StackEvent]]
 
   /** Requests deletion of the stack with the given name or ID.
     *
     * @param stackNameOrID the name or ID of stack to delete
     */
-  def deleteStack(stackNameOrID: String)(implicit m: Materializer): Future[Done]
+  def deleteStack(stackNameOrID: String)(implicit as: ActorSystem): Future[Done]
 
   /** Requests deletion of the stack with the given name or ID.
     *
@@ -55,16 +55,16 @@ trait AsyncCloudFormationClient extends AsyncAwsClient {
     *                        with the resources you want to retain.  During deletion, AWS CloudFormation deletes the
     *                        stack but does not delete the retained resources.
     */
-  def deleteStack(stackNameOrID: String, retainResources: Seq[String])(implicit m: Materializer): Future[Done]
+  def deleteStack(stackNameOrID: String, retainResources: Seq[String])(implicit as: ActorSystem): Future[Done]
 
   /** Validates the given template body. */
-  def validateTemplateBody(body: String)(implicit m: Materializer): Future[ValidatedTemplate]
+  def validateTemplateBody(body: String)(implicit as: ActorSystem): Future[ValidatedTemplate]
 
   /** Validates the template at the given S3 bucket URL. */
-  def validateTemplateURL(url: URL)(implicit m: Materializer): Future[ValidatedTemplate]
+  def validateTemplateURL(url: URL)(implicit as: ActorSystem): Future[ValidatedTemplate]
 
   /** Returns a summary of all of the resources for the given stack. */
-  def listStackResources(stackNameOrID: String)(implicit m: Materializer): Future[Seq[StackResourceSummary]]
+  def listStackResources(stackNameOrID: String)(implicit as: ActorSystem): Future[Seq[StackResourceSummary]]
 }
 
 object AsyncCloudFormationClient {

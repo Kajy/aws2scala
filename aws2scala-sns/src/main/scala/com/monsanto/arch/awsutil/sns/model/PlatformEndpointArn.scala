@@ -30,13 +30,13 @@ object PlatformEndpointArn {
     /** Extracts a `PlatformEndpointArn` object from the given ARN string. */
     def unapply(arnString: String): Option[PlatformEndpointArn] =
       arnString match {
-        case Arn.fromArnString(arn: PlatformEndpointArn) ⇒ Some(arn)
-        case _                                           ⇒ None
+        case Arn.fromArnString(arn: PlatformEndpointArn) => Some(arn)
+        case _                                           => None
       }
   }
 
   private[sns] val platformEndpointArnPF: PartialFunction[Arn.ArnParts, PlatformEndpointArn] = {
-    case (_, Arn.Namespace.AmazonSNS, Some(region), Some(account), PlatformEndpointResourceRegex(Platform(platform), applicationName, endpointId)) ⇒
+    case (_, Arn.Namespace.AmazonSNS, Some(region), Some(account), PlatformEndpointResourceRegex(Platform(platform), applicationName, endpointId)) =>
       PlatformEndpointArn(account, region, platform, applicationName, endpointId)
   }
 

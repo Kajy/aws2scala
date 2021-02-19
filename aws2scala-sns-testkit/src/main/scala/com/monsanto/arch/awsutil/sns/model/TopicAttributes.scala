@@ -16,16 +16,16 @@ case class TopicAttributes(arn: TopicArn,
                            effectiveDeliveryPolicy: TopicDeliveryPolicy) {
   def asMap: Map[String,String] =
     Map(
-      "TopicArn" → arn.arnString,
-      "DisplayName" → displayName,
-      "Owner" → arn.account.id,
-      "Policy" → policy.toString,
-      "SubscriptionsPending" → subscriptionsPending.toString,
-      "SubscriptionsConfirmed" → subscriptionsConfirmed.toString,
-      "SubscriptionsDeleted" → subscriptionsDeleted.toString,
-      "DeliveryPolicy" → deliveryPolicy.map(_.toJson.compactPrint).orNull,
-      "EffectiveDeliveryPolicy" → effectiveDeliveryPolicy.toJson.compactPrint
-    ).filter(e ⇒ Option(e._2).isDefined)
+      "TopicArn" ->arn.arnString,
+      "DisplayName" ->displayName,
+      "Owner" ->arn.account.id,
+      "Policy" ->policy.toString,
+      "SubscriptionsPending" ->subscriptionsPending.toString,
+      "SubscriptionsConfirmed" ->subscriptionsConfirmed.toString,
+      "SubscriptionsDeleted" ->subscriptionsDeleted.toString,
+      "DeliveryPolicy" ->deliveryPolicy.map(_.toJson.compactPrint).orNull,
+      "EffectiveDeliveryPolicy" ->effectiveDeliveryPolicy.toJson.compactPrint
+    ).filter(e => Option(e._2).isDefined)
 }
 
 object TopicAttributes {
@@ -46,23 +46,23 @@ object TopicAttributes {
   implicit lazy val arbTopicAttributes: Arbitrary[TopicAttributes] =
     Arbitrary {
       for {
-        subscriptionsPending ← Gen.posNum[Int]
-        subscriptionsConfirmed ← Gen.posNum[Int]
-        subscriptionsDeleted ← Gen.posNum[Int]
-        topic ← Gen.resultOf(
+        subscriptionsPending <- Gen.posNum[Int]
+        subscriptionsConfirmed <- Gen.posNum[Int]
+        subscriptionsDeleted <- Gen.posNum[Int]
+        topic <- Gen.resultOf(
           TopicAttributes(_: TopicArn, _: String, _: Policy, subscriptionsPending, subscriptionsConfirmed,
             subscriptionsDeleted, _: Option[TopicDeliveryPolicy], _: TopicDeliveryPolicy))
       } yield topic
     }
 
   implicit lazy val shrinkTopicAttributes: Shrink[TopicAttributes] =
-    Shrink { attrs ⇒
-      Shrink.shrink(attrs.arn).map(x ⇒ attrs.copy(arn = x)) append
-        Shrink.shrink(attrs.displayName).map(x ⇒ attrs.copy(displayName = x)) append
-        Shrink.shrink(attrs.policy).map(x ⇒ attrs.copy(policy = x)) append
-        Shrink.shrink(attrs.subscriptionsPending).filter(_ >= 0).map(x ⇒ attrs.copy(subscriptionsPending = x)) append
-        Shrink.shrink(attrs.subscriptionsConfirmed).filter(_ >= 0).map(x ⇒ attrs.copy(subscriptionsConfirmed = x)) append
-        Shrink.shrink(attrs.subscriptionsDeleted).filter(_ >= 0).map(x ⇒ attrs.copy(subscriptionsDeleted = x)) append
-        Stream.empty
+    Shrink { attrs =>
+      Shrink.shrink(attrs.arn).map(x => attrs.copy(arn = x)) lazyAppendedAll
+        Shrink.shrink(attrs.displayName).map(x => attrs.copy(displayName = x)) lazyAppendedAll
+        Shrink.shrink(attrs.policy).map(x => attrs.copy(policy = x)) lazyAppendedAll
+        Shrink.shrink(attrs.subscriptionsPending).filter(_ >= 0).map(x => attrs.copy(subscriptionsPending = x)) lazyAppendedAll
+        Shrink.shrink(attrs.subscriptionsConfirmed).filter(_ >= 0).map(x => attrs.copy(subscriptionsConfirmed = x)) lazyAppendedAll
+        Shrink.shrink(attrs.subscriptionsDeleted).filter(_ >= 0).map(x => attrs.copy(subscriptionsDeleted = x)) lazyAppendedAll
+        LazyList.empty
     }
 }

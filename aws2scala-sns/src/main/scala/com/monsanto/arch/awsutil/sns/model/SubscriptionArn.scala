@@ -28,13 +28,13 @@ object SubscriptionArn {
     /** Extracts a `SubscriptionArn` object from the given ARN string. */
     def unapply(arnString: String): Option[SubscriptionArn] =
       arnString match {
-        case Arn.fromArnString(arn: SubscriptionArn) ⇒ Some(arn)
-        case _                                       ⇒ None
+        case Arn.fromArnString(arn: SubscriptionArn) => Some(arn)
+        case _                                       => None
       }
   }
 
   private[sns] val subscriptionArnPF: PartialFunction[Arn.ArnParts, SubscriptionArn] = {
-    case (_, Arn.Namespace.AmazonSNS, Some(region), Some(owner), SubscriptionResourceRegex(name, id)) ⇒
+    case (_, Arn.Namespace.AmazonSNS, Some(region), Some(owner), SubscriptionResourceRegex(name, id)) =>
       SubscriptionArn(owner, region, name, id)
   }
 

@@ -10,7 +10,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class AccountSpec extends AnyFreeSpec {
   "an Account must" - {
     "have a 12-digit ID" in {
-      forAll { id: String ⇒
+      forAll { id: String =>
         whenever(!id.matches("^[0-9]{12}$")) {
           an [IllegalArgumentException] shouldBe thrownBy {
             Account(id)
@@ -20,19 +20,19 @@ class AccountSpec extends AnyFreeSpec {
     }
 
     "be constructable from an account number" in {
-      forAll(CoreGen.accountId) { id ⇒
+      forAll(CoreGen.accountId) { id =>
         Account(id) shouldBe Account(id, Partition.Aws)
       }
     }
 
     "be extractable from an account number" in {
-      forAll(CoreGen.accountId) { id ⇒
+      forAll(CoreGen.accountId) { id =>
         Account.fromNumber.unapply(id) shouldBe Some(Account(id, Partition.Aws))
       }
     }
 
     "generate the correct account ARN" in {
-      forAll { account: Account ⇒
+      forAll { account: Account =>
         account.arn shouldBe AccountArn(account)
       }
     }

@@ -12,8 +12,8 @@ private[awsutil] object PolicyJsonSupport {
     val generator = jsonFactory.createGenerator(jsonWriter)
     try {
       generator.writeStartObject()
-      policy.version.foreach(v ⇒ generator.writeStringField("Version", v.id))
-      policy.id.foreach(id ⇒ generator.writeStringField("Id", id))
+      policy.version.foreach(v => generator.writeStringField("Version", v.id))
+      policy.id.foreach(id => generator.writeStringField("Id", id))
       generator.writeFieldName("Statement")
       generator.writeStartArray()
       policy.statements.foreach(statementToJson(generator, _))
@@ -35,19 +35,19 @@ private[awsutil] object PolicyJsonSupport {
     }
     while (parser.nextToken() != JsonToken.END_OBJECT) {
       parser.getCurrentName match {
-        case "Version" ⇒
+        case "Version" =>
           if (parser.nextToken() == JsonToken.VALUE_STRING) {
             builder = builder.withVersion(Policy.Version.fromId(parser.getValueAsString))
           } else {
             throwBadToken(parser, "a string policy version")
           }
-        case "Id" ⇒
+        case "Id" =>
           if (parser.nextToken() == JsonToken.VALUE_STRING) {
             builder = builder.withId(parser.getValueAsString)
           } else {
             throwBadToken(parser, "a string policy identifier")
           }
-        case "Statement" ⇒
+        case "Statement" =>
           if (parser.nextToken() != JsonToken.START_ARRAY) {
             throwBadToken(parser, "a statement array")
           }
@@ -56,7 +56,7 @@ private[awsutil] object PolicyJsonSupport {
             statements += jsonToStatement(parser)
           }
           builder = builder.withStatements(statements.result())
-        case x ⇒
+        case x =>
           throwBadValue(parser, "Version, Id, or Statement", x)
       }
     }
@@ -65,7 +65,7 @@ private[awsutil] object PolicyJsonSupport {
 
   def statementToJson(generator: JsonGenerator, statement: Statement): Unit = {
     generator.writeStartObject()
-    statement.id.foreach(id ⇒ generator.writeStringField("Sid", id))
+    statement.id.foreach(id => generator.writeStringField("Sid", id))
     generator.writeFieldIfNonEmpty("Principal", statement.principals, principalsToJson)
     generator.writeStringField("Effect", statement.effect.name)
     generator.writeFieldIfNonEmpty("Action", statement.actions, actionsToJson)
@@ -81,27 +81,27 @@ private[awsutil] object PolicyJsonSupport {
     var builder = StatementBuilder.newBuilder
     while (parser.nextToken() != JsonToken.END_OBJECT) {
       parser.getCurrentName match {
-        case "Sid" ⇒
+        case "Sid" =>
           if (parser.nextToken() == JsonToken.VALUE_STRING) {
             builder = builder.withSid(parser.getValueAsString)
           } else {
             throwBadToken(parser, "a string statement identifier")
           }
-        case "Principal" ⇒
+        case "Principal" =>
           builder = builder.withPrincipals(jsonToPrincipals(parser))
-        case "Effect" ⇒
+        case "Effect" =>
           if (parser.nextToken() == JsonToken.VALUE_STRING) {
             builder = builder.withEffect(Statement.Effect.fromName(parser.getValueAsString))
           } else {
             throwBadToken(parser, "a string statement effect")
           }
-        case "Action" ⇒
+        case "Action" =>
           builder = builder.withActions(jsonToActions(parser))
-        case "Resource" ⇒
+        case "Resource" =>
           builder = builder.withResources(jsonToResources(parser))
-        case "Condition" ⇒
+        case "Condition" =>
           builder = builder.withConditions(jsonToConditions(parser))
-        case x ⇒
+        case x =>
           throwBadValue(parser, "Sid, Principal, Effect, Action, Resource, or Condition", x)
       }
     }
@@ -115,7 +115,7 @@ private[awsutil] object PolicyJsonSupport {
       generator.writeString("*")
     } else {
       generator.writeStartObject()
-      principals.groupBy(_.provider).foreach { grouped ⇒
+      principals.groupBy(_.provider).foreach { grouped =>
         val provider = grouped._1
         val ids = grouped._2.map(_.id).toList
         generator.writeCollapsibleStringsField(provider, ids)
@@ -126,22 +126,22 @@ private[awsutil] object PolicyJsonSupport {
 
   def jsonToPrincipals(parser: JsonParser): Set[Principal] = {
     parser.nextToken() match {
-      case JsonToken.VALUE_NULL ⇒
+      case JsonToken.VALUE_NULL =>
         Set.empty
-      case JsonToken.VALUE_STRING ⇒
+      case JsonToken.VALUE_STRING =>
         parser.getValueAsString match {
-          case "*" ⇒ Statement.allPrincipals
-          case x ⇒ throwBadValue(parser, "‘*’", x)
+          case "*" => Statement.allPrincipals
+          case x => throwBadValue(parser, "‘*’", x)
         }
-      case JsonToken.START_OBJECT ⇒
+      case JsonToken.START_OBJECT =>
         val builder = Set.newBuilder[Principal]
         while (parser.nextToken() != JsonToken.END_OBJECT) {
           val provider = parser.getCurrentName
           val ids = parser.readCollapsibleStringValue()
-          builder ++= ids.map(id ⇒ Principal.fromProviderAndId(provider, id))
+          builder ++= ids.map(id => Principal.fromProviderAndId(provider, id))
         }
         builder.result()
-      case _ ⇒
+      case _ =>
         throwBadToken(parser, "either null, the string ‘*’, or an object")
     }
   }
@@ -151,8 +151,8 @@ private[awsutil] object PolicyJsonSupport {
 
   def jsonToActions(parser: JsonParser): Seq[Action] =
     parser.readCollapsibleStringValue(true).collect {
-      case Action.fromName(action) ⇒ action
-      case name                    ⇒ Action.NamedAction(name)
+      case Action.fromName(action) => action
+      case name                    => Action.NamedAction(name)
     }
 
   def resourcesToJson(generator: JsonGenerator, resources: Seq[Resource]): Unit =
@@ -169,19 +169,19 @@ private[awsutil] object PolicyJsonSupport {
       val comparisonValuesByTypeAndKey =
         conditions
           .groupBy(_.comparisonType)
-          .mapValues { byTypeConditions ⇒
+          .view.mapValues { byTypeConditions =>
             byTypeConditions
               .groupBy(_.key)
-              .mapValues { byTypeAndKeyConditions ⇒
+              .view.mapValues { byTypeAndKeyConditions =>
                   byTypeAndKeyConditions.toList.flatMap(_.comparisonValues).distinct
               }
           }
       generator.writeStartObject()
-      comparisonValuesByTypeAndKey.foreach { typeEntry ⇒
+      comparisonValuesByTypeAndKey.foreach { typeEntry =>
         val (comparisonType, byTypeEntry) = typeEntry
         generator.writeFieldName(comparisonType)
         generator.writeStartObject()
-        byTypeEntry.foreach { keyEntry ⇒
+        byTypeEntry.foreach { keyEntry =>
           val (key, values) = keyEntry
           generator.writeCollapsibleStringsField(key, values)
         }
@@ -192,9 +192,9 @@ private[awsutil] object PolicyJsonSupport {
 
   def jsonToConditions(parser: JsonParser): Set[Condition] =
     parser.nextToken() match {
-      case JsonToken.VALUE_NULL ⇒
+      case JsonToken.VALUE_NULL =>
         Set.empty
-      case JsonToken.START_OBJECT ⇒
+      case JsonToken.START_OBJECT =>
         val conditions = Set.newBuilder[Condition]
         while(parser.nextToken() != JsonToken.END_OBJECT) {
           val comparisonType = parser.getCurrentName
@@ -208,16 +208,16 @@ private[awsutil] object PolicyJsonSupport {
           }
         }
         conditions.result()
-      case _ ⇒
+      case _ =>
         throwBadToken(parser, "either null or a condition object")
     }
 
   implicit class EnhancedJsonGenerator(val generator: JsonGenerator) extends AnyVal {
     def writeCollapsibleStrings(strings: Seq[String]): Unit =
       strings.length match {
-        case 0 ⇒ generator.writeNull()
-        case 1 ⇒ generator.writeString(strings.head)
-        case _ ⇒
+        case 0 => generator.writeNull()
+        case 1 => generator.writeString(strings.head)
+        case _ =>
           generator.writeStartArray()
           strings.foreach(generator.writeString)
           generator.writeEndArray()
@@ -228,10 +228,10 @@ private[awsutil] object PolicyJsonSupport {
       writeCollapsibleStrings(strings)
     }
 
-    def writeFieldIfNonEmpty[T <: TraversableOnce[_]](name: String,
+    def writeFieldIfNonEmpty[T <: IterableOnce[_]](name: String,
                                                       collection: T,
-                                                      serializer: (JsonGenerator, T) ⇒ Unit): Unit = {
-      if (collection.nonEmpty) {
+                                                      serializer: (JsonGenerator, T) => Unit): Unit = {
+      if (collection.iterator.nonEmpty) {
         generator.writeFieldName(name)
         serializer(generator, collection)
       }
@@ -241,9 +241,9 @@ private[awsutil] object PolicyJsonSupport {
   implicit class EnhancedJsonParser(val parser: JsonParser) extends AnyVal {
     def readCollapsibleStringValue(nullOk: Boolean): Seq[String] = {
       parser.nextToken() match {
-        case JsonToken.VALUE_STRING ⇒
+        case JsonToken.VALUE_STRING =>
           Seq(parser.getValueAsString)
-        case JsonToken.START_ARRAY ⇒
+        case JsonToken.START_ARRAY =>
           val strings = Seq.newBuilder[String]
           while (parser.nextToken() != JsonToken.END_ARRAY) {
             if (parser.getCurrentToken == JsonToken.VALUE_STRING) {
@@ -253,9 +253,9 @@ private[awsutil] object PolicyJsonSupport {
             }
           }
           strings.result()
-        case JsonToken.VALUE_NULL if nullOk ⇒
+        case JsonToken.VALUE_NULL if nullOk =>
           Seq.empty
-        case _ ⇒
+        case _ =>
           if (nullOk) {
             throwBadToken(parser, "null, a string, or an array of strings")
           } else {
@@ -269,19 +269,19 @@ private[awsutil] object PolicyJsonSupport {
 
   private def throwBadToken(jsonParser: JsonParser, expected: String): Nothing = {
     val tokenName = jsonParser.getCurrentToken match {
-      case JsonToken.END_ARRAY             ⇒ "the end of an array"
-      case JsonToken.END_OBJECT            ⇒ "the end of an object"
-      case JsonToken.FIELD_NAME            ⇒ s"the field ‘${jsonParser.getText}’"
-      case JsonToken.NOT_AVAILABLE         ⇒ "no available input"
-      case JsonToken.START_ARRAY           ⇒ "an array"
-      case JsonToken.START_OBJECT          ⇒ "an object"
-      case JsonToken.VALUE_EMBEDDED_OBJECT ⇒ "an object"
-      case JsonToken.VALUE_FALSE           ⇒ "the boolean value ‘false’"
-      case JsonToken.VALUE_NULL            ⇒ "the null value"
-      case JsonToken.VALUE_NUMBER_FLOAT    ⇒ "a floating-point number"
-      case JsonToken.VALUE_NUMBER_INT      ⇒ "an integer"
-      case JsonToken.VALUE_STRING          ⇒ "a string"
-      case JsonToken.VALUE_TRUE            ⇒ "the boolean value ‘true’"
+      case JsonToken.END_ARRAY             => "the end of an array"
+      case JsonToken.END_OBJECT            => "the end of an object"
+      case JsonToken.FIELD_NAME            => s"the field ‘${jsonParser.getText}’"
+      case JsonToken.NOT_AVAILABLE         => "no available input"
+      case JsonToken.START_ARRAY           => "an array"
+      case JsonToken.START_OBJECT          => "an object"
+      case JsonToken.VALUE_EMBEDDED_OBJECT => "an object"
+      case JsonToken.VALUE_FALSE           => "the boolean value ‘false’"
+      case JsonToken.VALUE_NULL            => "the null value"
+      case JsonToken.VALUE_NUMBER_FLOAT    => "a floating-point number"
+      case JsonToken.VALUE_NUMBER_INT      => "an integer"
+      case JsonToken.VALUE_STRING          => "a string"
+      case JsonToken.VALUE_TRUE            => "the boolean value ‘true’"
     }
     throw new JsonParseException(
       s"Expected $expected but got $tokenName.",

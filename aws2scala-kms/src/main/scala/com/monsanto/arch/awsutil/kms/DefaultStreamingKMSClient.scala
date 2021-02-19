@@ -4,24 +4,24 @@ import akka.NotUsed
 import akka.stream.FlowShape
 import akka.stream.scaladsl._
 import com.amazonaws.AmazonServiceException
-import com.amazonaws.services.kms.{AWSKMSAsync, model ⇒ aws}
+import com.amazonaws.services.kms.{AWSKMSAsync, model => aws}
 import com.monsanto.arch.awsutil.converters.KmsConverters._
 import com.monsanto.arch.awsutil.kms.model._
 import com.monsanto.arch.awsutil._
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 private[awsutil] class DefaultStreamingKMSClient(kms: AWSKMSAsync) extends StreamingKMSClient {
   private val keyCreator =
     Flow[CreateKeyWithAliasRequest]
       .map(_.asAws)
       .via[aws.CreateKeyResult, NotUsed](AWSFlow.simple(kms.createKeyAsync))
-      .map(result ⇒ result.getKeyMetadata.asScala)
+      .map(result => result.getKeyMetadata.asScala)
       .named("KMS.keyCreator")
 
   override val keyDeletionScheduler =
     Flow[(String, Int)]
-      .map { args ⇒
+      .map { args =>
         new aws.ScheduleKeyDeletionRequest()
           .withKeyId(args._1)
           .withPendingWindowInDays(args._2)
@@ -32,7 +32,7 @@ private[awsutil] class DefaultStreamingKMSClient(kms: AWSKMSAsync) extends Strea
 
   override val keyDeletionCanceller =
     Flow[String]
-      .map(id ⇒ new aws.CancelKeyDeletionRequest().withKeyId(id))
+      .map(id => new aws.CancelKeyDeletionRequest().withKeyId(id))
       .via[aws.CancelKeyDeletionResult, NotUsed](AWSFlow.simple(kms.cancelKeyDeletionAsync))
       .map(_.getKeyId)
       .named("KMS.keyDeletionCanceller")
@@ -40,7 +40,7 @@ private[awsutil] class DefaultStreamingKMSClient(kms: AWSKMSAsync) extends Strea
   /** An Akka flow that enables a key given an ID, emitting the ID of the enabled key. */
   override val keyEnabler =
     Flow[String]
-      .map(id ⇒ new aws.EnableKeyRequest().withKeyId(id))
+      .map(id => new aws.EnableKeyRequest().withKeyId(id))
       .via(AWSFlow.simple(AWSFlowAdapter.returnInput(kms.enableKeyAsync)))
       .map(_.getKeyId)
       .named("KMS.keyEnabler")
@@ -48,7 +48,7 @@ private[awsutil] class DefaultStreamingKMSClient(kms: AWSKMSAsync) extends Strea
   /** An Akka flow that enables a key given an ID, emitting the ID of the enabled key. */
   override val keyDisabler =
     Flow[String]
-      .map(id ⇒ new aws.DisableKeyRequest().withKeyId(id))
+      .map(id => new aws.DisableKeyRequest().withKeyId(id))
       .via(AWSFlow.simple(AWSFlowAdapter.returnInput(kms.disableKeyAsync)))
       .map(_.getKeyId)
       .named("KMS.keyDisabler")
@@ -56,10 +56,10 @@ private[awsutil] class DefaultStreamingKMSClient(kms: AWSKMSAsync) extends Strea
   override val keyDescriber =
     Flow[String]
       .map(asKeyIdentifier)
-      .map(id ⇒ new aws.DescribeKeyRequest().withKeyId(id))
+      .map(id => new aws.DescribeKeyRequest().withKeyId(id))
       .via[aws.DescribeKeyResult,NotUsed](AWSFlow.simple(kms.describeKeyAsync))
-      .map(result ⇒ Some(result.getKeyMetadata.asScala))
-      .recover { case e: AmazonServiceException if e.getErrorCode == "NotFoundException" ⇒ None }
+      .map(result => Some(result.getKeyMetadata.asScala))
+      .recover { case e: AmazonServiceException if e.getErrorCode == "NotFoundException" => None }
       .named("KMS.keyDescriber")
 
   private val keyLister =
@@ -70,7 +70,7 @@ private[awsutil] class DefaultStreamingKMSClient(kms: AWSKMSAsync) extends Strea
 
   override val aliasCreator =
     Flow[(String, String)]
-      .map { case (keyId, alias) ⇒
+      .map { case (keyId, alias) =>
         new aws.CreateAliasRequest()
           .withTargetKeyId(keyId)
           .withAliasName(withAliasPrefix(alias))
@@ -88,13 +88,13 @@ private[awsutil] class DefaultStreamingKMSClient(kms: AWSKMSAsync) extends Strea
 
   override val keyWithAliasCreator =
     Flow.fromGraph(
-      GraphDSL.create() { implicit b ⇒
+      GraphDSL.create() { implicit b =>
         import GraphDSL.Implicits._
 
         val inputCopy = b.add(Broadcast[CreateKeyWithAliasRequest](2))
         val metadataCopy = b.add(Broadcast[KeyMetadata](2))
-        val aliasInputs = b.add(Zip[String,String])
-        val outputSync = b.add(ZipWith[KeyMetadata, String, KeyMetadata]((a,_) ⇒ a))
+        val aliasInputs = b.add(Zip[String,String]())
+        val outputSync = b.add(ZipWith[KeyMetadata, String, KeyMetadata]((a,_) => a))
 
         // create the key
         inputCopy.out(0) ~> keyCreator ~> metadataCopy.in
@@ -116,17 +116,17 @@ private[awsutil] class DefaultStreamingKMSClient(kms: AWSKMSAsync) extends Strea
     Source.single(new aws.ListAliasesRequest)
       .via[aws.ListAliasesResult,NotUsed](AWSFlow.pagedByNextMarker(kms.listAliasesAsync))
       .mapConcat(_.getAliases.asScala.toList)
-      .fold(Map.empty[String,aws.AliasListEntry])((map, alias) ⇒ map + (alias.getTargetKeyId → alias))
+      .fold(Map.empty[String,aws.AliasListEntry])((map, alias) => map + (alias.getTargetKeyId ->alias))
       .named("KMS.aliasMapper")
 
   override val lister =
     aliasMapper
-      .flatMapConcat { aliasMappings ⇒
+      .flatMapConcat { aliasMappings =>
         keyLister
-          .map { keyEntry ⇒
+          .map { keyEntry =>
             aliasMappings.get(keyEntry.getKeyId) match {
-              case Some(aliasEntry) ⇒ ListEntry(keyEntry, aliasEntry)
-              case None ⇒ ListEntry(keyEntry)
+              case Some(aliasEntry) => ListEntry(keyEntry, aliasEntry)
+              case None => ListEntry(keyEntry)
             }
           }
       }
@@ -148,7 +148,7 @@ private[awsutil] class DefaultStreamingKMSClient(kms: AWSKMSAsync) extends Strea
 
   override val dataKeyGenerator =
     Flow[GenerateDataKeyRequest]
-      .flatMapConcat { request ⇒
+      .flatMapConcat { request =>
         Source.single(request)
           .via(
             if (request.includePlaintext) withPlaintextDataKeyGenerator
@@ -161,13 +161,13 @@ private[awsutil] class DefaultStreamingKMSClient(kms: AWSKMSAsync) extends Strea
     Flow[EncryptRequest]
       .map(_.toAws)
       .via[aws.EncryptResult, NotUsed](AWSFlow.simple(kms.encryptAsync))
-      .map(r ⇒ toBytes(r.getCiphertextBlob))
+      .map(r => toBytes(r.getCiphertextBlob))
       .named("KMS.encryptor")
 
   override def decryptor =
     Flow[DecryptRequest]
       .map(_.toAws)
       .via[aws.DecryptResult, NotUsed](AWSFlow.simple(kms.decryptAsync))
-      .map(r ⇒ toBytes(r.getPlaintext))
+      .map(r => toBytes(r.getPlaintext))
       .named("KMS.decryptor")
 }

@@ -1,8 +1,8 @@
 package com.monsanto.arch.awsutil.ec2.model
 
-import com.amazonaws.services.ec2.model.{DescribeKeyPairsRequest ⇒ AwsDescribeKeyPairsRequest}
+import com.amazonaws.services.ec2.model.{DescribeKeyPairsRequest => AwsDescribeKeyPairsRequest}
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /** Contains the information necessary to request descriptions of one or more key pairs.  Considering using one of the
   * convenience values/methods:

@@ -8,7 +8,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class PlatformEndpointArnSpec extends AnyFreeSpec {
   "a PlatformEndpointArn should" - {
     "provide the correct resource" in {
-      forAll { arn: PlatformEndpointArn ⇒
+      forAll { arn: PlatformEndpointArn =>
         val platform = arn.platform.name
         val applicationName = arn.applicationName
         val endpointId = arn.endpointId
@@ -18,7 +18,7 @@ class PlatformEndpointArnSpec extends AnyFreeSpec {
     }
 
     "produce the correct ARN" in {
-      forAll { arn: PlatformEndpointArn ⇒
+      forAll { arn: PlatformEndpointArn =>
         val partition = arn.account.partition
         val region = arn.region.name
         val account = arn.account.id
@@ -31,7 +31,7 @@ class PlatformEndpointArnSpec extends AnyFreeSpec {
     }
 
     "can round-trip via an ARN" in {
-      forAll { arn: PlatformEndpointArn ⇒
+      forAll { arn: PlatformEndpointArn =>
         PlatformEndpointArn.fromArnString(arn.arnString) shouldBe arn
       }
     }

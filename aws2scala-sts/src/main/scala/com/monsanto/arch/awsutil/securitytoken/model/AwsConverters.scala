@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.securitytoken.model
 
-import com.amazonaws.services.securitytoken.{model ⇒ aws}
+import com.amazonaws.services.securitytoken.{model => aws}
 
 object AwsConverters {
   implicit class ScalaAssumeRoleRequest(val request: AssumeRoleRequest) extends AnyVal {
@@ -8,10 +8,10 @@ object AwsConverters {
       val awsRequest = new aws.AssumeRoleRequest()
         .withRoleArn(request.roleArn)
         .withRoleSessionName(request.roleSessionName)
-      request.duration.foreach(d ⇒ awsRequest.setDurationSeconds(d.toSeconds.toInt))
-      request.externalId.foreach(id ⇒ awsRequest.setExternalId(id))
-      request.policy.foreach(p ⇒ awsRequest.setPolicy(p))
-      request.mfa.foreach { mfa ⇒
+      request.duration.foreach(d => awsRequest.setDurationSeconds(d.toSeconds.toInt))
+      request.externalId.foreach(id => awsRequest.setExternalId(id))
+      request.policy.foreach(p => awsRequest.setPolicy(p))
+      request.mfa.foreach { mfa =>
         awsRequest.setSerialNumber(mfa.serialNumber)
         awsRequest.setTokenCode(mfa.tokenCode)
       }
@@ -24,7 +24,7 @@ object AwsConverters {
       val awsResult = new aws.AssumeRoleResult
       awsResult.setAssumedRoleUser(result.assumedRoleUser.asAws)
       awsResult.setCredentials(result.credentials.asAws)
-      result.packedPolicySize.foreach(pps ⇒ awsResult.setPackedPolicySize(pps))
+      result.packedPolicySize.foreach(pps => awsResult.setPackedPolicySize(pps))
       awsResult
     }
   }

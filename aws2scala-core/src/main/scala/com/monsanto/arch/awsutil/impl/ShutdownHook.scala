@@ -19,10 +19,10 @@ private[awsutil] object ShutdownHook extends LazyLogging {
   private class ClientShutdownHook(name: String, serviceRef: WeakReference[AmazonWebServiceClient]) extends ShutdownHook {
     override def shutdown() = {
       serviceRef.get match {
-        case Some(service) ⇒
+        case Some(service) =>
           logger.debug(s"Shutting down client: $name")
           service.shutdown()
-        case None ⇒
+        case None =>
           logger.debug(s"Client $name appears to have garbage collected.")
       }
     }
@@ -31,10 +31,10 @@ private[awsutil] object ShutdownHook extends LazyLogging {
   private class ChildShutdownHook(child: WeakReference[AwsClient]) extends ShutdownHook {
     override def shutdown() = {
       child.get match {
-        case Some(client) ⇒
+        case Some(client) =>
           logger.debug(s"Shutting down child streaming client")
           client.shutdown()
-        case None ⇒
+        case None =>
           logger.debug("Child streaming client appears to have been garbage collected")
       }
     }

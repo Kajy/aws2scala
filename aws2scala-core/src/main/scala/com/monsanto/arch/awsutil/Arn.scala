@@ -86,26 +86,26 @@ object Arn {
       // first, try to get the parts of the ARN
       val maybeArnParts = arnString match {
         // no region or account
-        case ArnRegex(Partition(partition), Arn.Namespace.fromId(namespace), "", "", resource) ⇒
+        case ArnRegex(Partition(partition), Arn.Namespace.fromId(namespace), "", "", resource) =>
           Some((partition, namespace, None, None, resource))
 
         // region, but no account
-        case ArnRegex(Partition(partition), Arn.Namespace.fromId(namespace), Region(region), "", resource) ⇒
+        case ArnRegex(Partition(partition), Arn.Namespace.fromId(namespace), Region(region), "", resource) =>
           Some((partition, namespace, Some(region), None, resource))
 
         // account, but no region
-        case ArnRegex(Partition(partition), Arn.Namespace.fromId(namespace), "", accountId, resource) ⇒
+        case ArnRegex(Partition(partition), Arn.Namespace.fromId(namespace), "", accountId, resource) =>
           Some((partition, namespace, None, Some(Account(accountId, partition)), resource))
 
         // account and region
-        case ArnRegex(Partition(partition), Arn.Namespace.fromId(namespace), Region(region), accountId, resource) ⇒
+        case ArnRegex(Partition(partition), Arn.Namespace.fromId(namespace), Region(region), accountId, resource) =>
           Some((partition, namespace, Some(region), Some(Account(accountId, partition)), resource))
 
-        case _ ⇒ None
+        case _ => None
       }
       // now, extract an arn by finding it in the registered extractors, ending with GenericArn if no extractors
       // are found.
-      maybeArnParts.flatMap { arnParts ⇒
+      maybeArnParts.flatMap { arnParts =>
         arnPartialFunctions.synchronized {
           arnPartialFunctions.view
             .filter(_.isDefinedAt(arnParts))

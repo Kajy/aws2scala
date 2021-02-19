@@ -9,7 +9,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class ManagedPolicySpec extends AnyFreeSpec {
   "a ManagedPolicy should" - {
     "round-trip via its AWS equivalent" in {
-      forAll { policy: ManagedPolicy ⇒
+      forAll { policy: ManagedPolicy =>
         policy.asAws.asScala shouldBe policy
       }
     }

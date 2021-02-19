@@ -23,13 +23,13 @@ private[awsutil] object SamlProviderArn {
     /** Extracts a `SamlProviderArn` object from the given ARN string. */
     def unapply(arnString: String): Option[SamlProviderArn] =
       arnString match {
-        case Arn.fromArnString(arn: SamlProviderArn) ⇒ Some(arn)
-        case _                                       ⇒ None
+        case Arn.fromArnString(arn: SamlProviderArn) => Some(arn)
+        case _                                       => None
       }
   }
 
   private[awsutil] val samlProviderArnPF: PartialFunction[Arn.ArnParts, SamlProviderArn] = {
-    case (_, Arn.Namespace.IAM, None, Some(account), SamlProviderName(name)) ⇒ SamlProviderArn(account, name)
+    case (_, Arn.Namespace.IAM, None, Some(account), SamlProviderName(name)) => SamlProviderArn(account, name)
   }
 
   private val SamlProviderName = "^saml-provider/(.+)$".r

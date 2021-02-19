@@ -15,9 +15,9 @@ object TopicDeliveryPolicy {
   implicit lazy val arbTopicDeliveryPolicy: Arbitrary[TopicDeliveryPolicy] =
     Arbitrary {
       for {
-        disableSubscriptionOverrides ← arbitrary[Boolean]
-        maxReceivesPerSecond ← arbitrary[Option[ThrottlePolicy]]
-        defaultHealthyRetryPolicy ← arbitrary[RetryPolicy]
+        disableSubscriptionOverrides <- arbitrary[Boolean]
+        maxReceivesPerSecond <- arbitrary[Option[ThrottlePolicy]]
+        defaultHealthyRetryPolicy <- arbitrary[RetryPolicy]
       } yield
         TopicDeliveryPolicy(
           disableSubscriptionOverrides,
@@ -33,10 +33,10 @@ object TopicDeliveryPolicy {
 
     override def read(json: JsValue): TopicDeliveryPolicy =
       json match {
-        case JsObject(fields) if fields.keys == Set("http") ⇒ deliveryPolicyFormat.read(fields("http"))
-        case x ⇒ deserializationError(s"Expected an object with the field ‘http’, but got $x")
+        case JsObject(fields) if fields.keys == Set("http") => deliveryPolicyFormat.read(fields("http"))
+        case x => deserializationError(s"Expected an object with the field ‘http’, but got $x")
       }
 
-    override def write(obj: TopicDeliveryPolicy): JsValue = JsObject("http" → deliveryPolicyFormat.write(obj))
+    override def write(obj: TopicDeliveryPolicy): JsValue = JsObject("http" ->deliveryPolicyFormat.write(obj))
   }
 }

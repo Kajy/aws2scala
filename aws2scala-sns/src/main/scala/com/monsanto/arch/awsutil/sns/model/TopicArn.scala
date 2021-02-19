@@ -23,13 +23,13 @@ object TopicArn {
     /** Extracts a `TopicArn` object from the given ARN string. */
     def unapply(arnString: String): Option[TopicArn] =
       arnString match {
-        case Arn.fromArnString(arn: TopicArn) ⇒ Some(arn)
-        case _                                ⇒ None
+        case Arn.fromArnString(arn: TopicArn) => Some(arn)
+        case _                                => None
       }
   }
 
   private[sns] val topicArnPF: PartialFunction[Arn.ArnParts, TopicArn] = {
-    case (_, Arn.Namespace.AmazonSNS, Some(region), Some(owner), TopicResourceRegex(name)) ⇒
+    case (_, Arn.Namespace.AmazonSNS, Some(region), Some(owner), TopicResourceRegex(name)) =>
       TopicArn(owner, region, name)
   }
 

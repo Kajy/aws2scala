@@ -2,11 +2,11 @@ package com.monsanto.arch.awsutil.kms.model
 
 import java.util.UUID
 
-import com.amazonaws.services.kms.model.{GenerateDataKeyRequest ⇒ AWSGenerateDataKeyRequest, GenerateDataKeyWithoutPlaintextRequest}
+import com.amazonaws.services.kms.model.{GenerateDataKeyRequest => AWSGenerateDataKeyRequest, GenerateDataKeyWithoutPlaintextRequest}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers._
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class GenerateDataKeyRequestSpec extends AnyFreeSpec {
   val keyId = UUID.randomUUID().toString
@@ -62,7 +62,7 @@ class GenerateDataKeyRequestSpec extends AnyFreeSpec {
       }
 
       "with a non-empty encryption context" in {
-        val encryptionContext = Map("a" → "b", "c" → "d")
+        val encryptionContext = Map("a" ->"b", "c" ->"d")
         val request = GenerateDataKeyRequest(keyId, context = encryptionContext)
         val result = request.toAws[T]
 

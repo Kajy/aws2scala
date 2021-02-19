@@ -13,19 +13,19 @@ object CoreGen {
   /** Generates an [[com.monsanto.arch.awsutil.Account Account]] within the given
     * [[com.monsanto.arch.awsutil.partitions.Partition Partition]].
     */
-  def account(partition: Partition): Gen[Account] = accountId.map(id ⇒ Account(id, partition))
+  def account(partition: Partition): Gen[Account] = accountId.map(id => Account(id, partition))
 
   /** Generates an arbitrary [[com.monsanto.arch.awsutil.regions.Region Region]] located within the given
     * [[com.monsanto.arch.awsutil.partitions.Partition Partition]].
     */
   def regionFor(partition: Partition): Gen[Region] =
     partition match {
-      case Partition.Aws ⇒
+      case Partition.Aws =>
         Gen.oneOf(Region.US_EAST_1, Region.US_WEST_1, Region.US_WEST_2, Region.EU_WEST_1, Region.EU_CENTRAL_1,
           Region.AP_SOUTHEAST_1, Region.AP_SOUTHEAST_2, Region.AP_NORTHEAST_1, Region.AP_NORTHEAST_2, Region.SA_EAST_1)
-      case Partition.China ⇒
+      case Partition.China =>
         Gen.const(Region.CN_NORTH_1)
-      case Partition.GovCloud ⇒
+      case Partition.GovCloud =>
         Gen.const(Region.GovCloud)
     }
 

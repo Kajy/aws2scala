@@ -22,13 +22,13 @@ object RoleArn {
     /** Extracts a `RoleArn` object from the given ARN string. */
     def unapply(arnString: String): Option[RoleArn] =
       arnString match {
-        case Arn.fromArnString(arn: RoleArn) ⇒ Some(arn)
-        case _                               ⇒ None
+        case Arn.fromArnString(arn: RoleArn) => Some(arn)
+        case _                               => None
       }
   }
 
   private[awsutil] val roleArnPF: PartialFunction[Arn.ArnParts, RoleArn] = {
-    case (_, Arn.Namespace.IAM, None, Some(account), RoleResourceRegex(Path.fromPathString(path), name)) ⇒
+    case (_, Arn.Namespace.IAM, None, Some(account), RoleResourceRegex(Path.fromPathString(path), name)) =>
       RoleArn(account, name, path)
   }
 

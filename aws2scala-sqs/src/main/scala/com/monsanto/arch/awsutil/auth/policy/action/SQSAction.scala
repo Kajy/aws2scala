@@ -61,27 +61,27 @@ object SQSAction {
 
   private[awsutil] def registerActions(): Unit =
     Action.registerActions(
-      SQSActions.AllSQSActions → AllSQSActions,
-      SQSActions.AddPermission → AddPermission,
-      SQSActions.ChangeMessageVisibility → ChangeMessageVisibility,
-      SQSActions.ChangeMessageVisibilityBatch → ChangeMessageVisibilityBatch,
-      SQSActions.CreateQueue → CreateQueue,
-      SQSActions.DeleteMessage → DeleteMessage,
-      SQSActions.DeleteMessageBatch → DeleteMessageBatch,
-      SQSActions.DeleteQueue → DeleteQueue,
-      SQSActions.GetQueueAttributes → GetQueueAttributes,
-      SQSActions.GetQueueUrl → GetQueueUrl,
-      SQSActions.ListDeadLetterSourceQueues → ListDeadLetterSourceQueues,
-      SQSActions.ListQueues → ListQueues,
-      SQSActions.ListQueueTags → ListQueueTags,
-      SQSActions.PurgeQueue → PurgeQueue,
-      SQSActions.ReceiveMessage → ReceiveMessage,
-      SQSActions.RemovePermission → RemovePermission,
-      SQSActions.SendMessage → SendMessage,
-      SQSActions.SendMessageBatch → SendMessageBatch,
-      SQSActions.SetQueueAttributes → SetQueueAttributes,
-      SQSActions.TagQueue → TagQueue,
-      SQSActions.UntagQueue → UntagQueue
+      SQSActions.AllSQSActions ->AllSQSActions,
+      SQSActions.AddPermission ->AddPermission,
+      SQSActions.ChangeMessageVisibility ->ChangeMessageVisibility,
+      SQSActions.ChangeMessageVisibilityBatch ->ChangeMessageVisibilityBatch,
+      SQSActions.CreateQueue ->CreateQueue,
+      SQSActions.DeleteMessage ->DeleteMessage,
+      SQSActions.DeleteMessageBatch ->DeleteMessageBatch,
+      SQSActions.DeleteQueue ->DeleteQueue,
+      SQSActions.GetQueueAttributes ->GetQueueAttributes,
+      SQSActions.GetQueueUrl ->GetQueueUrl,
+      SQSActions.ListDeadLetterSourceQueues ->ListDeadLetterSourceQueues,
+      SQSActions.ListQueues ->ListQueues,
+      SQSActions.ListQueueTags ->ListQueueTags,
+      SQSActions.PurgeQueue ->PurgeQueue,
+      SQSActions.ReceiveMessage ->ReceiveMessage,
+      SQSActions.RemovePermission ->RemovePermission,
+      SQSActions.SendMessage ->SendMessage,
+      SQSActions.SendMessageBatch ->SendMessageBatch,
+      SQSActions.SetQueueAttributes ->SetQueueAttributes,
+      SQSActions.TagQueue ->TagQueue,
+      SQSActions.UntagQueue ->UntagQueue
     )
 }
 

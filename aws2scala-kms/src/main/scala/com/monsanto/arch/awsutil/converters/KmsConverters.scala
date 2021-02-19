@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.converters
 
-import com.amazonaws.services.kms.{model ⇒ aws}
+import com.amazonaws.services.kms.{model => aws}
 import com.monsanto.arch.awsutil.kms.model._
 
 /** Utility for converting ''aws2scala-kms'' objects to/from their AWS counterparts. */
@@ -38,38 +38,38 @@ object KmsConverters {
   implicit class AwsKeyState(val keyState: aws.KeyState) extends AnyVal {
     def asScala: KeyState =
       keyState match {
-        case aws.KeyState.Enabled         ⇒ KeyState.Enabled
-        case aws.KeyState.Disabled        ⇒ KeyState.Disabled
-        case aws.KeyState.PendingDeletion ⇒ KeyState.PendingDeletion
-        case aws.KeyState.PendingImport   ⇒ KeyState.PendingImport
-        case aws.KeyState.Unavailable     ⇒ KeyState.Unavailable
+        case aws.KeyState.Enabled         => KeyState.Enabled
+        case aws.KeyState.Disabled        => KeyState.Disabled
+        case aws.KeyState.PendingDeletion => KeyState.PendingDeletion
+        case aws.KeyState.PendingImport   => KeyState.PendingImport
+        case aws.KeyState.Unavailable     => KeyState.Unavailable
       }
   }
 
   implicit class ScalaKeyState(val keyState: KeyState) extends AnyVal {
     def asAws: aws.KeyState =
       keyState match {
-        case KeyState.Enabled         ⇒ aws.KeyState.Enabled
-        case KeyState.Disabled        ⇒ aws.KeyState.Disabled
-        case KeyState.PendingDeletion ⇒ aws.KeyState.PendingDeletion
-        case KeyState.PendingImport   ⇒ aws.KeyState.PendingImport
-        case KeyState.Unavailable     ⇒ aws.KeyState.Unavailable
+        case KeyState.Enabled         => aws.KeyState.Enabled
+        case KeyState.Disabled        => aws.KeyState.Disabled
+        case KeyState.PendingDeletion => aws.KeyState.PendingDeletion
+        case KeyState.PendingImport   => aws.KeyState.PendingImport
+        case KeyState.Unavailable     => aws.KeyState.Unavailable
       }
   }
 
   implicit class AwsKeyUsage(val keyUsage: aws.KeyUsageType) extends AnyVal {
     def asScala: KeyUsage =
       keyUsage match {
-        case aws.KeyUsageType.ENCRYPT_DECRYPT ⇒ KeyUsage.EncryptDecrypt
-        case aws.KeyUsageType.SIGN_VERIFY     ⇒ KeyUsage.SignVerify
+        case aws.KeyUsageType.ENCRYPT_DECRYPT => KeyUsage.EncryptDecrypt
+        case aws.KeyUsageType.SIGN_VERIFY     => KeyUsage.SignVerify
       }
   }
 
   implicit class ScalaKeyUsage(val keyUsage: KeyUsage) extends AnyVal {
     def asAws: aws.KeyUsageType =
       keyUsage match {
-        case KeyUsage.EncryptDecrypt ⇒ aws.KeyUsageType.ENCRYPT_DECRYPT
-        case KeyUsage.SignVerify     ⇒ aws.KeyUsageType.SIGN_VERIFY
+        case KeyUsage.EncryptDecrypt => aws.KeyUsageType.ENCRYPT_DECRYPT
+        case KeyUsage.SignVerify     => aws.KeyUsageType.SIGN_VERIFY
       }
   }
 

@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.sns.model
 
-import akka.stream.Materializer
+import akka.actor.ActorSystem
 import akka.stream.scaladsl.{Sink, Source}
 import com.monsanto.arch.awsutil.sns.StreamingSNSClient
 
@@ -8,7 +8,7 @@ import scala.concurrent.Future
 
 object SNS {
   /** Creates a topic with the given name. */
-  def createTopic(name: String)(implicit sns: StreamingSNSClient, m: Materializer): Future[Topic] =
+  def createTopic(name: String)(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Topic] =
     Source.single(name)
       .via(sns.topicCreator)
       .via(sns.topicAttributesGetter)
@@ -16,14 +16,14 @@ object SNS {
       .runWith(Sink.head)
 
   /** Lists all available topics. */
-  def listTopics()(implicit sns: StreamingSNSClient, m: Materializer): Future[Seq[Topic]] =
+  def listTopics()(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Seq[Topic]] =
     sns.topicLister
       .via(sns.topicAttributesGetter)
       .map(Topic.apply)
       .runFold(Seq.empty[Topic])(_ :+ _)
 
   /** Lists all available subscriptions, including unconfirmed subscriptions. */
-  def listSubscriptions()(implicit sns: StreamingSNSClient, m: Materializer): Future[Seq[SubscriptionSummary]] =
+  def listSubscriptions()(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Seq[SubscriptionSummary]] =
     Source.single(ListSubscriptionsRequest.allSubscriptions)
       .via(sns.subscriptionLister)
       .runFold(Seq.empty[SubscriptionSummary])(_ :+ _)
@@ -43,7 +43,7 @@ object SNS {
     * @see [[http://docs.aws.amazon.com/sns/latest/dg/SNSMobilePush.html Using SNS Mobile Push Notifications]]
     */
   def createPlatformApplication(name: String, credentials: PlatformApplicationCredentials)
-                               (implicit sns: StreamingSNSClient, m: Materializer): Future[PlatformApplication] =
+                               (implicit sns: StreamingSNSClient, as: ActorSystem): Future[PlatformApplication] =
     Source.single(CreatePlatformApplicationRequest(name, credentials.platform.name, credentials.principal, credentials.credential))
       .via(sns.platformApplicationCreator)
       .runWith(PlatformApplication.toPlatformApplication)
@@ -65,13 +65,13 @@ object SNS {
     */
   def createPlatformApplication(name: String, credentials: PlatformApplicationCredentials,
                                 attributes: Map[String,String])
-                               (implicit sns: StreamingSNSClient, m: Materializer): Future[PlatformApplication] =
+                               (implicit sns: StreamingSNSClient, as: ActorSystem): Future[PlatformApplication] =
     Source.single(CreatePlatformApplicationRequest(name, credentials.platform.name, credentials.principal, credentials.credential, attributes))
       .via(sns.platformApplicationCreator)
       .runWith(PlatformApplication.toPlatformApplication)
 
   /** Lists all of the platform applications. */
-  def listPlatformApplications()(implicit sns: StreamingSNSClient, m: Materializer): Future[Seq[PlatformApplication]] =
+  def listPlatformApplications()(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Seq[PlatformApplication]] =
     sns.platformApplicationLister
       .runWith(Sink.seq)
 }

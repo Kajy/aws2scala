@@ -2,10 +2,10 @@ package com.monsanto.arch.awsutil.kms.model
 
 import java.nio.ByteBuffer
 
-import com.amazonaws.services.kms.model.{EncryptRequest ⇒ AWSEncryptRequest}
+import com.amazonaws.services.kms.model.{EncryptRequest => AWSEncryptRequest}
 import com.monsanto.arch.awsutil.kms.asKeyIdentifier
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /** A rough analogue to AWS’ own `EncryptRequest`.
   *

@@ -12,20 +12,20 @@ class QueueArnSpec extends AnyFreeSpec {
 
   "a queue ARN should" - {
     "have the correct resource" in {
-      forAll { arn: QueueArn ⇒
+      forAll { arn: QueueArn =>
         arn.resource shouldBe arn.name
       }
     }
 
     "produce the correct ARN" in {
-      forAll { arn: QueueArn ⇒
+      forAll { arn: QueueArn =>
 
         arn.arnString shouldBe s"arn:${arn.account.partition.id}:sqs:${arn.region.name}:${arn.account.id}:${arn.name}"
       }
     }
 
     "round-trip via an ARN" in {
-      forAll { arn: QueueArn ⇒
+      forAll { arn: QueueArn =>
         QueueArn.fromArnString(arn.arnString) shouldBe arn
       }
     }

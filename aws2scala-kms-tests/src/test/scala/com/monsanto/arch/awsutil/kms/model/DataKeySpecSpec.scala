@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.kms.model
 
-import com.amazonaws.services.kms.model.{DataKeySpec ⇒ AWSDataKeySpec}
+import com.amazonaws.services.kms.model.{DataKeySpec => AWSDataKeySpec}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 

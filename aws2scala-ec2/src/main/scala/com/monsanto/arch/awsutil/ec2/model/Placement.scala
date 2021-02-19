@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.ec2.model
 
-import com.amazonaws.services.ec2.{model ⇒ aws}
+import com.amazonaws.services.ec2.{model => aws}
 
 /** Describes the placement for an instance.
   *
@@ -21,7 +21,7 @@ object Placement {
     Placement(
       placement.getAvailabilityZone,
       Option(placement.getGroupName).filter(_.nonEmpty),
-      Option(placement.getTenancy).map(t ⇒ Tenancy.fromString(t).get),
+      Option(placement.getTenancy).map(t => Tenancy.fromString(t).get),
       Option(placement.getHostId),
-      Option(placement.getAffinity).map(t ⇒ Affinity.fromString(t).get))
+      Option(placement.getAffinity).map(t => Affinity.fromString(t).get))
 }

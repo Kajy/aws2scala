@@ -15,7 +15,7 @@ class SQSSpec extends AnyFreeSpec with MockFactory with AwsClientProviderBehavio
     behave like anAwsClientProvider(SQS)
 
     "register the SQS actions" in {
-      forAll(actions) { action ⇒
+      forAll(actions) { action =>
         action.asAws.asScala shouldBe action
       }
     }

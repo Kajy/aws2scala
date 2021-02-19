@@ -8,7 +8,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class RoleArnSpec extends AnyFreeSpec {
   "a RoleArn should" - {
     "provide the correct resource" in {
-      forAll { arn: RoleArn ⇒
+      forAll { arn: RoleArn =>
         val path = arn.path.pathString
         val roleName = arn.name
         arn.resource shouldBe s"role$path$roleName"
@@ -16,7 +16,7 @@ class RoleArnSpec extends AnyFreeSpec {
     }
 
     "produce the correct ARN" in {
-      forAll { arn: RoleArn ⇒
+      forAll { arn: RoleArn =>
         val partition = arn.account.partition.id
         val account = arn.account.id
         val path = arn.path.pathString
@@ -27,7 +27,7 @@ class RoleArnSpec extends AnyFreeSpec {
     }
 
     "can round-trip via an ARN" in {
-      forAll { arn: RoleArn ⇒
+      forAll { arn: RoleArn =>
         RoleArn.fromArnString(arn.arnString) shouldBe arn
       }
     }

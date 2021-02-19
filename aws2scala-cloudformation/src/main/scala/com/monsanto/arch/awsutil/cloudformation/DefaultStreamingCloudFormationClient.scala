@@ -2,12 +2,12 @@ package com.monsanto.arch.awsutil.cloudformation
 
 import akka.NotUsed
 import akka.stream.scaladsl.Flow
-import com.amazonaws.services.cloudformation.{AmazonCloudFormationAsync, model ⇒ aws}
+import com.amazonaws.services.cloudformation.{AmazonCloudFormationAsync, model => aws}
 import com.monsanto.arch.awsutil.cloudformation.model.AwsConverters._
 import com.monsanto.arch.awsutil.cloudformation.model.{DeleteStackRequest, ValidatedTemplate}
 import com.monsanto.arch.awsutil._
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 private[cloudformation] class DefaultStreamingCloudFormationClient(client: AmazonCloudFormationAsync) extends StreamingCloudFormationClient {
   override val stackCreator =
@@ -27,7 +27,7 @@ private[cloudformation] class DefaultStreamingCloudFormationClient(client: Amazo
     Flow[Option[String]]
       .map { maybeStackName =>
         val req = new aws.DescribeStacksRequest
-        maybeStackName.foreach(name ⇒ req.setStackName(name))
+        maybeStackName.foreach(name => req.setStackName(name))
         req
       }
       .via[aws.DescribeStacksResult,NotUsed](AWSFlow.pagedByNextToken(client.describeStacksAsync))
@@ -36,7 +36,7 @@ private[cloudformation] class DefaultStreamingCloudFormationClient(client: Amazo
 
   override val stackEventsDescriber =
     Flow[String]
-      .map(stackNameOrId ⇒ new aws.DescribeStackEventsRequest().withStackName(stackNameOrId))
+      .map(stackNameOrId => new aws.DescribeStackEventsRequest().withStackName(stackNameOrId))
       .via[aws.DescribeStackEventsResult,NotUsed](AWSFlow.pagedByNextToken(client.describeStackEventsAsync))
       .mapConcat(_.getStackEvents.asScala.toList)
       .named("CloudFormation.stackEventsDescriber")
@@ -51,12 +51,12 @@ private[cloudformation] class DefaultStreamingCloudFormationClient(client: Amazo
   override val templateValidator =
     Flow[aws.ValidateTemplateRequest]
       .via[aws.ValidateTemplateResult,NotUsed](AWSFlow.simple(client.validateTemplateAsync))
-      .map(r ⇒ ValidatedTemplate(r))
+      .map(r => ValidatedTemplate(r))
       .named("CloudFormation.templateValidator")
 
   override val stackResourceLister =
     Flow[String]
-      .map(x ⇒ new aws.ListStackResourcesRequest().withStackName(x))
+      .map(x => new aws.ListStackResourcesRequest().withStackName(x))
       .via[aws.ListStackResourcesResult,NotUsed](AWSFlow.pagedByNextToken(client.listStackResourcesAsync))
       .mapConcat(_.getStackResourceSummaries.asScala.toList)
       .named("CloudFormation.stackResourceLister")

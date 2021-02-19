@@ -9,7 +9,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class KeyPairSpec extends AnyFreeSpec {
   "a KeyPair should" - {
     "be constructed from an AWS instance" in {
-      forAll { keyPair: KeyPair ⇒
+      forAll { keyPair: KeyPair =>
         KeyPair.fromAws(keyPair.toAws) shouldBe keyPair
       }
     }

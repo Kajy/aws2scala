@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.securitytoken
 
-import akka.stream.Materializer
+import akka.actor.ActorSystem
 import com.monsanto.arch.awsutil.AsyncAwsClient
 import com.monsanto.arch.awsutil.securitytoken.model.{AssumeRoleRequest, AssumeRoleResult, Credentials}
 
@@ -17,7 +17,7 @@ trait AsyncSecurityTokenServiceClient extends AsyncAwsClient {
     * @param sessionName the name of the assumed role session
     * @return temporary security credentials for the assumed role
     */
-  def assumeRole(roleArn: String, sessionName: String)(implicit m: Materializer): Future[Credentials]
+  def assumeRole(roleArn: String, sessionName: String)(implicit as: ActorSystem): Future[Credentials]
 
   /** Returns a set of temporary security credentials you can use to access AWS resources to which you might not
     * normally have access.
@@ -30,7 +30,7 @@ trait AsyncSecurityTokenServiceClient extends AsyncAwsClient {
     * @param externalId an external ID to include in the request
     * @return temporary security credentials for the assumed role
     */
-  def assumeRole(roleArn: String, sessionName: String, externalId: String)(implicit m: Materializer): Future[Credentials]
+  def assumeRole(roleArn: String, sessionName: String, externalId: String)(implicit as: ActorSystem): Future[Credentials]
 
   /** Returns a set of temporary security credentials you can use to access AWS resources to which you might not
     * normally have access.
@@ -43,5 +43,5 @@ trait AsyncSecurityTokenServiceClient extends AsyncAwsClient {
     * @return the full result from AWS, which includes the credentials, assumed role information, and the packed policy
     *         size
     */
-  def assumeRole(request: AssumeRoleRequest)(implicit m: Materializer): Future[AssumeRoleResult]
+  def assumeRole(request: AssumeRoleRequest)(implicit as: ActorSystem): Future[AssumeRoleResult]
 }

@@ -12,13 +12,13 @@ class KeyUsageSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
     val keyUsages = Table("key usage", KeyUsage.values: _*)
 
     "have an ID that matches AWS string enumeration name" in {
-      forAll(keyUsages) { keyUsage ⇒
+      forAll(keyUsages) { keyUsage =>
         keyUsage.name shouldBe keyUsage.asAws.name()
       }
     }
 
     "be buildable from an identifier string" in {
-      forAll(keyUsages) { keyUsage ⇒
+      forAll(keyUsages) { keyUsage =>
         KeyUsage.fromName(keyUsage.name) shouldBe keyUsage
       }
     }

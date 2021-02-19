@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.sns.model
 
-import com.amazonaws.services.sns.model.{SetTopicAttributesRequest ⇒ AwsSetTopicAttributesRequest}
+import com.amazonaws.services.sns.model.{SetTopicAttributesRequest => AwsSetTopicAttributesRequest}
 
 /** Allows a topic owner to set an attribute of the topic to a new value.
   *

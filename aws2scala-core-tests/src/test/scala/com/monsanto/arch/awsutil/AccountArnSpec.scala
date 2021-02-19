@@ -8,19 +8,19 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class AccountArnSpec extends AnyFreeSpec {
   "an account ARN should" - {
     "have the correct resource" in {
-      forAll { arn: AccountArn ⇒
+      forAll { arn: AccountArn =>
         arn.resource shouldBe "root"
       }
     }
 
     "produce the correct ARN string" in {
-      forAll { arn: AccountArn ⇒
+      forAll { arn: AccountArn =>
         arn.arnString shouldBe s"arn:${arn.account.partition}:iam::${arn.account.id}:root"
       }
     }
 
     "round-trip via an ARN string" in {
-      forAll { arn: AccountArn ⇒
+      forAll { arn: AccountArn =>
         AccountArn.fromArnString(arn.arnString) shouldBe arn
       }
     }

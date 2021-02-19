@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.auth.policy
 
-import com.amazonaws.auth.{policy ⇒ aws}
+import com.amazonaws.auth.{policy => aws}
 import com.monsanto.arch.awsutil.converters.CoreConverters._
 import com.monsanto.arch.awsutil.test_support.ActionBehaviours
 import org.scalatest.freespec.AnyFreeSpec

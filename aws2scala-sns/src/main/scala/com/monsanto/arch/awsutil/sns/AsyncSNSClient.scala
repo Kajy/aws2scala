@@ -1,7 +1,7 @@
 package com.monsanto.arch.awsutil.sns
 
 import akka.Done
-import akka.stream.Materializer
+import akka.actor.ActorSystem
 import com.monsanto.arch.awsutil.AsyncAwsClient
 import com.monsanto.arch.awsutil.auth.policy.action.SNSAction
 import com.monsanto.arch.awsutil.sns.model.{MessageAttributeValue, PlatformApplication, PlatformEndpoint, SubscriptionSummary}
@@ -14,19 +14,19 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @param name the name of the topic to create
     * @return the ARN assigned to the created topic
     */
-  def createTopic(name: String)(implicit m: Materializer): Future[String]
+  def createTopic(name: String)(implicit as: ActorSystem): Future[String]
 
   /** Deletes a topic and all of its subscriptions.
     *
     * @param topicArn the ARN of the topic to delete
     */
-  def deleteTopic(topicArn: String)(implicit m: Materializer): Future[Done]
+  def deleteTopic(topicArn: String)(implicit as: ActorSystem): Future[Done]
 
   /** Lists all available topic ARNs.
     *
     * @return a list of topic ARNs
     */
-  def listTopics()(implicit m: Materializer): Future[Seq[String]]
+  def listTopics()(implicit as: ActorSystem): Future[Seq[String]]
 
   /** Return a specific attribute of a topic.
     *
@@ -34,10 +34,10 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @param name the name of the attribute to retrieve
     * @return the value of the attribute, if any
     */
-  def getTopicAttribute(topicArn: String, name: String)(implicit m: Materializer): Future[Option[String]]
+  def getTopicAttribute(topicArn: String, name: String)(implicit as: ActorSystem): Future[Option[String]]
 
   /** Return all of the attributes of a topic. */
-  def getTopicAttributes(topicArn: String)(implicit m: Materializer): Future[Map[String,String]]
+  def getTopicAttributes(topicArn: String)(implicit as: ActorSystem): Future[Map[String,String]]
 
   /** Sets an attribute of a topic to a new value.
     *
@@ -46,7 +46,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @param attributeValue the new value for the attribute
     */
   def setTopicAttribute(topicArn: String, attributeName: String, attributeValue: String)
-                       (implicit m: Materializer): Future[Done]
+                       (implicit as: ActorSystem): Future[Done]
 
   /** Sets an attribute of a topic to a new value.
     *
@@ -55,7 +55,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @param attributeValue the new value for the attribute (if any)
     */
   def setTopicAttribute(topicArn: String, attributeName: String, attributeValue: Option[String])
-                       (implicit m: Materializer): Future[Done]
+                       (implicit as: ActorSystem): Future[Done]
 
   /** Adds a statement to a topic’s access control policy, granting access for the specified AWS accounts to the
     * specified actions.
@@ -66,20 +66,20 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @param actions the actions you want to allow for the specified principals
     */
   def addPermission(topicArn: String, label: String, accounts: Seq[String], actions: Seq[SNSAction])
-                   (implicit m: Materializer): Future[Done]
+                   (implicit as: ActorSystem): Future[Done]
 
   /** Removes a statement from a topic’s access control policy.
     *
     * @param topicArn the ARN of the topic whose access control policy to modify
     * @param label the unique identifier of the statement you want to remove
     */
-  def removePermission(topicArn: String, label: String)(implicit m: Materializer): Future[Done]
+  def removePermission(topicArn: String, label: String)(implicit as: ActorSystem): Future[Done]
 
   /** Returns a list of all of the available subscriptions. */
-  def listSubscriptions()(implicit m: Materializer): Future[Seq[SubscriptionSummary]]
+  def listSubscriptions()(implicit as: ActorSystem): Future[Seq[SubscriptionSummary]]
 
   /** Returns a list of all of the available subscriptions to a specific topic. */
-  def listSubscriptions(topicArn: String)(implicit m: Materializer): Future[Seq[SubscriptionSummary]]
+  def listSubscriptions(topicArn: String)(implicit as: ActorSystem): Future[Seq[SubscriptionSummary]]
 
   /** Prepares to subscribe an endpoint by sending the endpoint a confirmation message.
     *
@@ -88,7 +88,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @param endpoint the endpoint that will receive notifications
     * @return the ARN of the subscription if the service was able to create a subscription immediately.
     */
-  def subscribe(topicArn: String, protocol: String, endpoint: String)(implicit m: Materializer): Future[Option[String]]
+  def subscribe(topicArn: String, protocol: String, endpoint: String)(implicit as: ActorSystem): Future[Option[String]]
 
   /** Verifies an endpoint owner‘s intent to receive messages by validating the token sent to the endpoint by an
     * earlier `Subscribe` action.  If the token is valid, the action creates a new subscription and return its Amazon
@@ -98,7 +98,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @param token a short-lived token sent to an endpoint during the `Subscribe` action
     * @return the ARN of the new subscription
     */
-  def confirmSubscription(topicArn: String, token: String)(implicit m: Materializer): Future[String]
+  def confirmSubscription(topicArn: String, token: String)(implicit as: ActorSystem): Future[String]
 
   /** Verifies an endpoint owner‘s intent to receive messages by validating the token sent to the endpoint by an
     * earlier `Subscribe` action.  If the token is valid, the action creates a new subscription and return its Amazon
@@ -110,7 +110,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @return the ARN of the new subscription
     */
   def confirmSubscription(topicArn: String, token: String, authenticateOnUnsubscribe: Boolean)
-                         (implicit m: Materializer): Future[String]
+                         (implicit as: ActorSystem): Future[String]
 
   /** Return a specific property of a subscription.
     *
@@ -118,10 +118,10 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @param name the name of the property to retrieve
     * @return the value of the property, if available
     */
-  def getSubscriptionAttribute(subscriptionArn: String, name: String)(implicit m: Materializer): Future[Option[String]]
+  def getSubscriptionAttribute(subscriptionArn: String, name: String)(implicit as: ActorSystem): Future[Option[String]]
 
   /** Return all of the properties of a subscription. */
-  def getSubscriptionAttributes(subscriptionArn: String)(implicit m: Materializer): Future[Map[String,String]]
+  def getSubscriptionAttributes(subscriptionArn: String)(implicit as: ActorSystem): Future[Map[String,String]]
 
   /** Sets an attribute of a subscription to a new value.
     *
@@ -130,7 +130,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @param attributeValue the new value for the attribute
     */
   def setSubscriptionAttribute(subscriptionArn: String, attributeName: String, attributeValue: String)
-                              (implicit m: Materializer): Future[Done]
+                              (implicit as: ActorSystem): Future[Done]
 
   /** Sets an attribute of a subscription to a new value.
     *
@@ -139,10 +139,10 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @param attributeValue the new value for the attribute (if any)
     */
   def setSubscriptionAttribute(subscriptionArn: String, attributeName: String, attributeValue: Option[String])
-                              (implicit m: Materializer): Future[Done]
+                              (implicit as: ActorSystem): Future[Done]
 
   /** Deletes a subscription. */
-  def unsubscribe(subscriptionArn: String)(implicit m: Materializer): Future[Done]
+  def unsubscribe(subscriptionArn: String)(implicit as: ActorSystem): Future[Done]
 
   /** Creates a platform application for one of the supported push notification services, such as APNS and GCM, to
     * which devices and mobile apps may register.
@@ -163,7 +163,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @see [[http://docs.aws.amazon.com/sns/latest/dg/SNSMobilePush.html Using SNS Mobile Push Notifications]]
     */
   def createPlatformApplication(name: String, platform: String, principal: String, credential: String)
-                               (implicit m: Materializer): Future[String]
+                               (implicit as: ActorSystem): Future[String]
 
   /** Creates a platform application for one of the supported push notification services, such as APNS and GCM, to
     * which devices and mobile apps may register.
@@ -186,14 +186,14 @@ trait AsyncSNSClient extends AsyncAwsClient {
     */
   def createPlatformApplication(name: String, platform: String, principal: String, credential: String,
                                 attributes: Map[String,String])
-                               (implicit m: Materializer): Future[String]
+                               (implicit as: ActorSystem): Future[String]
 
   /** Retrieves the attributes of the platform application object.
     *
     * @param arn the ARN of the platform application
     * @return a map containing all of the platform application object’s attributes
     */
-  def getPlatformApplicationAttributes(arn: String)(implicit m: Materializer): Future[Map[String,String]]
+  def getPlatformApplicationAttributes(arn: String)(implicit as: ActorSystem): Future[Map[String,String]]
 
   /** Retrieves a specific attribute of the platform application object.
     *
@@ -202,7 +202,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @return the attribute value, if any
     */
   def getPlatformApplicationAttribute(arn: String, attributeName: String)
-                                     (implicit m: Materializer): Future[Option[String]]
+                                     (implicit as: ActorSystem): Future[Option[String]]
 
   /** Sets the attribute of a platform application to the given value.
     *
@@ -211,7 +211,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @param attributeValue the new value for the attribute, note that a null value will be set to the empty string
     */
   def setPlatformApplicationAttribute(arn: String, attributeName: String, attributeValue: String)
-                                     (implicit m: Materializer): Future[Done]
+                                     (implicit as: ActorSystem): Future[Done]
 
   /** Resets the attribute of a platform application to the given value.
     *
@@ -220,7 +220,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @param attributeValue the new value for the attribute.  If `None`, this results in setting to the empty string.
     */
   def setPlatformApplicationAttribute(arn: String, attributeName: String, attributeValue: Option[String])
-                                     (implicit m: Materializer): Future[Done]
+                                     (implicit as: ActorSystem): Future[Done]
 
   /** Sets the attributes of the platform application object.
     *
@@ -229,16 +229,16 @@ trait AsyncSNSClient extends AsyncAwsClient {
     *                   performed on the values.
     */
   def setPlatformApplicationAttributes(arn: String, attributes: Map[String,String])
-                                      (implicit m: Materializer): Future[Done]
+                                      (implicit as: ActorSystem): Future[Done]
 
   /** Deletes a platform application object for one of the supported push notification services.
     *
     * @param arn the ARN of the platform application to delete
     */
-  def deletePlatformApplication(arn: String)(implicit m: Materializer): Future[Done]
+  def deletePlatformApplication(arn: String)(implicit as: ActorSystem): Future[Done]
 
   /** Lists all of the platform applications. */
-  def listPlatformApplications()(implicit m: Materializer): Future[Seq[PlatformApplication]]
+  def listPlatformApplications()(implicit as: ActorSystem): Future[Seq[PlatformApplication]]
 
   /** Creates an endpoint for a device and mobile app on one of the supported push notification services, such as GCM
     * and APNS.  Note that for Baidu it is necessary to include the `ChannelID` and `UserID` attributes using a method
@@ -251,7 +251,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     *              ''push notification URI''
     * @return the ARN of the newly created endpoint
     */
-  def createPlatformEndpoint(platformApplicationArn: String, token: String)(implicit m: Materializer): Future[String]
+  def createPlatformEndpoint(platformApplicationArn: String, token: String)(implicit as: ActorSystem): Future[String]
 
   /** Creates an endpoint for a device and mobile app on one of the supported push notification services, such as GCM
     * and APNS.  Note that for Baidu it is necessary to include the `ChannelID` and `UserID` attributes using a method
@@ -266,7 +266,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @return the ARN of the newly created endpoint
     */
   def createPlatformEndpoint(platformApplicationArn: String, token: String, customUserData: String)
-                            (implicit m: Materializer): Future[String]
+                            (implicit as: ActorSystem): Future[String]
 
   /** Creates an endpoint for a device and mobile app on one of the supported push notification services, such as GCM
     * and APNS.  Note that for Baidu it is necessary to include the `ChannelID` and `UserID` attributes.
@@ -280,7 +280,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @return the ARN of the newly created endpoint
     */
   def createPlatformEndpoint(platformApplicationArn: String, token: String, attributes: Map[String,String])
-                            (implicit m: Materializer): Future[String]
+                            (implicit as: ActorSystem): Future[String]
 
   /** Creates an endpoint for a device and mobile app on one of the supported push notification services, such as GCM
     * and APNS.  Note that for Baidu it is necessary to include the `ChannelID` and `UserID` attributes.
@@ -296,7 +296,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     */
   def createPlatformEndpoint(platformApplicationArn: String, token: String, customUserData: String,
                              attributes: Map[String,String])
-                            (implicit m: Materializer): Future[String]
+                            (implicit as: ActorSystem): Future[String]
 
   /** Retrieve an endpoint attributes for a device on one of the supported push notification services.
     *
@@ -305,14 +305,14 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @return the value for the given attribute, if any
     */
   def getPlatformEndpointAttribute(platformEndpointArn: String, attributeName: String)
-                                  (implicit m: Materializer): Future[Option[String]]
+                                  (implicit as: ActorSystem): Future[Option[String]]
 
   /** Retrieves the endpoint attributes for a device on one of the supported push notification services.
     *
     * @param platformEndpointArn the ARN of the platform endpoint
     * @return a map containing the platform endpoint attributes
     */
-  def getPlatformEndpointAttributes(platformEndpointArn: String)(implicit m: Materializer): Future[Map[String,String]]
+  def getPlatformEndpointAttributes(platformEndpointArn: String)(implicit as: ActorSystem): Future[Map[String,String]]
 
   /** Sets tan attribute for an endpoint for a device on one of the supported push notification services.
     *
@@ -321,7 +321,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @param attributeValue the new value for the attribute
     */
   def setPlatformEndpointAttributes(platformEndpointArn: String, attributeName: String, attributeValue: String)
-                                   (implicit m: Materializer): Future[Done]
+                                   (implicit as: ActorSystem): Future[Done]
 
   /** Sets tan attribute for an endpoint for a device on one of the supported push notification services.
     *
@@ -330,7 +330,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @param attributeValue the new value for the attribute.  `None` values will be converted to empty strings.
     */
   def setPlatformEndpointAttributes(platformEndpointArn: String, attributeName: String, attributeValue: Option[String])
-                                   (implicit m: Materializer): Future[Done]
+                                   (implicit as: ActorSystem): Future[Done]
 
   /** Sets the attributes for an endpoint for a device on one of the supported push notification services.
     *
@@ -338,19 +338,19 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @param attributes a map of the endpoint attributes
     */
   def setPlatformEndpointAttributes(platformEndpointArn: String, attributes: Map[String,String])
-                                   (implicit m: Materializer): Future[Done]
+                                   (implicit as: ActorSystem): Future[Done]
 
   /** Deletes the endpoint for a device and mobile app from Amazon SNS.
     *
     * @param platformEndpointArn the ARN of the platform endpoint to delete
     */
-  def deletePlatformEndpoint(platformEndpointArn: String)(implicit m: Materializer): Future[Done]
+  def deletePlatformEndpoint(platformEndpointArn: String)(implicit as: ActorSystem): Future[Done]
 
   /** Lists endpoints and endpoint attributes for devices in a supported push notification service.
     *
     * @param platformApplicationArn the platform application for which to list endpoints
     */
-  def listPlatformEndpoints(platformApplicationArn: String)(implicit m: Materializer): Future[Seq[PlatformEndpoint]]
+  def listPlatformEndpoints(platformApplicationArn: String)(implicit as: ActorSystem): Future[Seq[PlatformEndpoint]]
 
   /** Sends a message to a mobile endpoint or to all of a topic’s subscribed endpoints.
     *
@@ -361,7 +361,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @param message the message to send
     * @return the unique identifier of the published message
     */
-  def publish(targetArn: String, message: String)(implicit m: Materializer): Future[String]
+  def publish(targetArn: String, message: String)(implicit as: ActorSystem): Future[String]
 
   /** Sends a message to a mobile endpoint or to all of a topic’s subscribed endpoints.
     *
@@ -373,7 +373,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @param subject a string to be used as the ''Subject'' line when the message is delivered to e-mail endpoints
     * @return the unique identifier of the published message
     */
-  def publish(targetArn: String, message: String, subject: String)(implicit m: Materializer): Future[String]
+  def publish(targetArn: String, message: String, subject: String)(implicit as: ActorSystem): Future[String]
 
   /** Sends a message to a mobile endpoint or to all of a topic’s subscribed endpoints.
     *
@@ -386,7 +386,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @return the unique identifier of the published message
     */
   def publish(targetArn: String, message: String, attributes: Map[String,MessageAttributeValue])
-             (implicit m: Materializer): Future[String]
+             (implicit as: ActorSystem): Future[String]
 
   /** Sends a message to a mobile endpoint or to all of a topic’s subscribed endpoints.
     *
@@ -400,7 +400,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @return the unique identifier of the published message
     */
   def publish(targetArn: String, message: String, subject: String, attributes: Map[String,MessageAttributeValue])
-             (implicit m: Materializer): Future[String]
+             (implicit as: ActorSystem): Future[String]
 
   /** Sends a message to a mobile endpoint or to all of a topic’s subscribed endpoints.  This variation allows sending
     * different messages to different transport protocols or to be able to send JSON to a mobile endpoint.
@@ -410,7 +410,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     *                `APNS_SANDBOX`, or `GCM`, and the values are strings that will be JSON-escaped
     * @return the unique identifier of the published message
     */
-  def publish(targetArn: String, message: Map[String,String])(implicit m: Materializer): Future[String]
+  def publish(targetArn: String, message: Map[String,String])(implicit as: ActorSystem): Future[String]
 
   /** Sends a message to a mobile endpoint or to all of a topic’s subscribed endpoints.  This variation allows sending
     * different messages to different transport protocols or to be able to send JSON to a mobile endpoint.
@@ -422,7 +422,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @return the unique identifier of the published message
     */
   def publish(targetArn: String, message: Map[String,String], subject: String)
-             (implicit m: Materializer): Future[String]
+             (implicit as: ActorSystem): Future[String]
 
   /** Sends a message to a mobile endpoint or to all of a topic’s subscribed endpoints.  This variation allows sending
     * different messages to different transport protocols or to be able to send JSON to a mobile endpoint.
@@ -434,7 +434,7 @@ trait AsyncSNSClient extends AsyncAwsClient {
     * @return the unique identifier of the published message
     */
   def publish(targetArn: String, message: Map[String,String], attributes: Map[String,MessageAttributeValue])
-             (implicit m: Materializer): Future[String]
+             (implicit as: ActorSystem): Future[String]
 
   /** Sends a message to a mobile endpoint or to all of a topic’s subscribed endpoints.  This variation allows sending
     * different messages to different transport protocols or to be able to send JSON to a mobile endpoint.
@@ -448,5 +448,5 @@ trait AsyncSNSClient extends AsyncAwsClient {
     */
   def publish(targetArn: String, message: Map[String,String], subject: String,
               attributes: Map[String,MessageAttributeValue])
-             (implicit m: Materializer): Future[String]
+             (implicit as: ActorSystem): Future[String]
 }

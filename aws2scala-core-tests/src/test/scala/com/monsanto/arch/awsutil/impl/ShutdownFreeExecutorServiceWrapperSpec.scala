@@ -11,7 +11,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.concurrent.Promise
 
 class ShutdownFreeExecutorServiceWrapperSpec extends AnyFreeSpec {
@@ -20,7 +20,7 @@ class ShutdownFreeExecutorServiceWrapperSpec extends AnyFreeSpec {
   "a ShutdownFreeExecutorServiceWrapper" - {
     "passes through" - {
       "invokeAll" in {
-        forAll { tasks: Seq[FakeCallable[Int]] ⇒
+        forAll { tasks: Seq[FakeCallable[Int]] =>
           val expectedResult = tasks.map(_.call())
           val result = wrapper.invokeAll(tasks.asJavaCollection).asScala.map(_.get())
           result shouldBe expectedResult
@@ -28,7 +28,7 @@ class ShutdownFreeExecutorServiceWrapperSpec extends AnyFreeSpec {
       }
 
       "invokeAll with timeout" in {
-        forAll { (tasks: Seq[FakeCallable[Int]], timeout: Long, timeUnit: TimeUnit) ⇒
+        forAll { (tasks: Seq[FakeCallable[Int]], timeout: Long, timeUnit: TimeUnit) =>
           val expectedResult = tasks.map(_.call())
           val result = wrapper.invokeAll(tasks.asJavaCollection, timeout, timeUnit).asScala.map(_.get())
           result shouldBe expectedResult
@@ -36,7 +36,7 @@ class ShutdownFreeExecutorServiceWrapperSpec extends AnyFreeSpec {
       }
 
       "invokeAny" in {
-        forAll { tasks: Seq[FakeCallable[Int]] ⇒
+        forAll { tasks: Seq[FakeCallable[Int]] =>
           whenever(tasks.nonEmpty) {
             val expectedResult = tasks.head.call()
             val result = wrapper.invokeAny(tasks.asJavaCollection)
@@ -46,7 +46,7 @@ class ShutdownFreeExecutorServiceWrapperSpec extends AnyFreeSpec {
       }
 
       "invokeAny with timeout" in {
-        forAll { (tasks: Seq[FakeCallable[Int]], timeout: Long, timeUnit: TimeUnit) ⇒
+        forAll { (tasks: Seq[FakeCallable[Int]], timeout: Long, timeUnit: TimeUnit) =>
           whenever(tasks.nonEmpty) {
             val expectedResult = tasks.head.call()
             val result = wrapper.invokeAny(tasks.asJavaCollection, timeout, timeUnit)
@@ -64,26 +64,26 @@ class ShutdownFreeExecutorServiceWrapperSpec extends AnyFreeSpec {
       }
 
       "submit(Callable[T])" in {
-        forAll { task: FakeCallable[Int] ⇒
+        forAll { task: FakeCallable[Int] =>
           wrapper.submit(task) shouldBe theSameInstanceAs (task.toFakeFuture)
         }
       }
 
       "submit(Runnable)" in {
-        forAll(arbitrary[Runnable]) { task ⇒
+        forAll(arbitrary[Runnable]) { task =>
           wrapper.submit(task) shouldBe theSameInstanceAs (FakeRunnableFuture)
         }
       }
 
       "submit(Runnable,T)" in {
-        forAll { (runnable: Runnable, str: String) ⇒
+        forAll { (runnable: Runnable, str: String) =>
           wrapper.submit(runnable, str).get shouldBe str
         }
       }
 
       "execute" in {
-        forAll { str: String ⇒
-          val promise = Promise[String]
+        forAll { str: String =>
+          val promise = Promise[String]()
           val runnable =  new Runnable {
             override def run() = promise.success(str)
           }
@@ -97,9 +97,9 @@ class ShutdownFreeExecutorServiceWrapperSpec extends AnyFreeSpec {
     "intercepts" - {
       "awaitTerminationCalls" in {
         forAll(
-          Gen.posNum[Long] → "timeout",
-          arbitrary[TimeUnit] → "timeUnit"
-        ) { (timeout, timeUnit) ⇒
+          Gen.posNum[Long] ->"timeout",
+          arbitrary[TimeUnit] ->"timeUnit"
+        ) { (timeout, timeUnit) =>
           wrapper.awaitTermination(timeout, timeUnit) shouldBe true
         }
       }
@@ -152,12 +152,12 @@ object ShutdownFreeExecutorServiceWrapperSpec {
 
     override def invokeAll[T](tasks: util.Collection[_ <: Callable[T]]) =
       tasks.asScala.toList.map {
-        case x: FakeCallable[T] ⇒ x.toFakeFuture
+        case x: FakeCallable[T] => x.toFakeFuture
       }.asJava
 
     override def invokeAll[T](tasks: util.Collection[_ <: Callable[T]], timeout: Long, unit: TimeUnit) =
       tasks.asScala.toList.map {
-        case x: FakeCallable[T] ⇒ x.toFakeFuture
+        case x: FakeCallable[T] => x.toFakeFuture
       }.asJava
 
     override def invokeAny[T](tasks: util.Collection[_ <: Callable[T]]) =
@@ -168,7 +168,7 @@ object ShutdownFreeExecutorServiceWrapperSpec {
 
     override def submit[T](task: Callable[T]) =
       task match {
-        case x: FakeCallable[T] ⇒ x.toFakeFuture
+        case x: FakeCallable[T] => x.toFakeFuture
       }
 
     override def submit[T](task: Runnable, result: T) = new FakeCallable(result).toFakeFuture

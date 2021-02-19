@@ -20,9 +20,9 @@ class StatementBuilderSpec extends AnyFreeSpec {
     "reject duplicate invocations of" - {
       "withSid" in {
         forAll(
-          CoreGen.statementId → "sid1",
-          CoreGen.statementId → "sid2"
-        ) { (sid1, sid2) ⇒
+          CoreGen.statementId ->"sid1",
+          CoreGen.statementId ->"sid2"
+        ) { (sid1, sid2) =>
           the [IllegalStateException] thrownBy {
             StatementBuilder.newBuilder
               .withSid(sid1)
@@ -32,7 +32,7 @@ class StatementBuilderSpec extends AnyFreeSpec {
       }
 
       "withPrincipals" in {
-        forAll { (principals1: Set[Principal], principals2: Set[Principal]) ⇒
+        forAll { (principals1: Set[Principal], principals2: Set[Principal]) =>
           the [IllegalStateException] thrownBy {
             StatementBuilder.newBuilder
               .withPrincipals(principals1)
@@ -42,7 +42,7 @@ class StatementBuilderSpec extends AnyFreeSpec {
       }
 
       "withEffect" in {
-        forAll { (effect1: Statement.Effect, effect2: Statement.Effect) ⇒
+        forAll { (effect1: Statement.Effect, effect2: Statement.Effect) =>
           the [IllegalStateException] thrownBy {
             StatementBuilder.newBuilder
               .withEffect(effect1)
@@ -52,7 +52,7 @@ class StatementBuilderSpec extends AnyFreeSpec {
       }
 
       "withActions" in {
-        forAll { (actions1: Seq[Action], actions2: Seq[Action]) ⇒
+        forAll { (actions1: Seq[Action], actions2: Seq[Action]) =>
           the [IllegalStateException] thrownBy {
             StatementBuilder.newBuilder
               .withActions(actions1)
@@ -62,7 +62,7 @@ class StatementBuilderSpec extends AnyFreeSpec {
       }
 
       "withResources" in {
-        forAll { (resources1: Seq[Resource], resources2: Seq[Resource]) ⇒
+        forAll { (resources1: Seq[Resource], resources2: Seq[Resource]) =>
           the [IllegalStateException] thrownBy {
             StatementBuilder.newBuilder
               .withResources(resources1)
@@ -74,7 +74,7 @@ class StatementBuilderSpec extends AnyFreeSpec {
 
     "build with" - {
       "only an effect" in {
-        forAll { effect: Statement.Effect ⇒
+        forAll { effect: Statement.Effect =>
           val result = StatementBuilder.newBuilder
             .withEffect(effect)
             .result
@@ -85,9 +85,9 @@ class StatementBuilderSpec extends AnyFreeSpec {
 
       "an effect and a statement identifier" in {
         forAll(
-          CoreGen.statementId → "sid",
-          arbitrary[Statement.Effect] → "effect"
-        ) { (sid, effect) ⇒
+          CoreGen.statementId ->"sid",
+          arbitrary[Statement.Effect] ->"effect"
+        ) { (sid, effect) =>
           val result = StatementBuilder.newBuilder
             .withSid(sid)
             .withEffect(effect)
@@ -98,7 +98,7 @@ class StatementBuilderSpec extends AnyFreeSpec {
       }
 
       "an effect and a set of principals" in {
-        forAll { (principals: Set[Principal], effect: Statement.Effect) ⇒
+        forAll { (principals: Set[Principal], effect: Statement.Effect) =>
           val result = StatementBuilder.newBuilder
             .withPrincipals(principals)
             .withEffect(effect)
@@ -109,7 +109,7 @@ class StatementBuilderSpec extends AnyFreeSpec {
       }
 
       "an effect and a list of actions" in {
-        forAll { (actions: Seq[Action], effect: Statement.Effect) ⇒
+        forAll { (actions: Seq[Action], effect: Statement.Effect) =>
           val result = StatementBuilder.newBuilder
             .withEffect(effect)
             .withActions(actions)
@@ -120,7 +120,7 @@ class StatementBuilderSpec extends AnyFreeSpec {
       }
 
       "an effect and a list of resources" in {
-        forAll { (resources: Seq[Resource], effect: Statement.Effect) ⇒
+        forAll { (resources: Seq[Resource], effect: Statement.Effect) =>
           val result = StatementBuilder.newBuilder
             .withEffect(effect)
             .withResources(resources)
@@ -131,7 +131,7 @@ class StatementBuilderSpec extends AnyFreeSpec {
       }
 
       "an effect and a set of conditions" in {
-        forAll { (conditions: Set[Condition], effect: Statement.Effect) ⇒
+        forAll { (conditions: Set[Condition], effect: Statement.Effect) =>
           val result = StatementBuilder.newBuilder
             .withEffect(effect)
             .withConditions(conditions)

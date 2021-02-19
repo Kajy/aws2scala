@@ -22,13 +22,13 @@ object UserArn {
     /** Extracts a `UserArn` object from the given ARN string. */
     def unapply(arnString: String): Option[UserArn] =
       arnString match {
-        case Arn.fromArnString(arn: UserArn) ⇒ Some(arn)
-        case _                               ⇒ None
+        case Arn.fromArnString(arn: UserArn) => Some(arn)
+        case _                               => None
       }
   }
 
   private[awsutil] val userArnPF: PartialFunction[Arn.ArnParts, UserArn] = {
-    case (_, Arn.Namespace.IAM, None, Some(account), UserResourceRegex(Path.fromPathString(path), name)) ⇒
+    case (_, Arn.Namespace.IAM, None, Some(account), UserResourceRegex(Path.fromPathString(path), name)) =>
       UserArn(account, name, path)
   }
 

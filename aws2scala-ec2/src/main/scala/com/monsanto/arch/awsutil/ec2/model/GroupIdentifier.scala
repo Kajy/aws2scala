@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.ec2.model
 
-import com.amazonaws.services.ec2.model.{GroupIdentifier ⇒ AwsGroupIdentifier}
+import com.amazonaws.services.ec2.model.{GroupIdentifier => AwsGroupIdentifier}
 
 /** Describes a security group.
   *

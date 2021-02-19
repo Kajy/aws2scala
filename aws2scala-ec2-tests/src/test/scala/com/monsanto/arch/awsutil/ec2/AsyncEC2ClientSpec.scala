@@ -18,92 +18,92 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class AsyncEC2ClientSpec extends AnyFreeSpec with MockFactory with Materialised with FlowMockUtils {
   "the default async EC2 client can" - {
     "create a key pair" in {
-      forAll { keyPair: KeyPair ⇒
+      forAll { keyPair: KeyPair =>
         val streaming = mock[StreamingEC2Client]("streaming")
         val async = new DefaultAsyncEC2Client(streaming)
 
         val name = keyPair.name
 
-        (streaming.keyPairCreator _)
+        (() => streaming.keyPairCreator)
           .expects()
           .returningFlow(name, keyPair)
 
-        val result = async.createKeyPair(name).futureValue
+        val result = async.createKeyPair(name).futureValue()
         result shouldBe keyPair
       }
     }
 
     "delete a key pair" in {
-      forAll(Ec2Gen.keyName → "keyName") { name ⇒
+      forAll(Ec2Gen.keyName ->"keyName") { name =>
         val streaming = mock[StreamingEC2Client]("streaming")
         val async = new DefaultAsyncEC2Client(streaming)
 
-        (streaming.keyPairDeleter _)
+        (() => streaming.keyPairDeleter)
           .expects()
           .returningFlow(name, name)
 
-        val result = async.deleteKeyPair(name).futureValue
+        val result = async.deleteKeyPair(name).futureValue()
         result shouldBe name
       }
     }
 
     "describe key pairs" - {
       "all of them" in {
-        forAll(SizeRange(30)) { keyPairInfo: List[KeyPairInfo] ⇒
+        forAll(SizeRange(30)) { keyPairInfo: List[KeyPairInfo] =>
           val streaming = mock[StreamingEC2Client]("streaming")
           val async = new DefaultAsyncEC2Client(streaming)
 
-          (streaming.keyPairsDescriber _)
+          (() => streaming.keyPairsDescriber)
             .expects()
             .returningConcatFlow(DescribeKeyPairsRequest(Seq.empty, Seq.empty), keyPairInfo)
 
-          val result = async.describeKeyPairs().futureValue
+          val result = async.describeKeyPairs().futureValue()
           result shouldBe keyPairInfo
         }
       }
 
       "using a filter" in {
-        forAll("filters", minSize(20)) { filters: Seq[Filter] ⇒
+        forAll("filters", minSize(20)) { filters: Seq[Filter] =>
           val streaming = mock[StreamingEC2Client]("streaming")
           val async = new DefaultAsyncEC2Client(streaming)
 
-          val mapFilter = filters.map(f ⇒ f.name → f.values).toMap
+          val mapFilter = filters.map(f => f.name ->f.values).toMap
           val keyPairInfo = arbitrarySample[List[KeyPairInfo]](20)
 
-          (streaming.keyPairsDescriber _)
+          (() => streaming.keyPairsDescriber)
             .expects()
             .returningConcatFlow(DescribeKeyPairsRequest(Seq.empty, Filter.fromMap(mapFilter)), keyPairInfo)
 
-          val result = async.describeKeyPairs(mapFilter).futureValue
+          val result = async.describeKeyPairs(mapFilter).futureValue()
           result shouldBe keyPairInfo
         }
       }
 
       "by name" in {
-        forAll(Ec2Gen.keyName → "keyName") { name ⇒
+        forAll(Ec2Gen.keyName ->"keyName") { name =>
           val streaming = mock[StreamingEC2Client]("streaming")
           val async = new DefaultAsyncEC2Client(streaming)
 
           val maybeKeyPairInfo = arbitrarySample[Option[KeyPairInfo]](5)
 
-          (streaming.keyPairsDescriber _)
+          (() => streaming.keyPairsDescriber)
             .expects()
-            .onCall { () ⇒
+            .onCall { () =>
               Flow[DescribeKeyPairsRequest]
-                .mapConcat { request ⇒
+                .mapConcat { request =>
                   request shouldBe DescribeKeyPairsRequest(Seq(name), Seq.empty)
                   maybeKeyPairInfo match {
-                    case None ⇒
+                    case None =>
                       val ex = new AmazonServiceException("Oh, no!")
                       ex.setErrorCode("InvalidKeyPair.NotFound")
                       throw ex
-                    case Some(kpi) ⇒
+                    case Some(kpi) =>
                       List(kpi)
                   }
                 }
             }
 
-          val result = async.describeKeyPair(name).futureValue
+          val result = async.describeKeyPair(name).futureValue()
           result shouldBe maybeKeyPairInfo
         }
       }
@@ -117,60 +117,60 @@ class AsyncEC2ClientSpec extends AnyFreeSpec with MockFactory with Materialised 
         val reservations = Gen.resize(10, arbitrary[List[Reservation]]).reallySample
         val instances = reservations.flatMap(_.instances)
 
-        (streaming.instancesDescriber _)
+        (() => streaming.instancesDescriber)
           .expects()
           .returningConcatFlow(DescribeInstancesRequest(Seq.empty, Seq.empty), reservations)
 
-        val result = async.describeInstances().futureValue
+        val result = async.describeInstances().futureValue()
         result shouldBe instances
       }
 
       "using a filter" in {
-        forAll { filters: Seq[Filter] ⇒
+        forAll { filters: Seq[Filter] =>
           val streaming = mock[StreamingEC2Client]("streaming")
           val async = new DefaultAsyncEC2Client(streaming)
 
-          val mapFilter = filters.map(f ⇒ f.name → f.values).toMap
+          val mapFilter = filters.map(f => f.name ->f.values).toMap
           val reservations = Gen.resize(10, arbitrary[List[Reservation]]).reallySample
           val instances = reservations.flatMap(_.instances)
 
-          (streaming.instancesDescriber _)
+          (() => streaming.instancesDescriber)
             .expects()
             .returningConcatFlow(DescribeInstancesRequest(Seq.empty, Filter.fromMap(mapFilter)), reservations)
 
-          val result = async.describeInstances(mapFilter).futureValue
+          val result = async.describeInstances(mapFilter).futureValue()
           result shouldBe instances
         }
       }
 
       "by name" in {
-        forAll(Ec2Gen.instanceId → "instanceId") { id ⇒
+        forAll(Ec2Gen.instanceId ->"instanceId") { id =>
           val streaming = mock[StreamingEC2Client]("streaming")
           val async = new DefaultAsyncEC2Client(streaming)
 
-          val reservationGen = Gen.resize(5, arbitrary[Reservation]).map { reservation ⇒
+          val reservationGen = Gen.resize(5, arbitrary[Reservation]).map { reservation =>
             reservation.copy(instances = Seq(reservation.instances.head))
           }
           val maybeReservation = Gen.option(reservationGen).reallySample
 
-          (streaming.instancesDescriber _)
+          (() => streaming.instancesDescriber)
             .expects()
-            .onCall { () ⇒
+            .onCall { () =>
               Flow[DescribeInstancesRequest]
-                .mapConcat { request ⇒
+                .mapConcat { request =>
                   request shouldBe DescribeInstancesRequest(Seq(id), Seq.empty)
                   maybeReservation match {
-                    case None ⇒
+                    case None =>
                       val ex = new AmazonServiceException("Oh, no!")
                       ex.setErrorCode("InvalidInstanceId.NotFound")
                       throw ex
-                    case Some(r) ⇒
+                    case Some(r) =>
                       List(r)
                   }
                 }
             }
 
-          val result = async.describeInstance(id).futureValue
+          val result = async.describeInstance(id).futureValue()
           result shouldBe maybeReservation.map(_.instances.head)
         }
       }

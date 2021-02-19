@@ -83,7 +83,7 @@ object Principal {
     /** Tags a [[com.monsanto.arch.awsutil.auth.policy.Principal.Service Service]] to denote that there is an AWS
       * enumeration value that corresponds to it.
       */
-    sealed trait AwsEnumerated { this: Service ⇒ }
+    sealed trait AwsEnumerated { this: Service => }
 
     /** Matches all Amazon services. */
     case object AllServices extends Service("*") with AwsEnumerated
@@ -181,35 +181,35 @@ object Principal {
     /** Extracts a principal given a tuple containing the provider name and identifier. */
     def unapply(providerAndId: (String, String)): Option[Principal] = {
       providerAndId match {
-        case ("*", "*") ⇒
+        case ("*", "*") =>
           Some(Principal.AllPrincipals)
-        case ("AWS", "*") ⇒
+        case ("AWS", "*") =>
           Some(Principal.allUsers)
-        case ("Service", "*") ⇒
+        case ("Service", "*") =>
           Some(Principal.allServices)
-        case ("Service", Principal.Service.fromId(service)) ⇒
+        case ("Service", Principal.Service.fromId(service)) =>
           Some(Principal.service(service))
-        case ("Service", serviceId) ⇒
+        case ("Service", serviceId) =>
           val logger = Logger(LoggerFactory.getLogger(classOf[Principal].getName))
           logger.warn(s"Using GenericService for service ID: $serviceId")
           Some(Principal.service(Principal.Service.GenericService(serviceId)))
-        case ("Federated", "*") ⇒
+        case ("Federated", "*") =>
           Some(Principal.allWebProviders)
-        case ("Federated", Principal.WebIdentityProvider.fromProvider(webIdentityProvider)) ⇒
+        case ("Federated", Principal.WebIdentityProvider.fromProvider(webIdentityProvider)) =>
           Some(Principal.webProvider(webIdentityProvider))
-        case ("Federated", SamlProviderArn.fromArnString(samlProviderArn)) ⇒
+        case ("Federated", SamlProviderArn.fromArnString(samlProviderArn)) =>
           Some(Principal.SamlProviderPrincipal(samlProviderArn))
-        case ("AWS", AccountArn.fromArnString(AccountArn(account))) ⇒
+        case ("AWS", AccountArn.fromArnString(AccountArn(account))) =>
           Some(Principal.AccountPrincipal(account))
-        case ("AWS", Account.fromNumber(account)) ⇒
+        case ("AWS", Account.fromNumber(account)) =>
           Some(Principal.AccountPrincipal(account))
-        case ("AWS", UserArn.fromArnString(userArn)) ⇒
+        case ("AWS", UserArn.fromArnString(userArn)) =>
           Some(Principal.IamUserPrincipal(userArn))
-        case ("AWS", RoleArn.fromArnString(roleArn)) ⇒
+        case ("AWS", RoleArn.fromArnString(roleArn)) =>
           Some(Principal.IamRolePrincipal(roleArn))
-        case ("AWS", AssumedRoleArn.fromArnString(assumedRoleArn)) ⇒
+        case ("AWS", AssumedRoleArn.fromArnString(assumedRoleArn)) =>
           Some(Principal.StsAssumedRolePrincipal(assumedRoleArn))
-        case _ ⇒
+        case _ =>
           None
       }
     }

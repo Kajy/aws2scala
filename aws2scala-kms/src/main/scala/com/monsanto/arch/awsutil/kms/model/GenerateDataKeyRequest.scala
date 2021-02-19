@@ -1,12 +1,12 @@
 package com.monsanto.arch.awsutil.kms.model
 
-import java.util.{Collection ⇒ JCollection, Map ⇒ JMap}
+import java.util.{Collection => JCollection, Map => JMap}
 
-import com.amazonaws.services.kms.model.{DataKeySpec ⇒ AWSDataKeySpec, GenerateDataKeyRequest ⇒ AWSGenerateDataKeyRequest, GenerateDataKeyWithoutPlaintextRequest}
+import com.amazonaws.services.kms.model.{DataKeySpec => AWSDataKeySpec, GenerateDataKeyRequest => AWSGenerateDataKeyRequest, GenerateDataKeyWithoutPlaintextRequest}
 import com.monsanto.arch.awsutil.kms.asKeyIdentifier
 import com.monsanto.arch.awsutil.kms.model.GenerateDataKeyRequest.AWSKeyRequestLike
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /** A rough analogue to AWS’s own `GenerateDataKeyRequest`.  Note that whether or not to return the generated key in
   * plaintext is controlled by the `includePlaintext` parameter.  Note that there is no support for specifying the

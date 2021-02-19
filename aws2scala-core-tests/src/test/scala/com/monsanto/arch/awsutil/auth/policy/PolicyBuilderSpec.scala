@@ -26,9 +26,9 @@ class PolicyBuilderSpec extends AnyFreeSpec {
     "reject duplicate invocations of" - {
       "withId" in {
         forAll(
-          CoreGen.statementId → "id1",
-          CoreGen.statementId → "id2"
-        ) { (id1, id2) ⇒
+          CoreGen.statementId ->"id1",
+          CoreGen.statementId ->"id2"
+        ) { (id1, id2) =>
           the [IllegalStateException] thrownBy {
             PolicyBuilder.newBuilder
               .withId(id1)
@@ -38,7 +38,7 @@ class PolicyBuilderSpec extends AnyFreeSpec {
       }
 
       "withVersion" in {
-        forAll { (version1: Policy.Version, version2: Policy.Version) ⇒
+        forAll { (version1: Policy.Version, version2: Policy.Version) =>
           the [IllegalStateException] thrownBy {
             PolicyBuilder.newBuilder
               .withVersion(version1)
@@ -48,7 +48,7 @@ class PolicyBuilderSpec extends AnyFreeSpec {
       }
 
       "withStatements" in {
-        forAll { (statements1: Seq[Statement], statements2: Seq[Statement]) ⇒
+        forAll { (statements1: Seq[Statement], statements2: Seq[Statement]) =>
           the [IllegalStateException] thrownBy {
             PolicyBuilder.newBuilder
               .withStatements(statements1)
@@ -60,16 +60,16 @@ class PolicyBuilderSpec extends AnyFreeSpec {
 
     "build with" - {
       "just some statements" in {
-        forAll { statements: Seq[Statement] ⇒
+        forAll { statements: Seq[Statement] =>
           PolicyBuilder.newBuilder.withStatements(statements).result shouldBe Policy(None, None, statements)
         }
       }
 
       "with statements and statement ID" in {
         forAll(
-          CoreGen.statementId → "sid",
-          arbitrary[Seq[Statement]] → "statements"
-        ) { (sid, statements) ⇒
+          CoreGen.statementId ->"sid",
+          arbitrary[Seq[Statement]] ->"statements"
+        ) { (sid, statements) =>
           val result = PolicyBuilder.newBuilder
             .withStatements(statements)
             .withId(sid)
@@ -80,9 +80,9 @@ class PolicyBuilderSpec extends AnyFreeSpec {
 
       "with statements and a version" in {
         forAll(
-          arbitrary[Policy.Version] → "version",
-          arbitrary[Seq[Statement]] → "statements"
-        ) { (version, statements) ⇒
+          arbitrary[Policy.Version] ->"version",
+          arbitrary[Seq[Statement]] ->"statements"
+        ) { (version, statements) =>
           val result = PolicyBuilder.newBuilder
             .withStatements(statements)
             .withVersion(version)
@@ -93,10 +93,10 @@ class PolicyBuilderSpec extends AnyFreeSpec {
 
       "with statements, a version, and a statement ID" in {
         forAll(
-          arbitrary[Policy.Version] → "version",
-          CoreGen.statementId → "sid",
-          arbitrary[Seq[Statement]] → "statements"
-        ) { (version, sid, statements) ⇒
+          arbitrary[Policy.Version] ->"version",
+          CoreGen.statementId ->"sid",
+          arbitrary[Seq[Statement]] ->"statements"
+        ) { (version, sid, statements) =>
           val result = PolicyBuilder.newBuilder
             .withStatements(statements)
             .withVersion(version)

@@ -1,13 +1,13 @@
 package com.monsanto.arch.awsutil.auth.policy
 
-import com.amazonaws.auth.{policy ⇒ aws}
+import com.amazonaws.auth.{policy => aws}
 import com.monsanto.arch.awsutil.converters.CoreConverters._
 import com.monsanto.arch.awsutil.test_support.AwsEnumerationBehaviours
 import com.monsanto.arch.awsutil.testkit.CoreScalaCheckImplicits._
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
-import org.scalatest.prop.TableDrivenPropertyChecks.{Table, forAll ⇒ forAllIn}
+import org.scalatest.prop.TableDrivenPropertyChecks.{Table, forAll => forAllIn}
 
 class StatementSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
   "Statement object should" - {
@@ -15,13 +15,13 @@ class StatementSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
     TestAction.registerActions()
 
     "round-trip via their AWS equivalents" in {
-      forAll { statement: Statement ⇒
+      forAll { statement: Statement =>
         statement.asAws.asScala shouldBe statement
       }
     }
 
     "reject using AllPrincipals with something else" in {
-      forAll { principal: Principal ⇒
+      forAll { principal: Principal =>
         an [IllegalArgumentException] shouldBe thrownBy {
           val principals = Set(principal, Principal.AllPrincipals)
           Statement(None, principals, Statement.Effect.Allow, Seq.empty, Seq.empty, Set.empty)
@@ -30,7 +30,7 @@ class StatementSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
     }
 
     "reject using AllActions with something else" in {
-      forAll { action: Action ⇒
+      forAll { action: Action =>
         an [IllegalArgumentException] shouldBe thrownBy {
           val actions = Seq(action, Action.AllActions)
           Statement(None, Set.empty, Statement.Effect.Allow, actions, Seq.empty, Set.empty)
@@ -39,7 +39,7 @@ class StatementSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
     }
 
     "reject using AllResources with something else" in {
-      forAll { resource: Resource ⇒
+      forAll { resource: Resource =>
         an [IllegalArgumentException] shouldBe thrownBy {
           val resources = Seq(resource, Resource.AllResources)
           Statement(None, Set.empty, Statement.Effect.Allow, Seq.empty, resources, Set.empty)
@@ -58,20 +58,20 @@ class StatementSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
       (_: aws.Statement.Effect).asScala)
 
     "has the same name values as their AWS equivalents" in {
-      forAllIn(effects) { effect ⇒
+      forAllIn(effects) { effect =>
         effect.name shouldBe effect.asAws.name()
       }
     }
 
     "can extract Effect objects from strings" in {
-      forAllIn(effects) { effect ⇒
+      forAllIn(effects) { effect =>
         Statement.Effect.fromName(effect.name) shouldBe effect
       }
     }
 
     "not build from bad names" in {
       val isValidName = Statement.Effect.values.map(_.name).toSet
-      forAll { name: String ⇒
+      forAll { name: String =>
         whenever(!isValidName(name)) {
           an [IllegalArgumentException] shouldBe thrownBy {
             Statement.Effect.fromName(name)

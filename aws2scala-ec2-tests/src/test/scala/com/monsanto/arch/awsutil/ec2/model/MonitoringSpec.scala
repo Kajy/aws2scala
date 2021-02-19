@@ -10,7 +10,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class MonitoringSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
   "a Monitoring should" - {
     "be constructible from its AWS equivalent" in {
-      forAll { monitoring: Monitoring ⇒
+      forAll { monitoring: Monitoring =>
         Monitoring.fromAws(monitoring.toAws) shouldBe monitoring
       }
     }

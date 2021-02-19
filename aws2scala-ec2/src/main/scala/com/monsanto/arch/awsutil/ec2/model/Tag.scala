@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.ec2.model
 
-import com.amazonaws.services.ec2.{model ⇒ aws}
+import com.amazonaws.services.ec2.{model => aws}
 
 case class Tag(key: String, value: String) {
   private[ec2] def toAws: aws.Tag = new aws.Tag().withKey(key).withValue(value)

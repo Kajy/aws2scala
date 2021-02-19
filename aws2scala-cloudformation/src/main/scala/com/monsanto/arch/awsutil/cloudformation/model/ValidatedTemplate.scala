@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.cloudformation.model
 
-import com.amazonaws.services.cloudformation.{model ⇒ aws}
+import com.amazonaws.services.cloudformation.{model => aws}
 
 import scala.collection.JavaConverters
 

@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.ec2.model
 
-import com.amazonaws.services.ec2.{model ⇒ aws}
+import com.amazonaws.services.ec2.{model => aws}
 
 /** Describes a key pair, including the private key.
   *

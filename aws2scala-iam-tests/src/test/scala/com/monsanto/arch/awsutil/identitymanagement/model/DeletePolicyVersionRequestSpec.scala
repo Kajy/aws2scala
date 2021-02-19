@@ -10,10 +10,10 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class DeletePolicyVersionRequestSpec extends AnyFreeSpec with AwsMatcherSupport {
   "a DeletePolicyVersionRequest should" - {
     "convert to the correct AWS equivalent" in {
-      forAll { request: DeletePolicyVersionRequest ⇒
+      forAll { request: DeletePolicyVersionRequest =>
         request.asAws should have (
-          'PolicyArn (request.arn.arnString),
-          'VersionId (request.versionId)
+          Symbol("PolicyArn") (request.arn.arnString),
+          Symbol("VersionId") (request.versionId)
         )
       }
     }

@@ -10,7 +10,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class InstanceStateSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
   "an InstanceState should" - {
     "be constructible from its AWS equivalent" in {
-      forAll { state: InstanceState ⇒
+      forAll { state: InstanceState =>
         InstanceState.fromAws(state.toAws) shouldBe state
       }
     }

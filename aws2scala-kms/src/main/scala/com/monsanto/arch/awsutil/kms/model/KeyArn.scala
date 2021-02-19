@@ -25,13 +25,13 @@ object KeyArn {
     /** Extracts a `KeyArn` object from the given ARN string. */
     def unapply(arnString: String): Option[KeyArn] =
       arnString match {
-        case Arn.fromArnString(arn: KeyArn) ⇒ Some(arn)
-        case _                              ⇒ None
+        case Arn.fromArnString(arn: KeyArn) => Some(arn)
+        case _                              => None
       }
   }
 
   private[awsutil] val keyArnPF: PartialFunction[Arn.ArnParts, KeyArn] = {
-    case (_, Arn.Namespace.AwsKMS, Some(region), Some(account), KeyResourceRegex(id)) ⇒
+    case (_, Arn.Namespace.AwsKMS, Some(region), Some(account), KeyResourceRegex(id)) =>
       KeyArn(account, region, id)
   }
 

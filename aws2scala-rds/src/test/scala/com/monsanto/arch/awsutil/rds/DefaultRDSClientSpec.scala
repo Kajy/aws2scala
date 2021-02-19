@@ -9,11 +9,11 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers._
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class DefaultRDSClientSpec  extends AnyFreeSpec with MockFactory with Materialised with AwsMockUtils {
   "The RDS client" - {
-    "can create a DB instance" in withFixture { f ⇒
+    "can create a DB instance" in withFixture { f =>
       val dbInstance = new DBInstance()
       val request = new CreateDBInstanceRequest()
 
@@ -21,56 +21,56 @@ class DefaultRDSClientSpec  extends AnyFreeSpec with MockFactory with Materialis
         .expects(request, *)
         .withAwsSuccess(dbInstance)
 
-      val result = f.asyncClient.createDBInstance(request).futureValue
+      val result = f.asyncClient.createDBInstance(request).futureValue()
       result shouldBe dbInstance
     }
 
     "can delete a DB instance" - {
-      "without a final snapshot" in withFixture { f ⇒
+      "without a final snapshot" in withFixture { f =>
         val dbInstanceId = "forty-two"
         val dbInstance = new DBInstance().withDBInstanceIdentifier(dbInstanceId)
 
         (f.rds.deleteDBInstanceAsync(_: DeleteDBInstanceRequest, _: AsyncHandler[DeleteDBInstanceRequest,DBInstance]))
-          .expects(whereRequest(r ⇒
+          .expects(whereRequest(r =>
             r.getDBInstanceIdentifier == dbInstanceId &&
               r.getSkipFinalSnapshot == true &&
               r.getFinalDBSnapshotIdentifier == null
           ))
           .withAwsSuccess(dbInstance)
 
-        val result = f.asyncClient.deleteDBInstance(dbInstanceId).futureValue
+        val result = f.asyncClient.deleteDBInstance(dbInstanceId).futureValue()
         result shouldBe dbInstance
       }
 
-      "with a final snapshot" in withFixture { f ⇒
+      "with a final snapshot" in withFixture { f =>
         val dbInstanceId = "forty-two"
         val dbSnapshotId = "forty-two-snapshot"
         val dbInstance = new DBInstance().withDBInstanceIdentifier(dbInstanceId)
 
         (f.rds.deleteDBInstanceAsync(_: DeleteDBInstanceRequest, _: AsyncHandler[DeleteDBInstanceRequest,DBInstance]))
-          .expects(whereRequest(r ⇒
+          .expects(whereRequest(r =>
             r.getDBInstanceIdentifier == dbInstanceId &&
               r.getSkipFinalSnapshot == false &&
               r.getFinalDBSnapshotIdentifier == dbSnapshotId
           ))
           .withAwsSuccess(dbInstance)
 
-        val result = f.asyncClient.deleteDBInstance(dbInstanceId, dbSnapshotId).futureValue
+        val result = f.asyncClient.deleteDBInstance(dbInstanceId, dbSnapshotId).futureValue()
         result shouldBe dbInstance
       }
     }
 
-    "list DB instances" in withFixture { f ⇒
-      val instances = Seq.tabulate(20)(i ⇒ new DBInstance().withDBName(s"instance$i"))
+    "list DB instances" in withFixture { f =>
+      val instances = Seq.tabulate(20)(i => new DBInstance().withDBName(s"instance$i"))
 
       val token = "token"
       (f.rds.describeDBInstancesAsync(_: DescribeDBInstancesRequest, _: AsyncHandler[DescribeDBInstancesRequest, DescribeDBInstancesResult]))
-        .expects(whereRequest(r ⇒
+        .expects(whereRequest(r =>
           (r.getMarker == null || r.getMarker == token) &&
             r.getFilters.isEmpty &&
             r.getDBInstanceIdentifier == null
         ))
-        .withAwsSuccess { r ⇒
+        .withAwsSuccess { r =>
           val first = r.getMarker == null
           val pagedInstances = if (first) instances.take(10) else instances.drop(10)
           val result = new DescribeDBInstancesResult().withDBInstances(pagedInstances.asJavaCollection)
@@ -81,24 +81,24 @@ class DefaultRDSClientSpec  extends AnyFreeSpec with MockFactory with Materialis
         }
         .twice()
 
-      val result = f.asyncClient.describeDBInstances().futureValue
+      val result = f.asyncClient.describeDBInstances().futureValue()
       result shouldBe instances
     }
 
-    "describe a specific DB instance" in withFixture { f ⇒
+    "describe a specific DB instance" in withFixture { f =>
       val instanceId = "instance0"
       val instance = new DBInstance().withDBName("test").withDBInstanceIdentifier(instanceId)
 
       val token = "token"
       (f.rds.describeDBInstancesAsync(_: DescribeDBInstancesRequest, _: AsyncHandler[DescribeDBInstancesRequest, DescribeDBInstancesResult]))
-        .expects(whereRequest(r ⇒
+        .expects(whereRequest(r =>
           (r.getMarker == null || r.getMarker == token) &&
             r.getFilters.isEmpty &&
             r.getDBInstanceIdentifier == instanceId
         ))
         .withAwsSuccess(new DescribeDBInstancesResult().withDBInstances(Seq(instance).asJavaCollection))
 
-      val result = f.asyncClient.describeDBInstance(instanceId).futureValue
+      val result = f.asyncClient.describeDBInstance(instanceId).futureValue()
       result shouldBe instance
     }
   }

@@ -10,6 +10,7 @@ import com.monsanto.arch.awsutil.{AwsClientProvider, AwsSettings}
 object CloudFormation extends AwsClientProvider[StreamingCloudFormationClient,AsyncCloudFormationClient] {
   override private[awsutil] def streamingClient(settings: AwsSettings, credentialsProvider: AWSCredentialsProvider,
                                                 executorService: ExecutorService) = {
+
     val aws = new AmazonCloudFormationAsyncClient(credentialsProvider, executorService)
     aws.setRegion(settings.region)
     val client = new DefaultStreamingCloudFormationClient(aws)

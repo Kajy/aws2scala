@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.identitymanagement.model
 
-import com.amazonaws.services.identitymanagement.{model ⇒ aws}
+import com.amazonaws.services.identitymanagement.{model => aws}
 import com.monsanto.arch.awsutil.converters.IamConverters._
 import com.monsanto.arch.awsutil.testkit.CoreScalaCheckImplicits._
 import org.scalatest.freespec.AnyFreeSpec
@@ -20,7 +20,7 @@ class ListRolesRequestSpec extends AnyFreeSpec {
 
   "a list roles with prefix" - {
     "creates the correct AWS request" in {
-      forAll { path: Path ⇒
+      forAll { path: Path =>
         val request = ListRolesRequest.withPrefix(path)
         val awsRequest = new aws.ListRolesRequest().withPathPrefix(path.pathString)
         request.asAws shouldBe awsRequest
@@ -28,7 +28,7 @@ class ListRolesRequestSpec extends AnyFreeSpec {
     }
 
     "creates new requests" in {
-      forAll { path: Path ⇒
+      forAll { path: Path =>
         val request = ListRolesRequest.withPrefix(path)
         request.asAws should not be theSameInstanceAs (request.asAws)
       }

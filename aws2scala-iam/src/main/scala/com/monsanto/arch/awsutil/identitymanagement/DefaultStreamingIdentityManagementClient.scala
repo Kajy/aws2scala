@@ -2,12 +2,12 @@ package com.monsanto.arch.awsutil.identitymanagement
 
 import akka.NotUsed
 import akka.stream.scaladsl.{Flow, Source}
-import com.amazonaws.services.identitymanagement.{AmazonIdentityManagementAsync, model ⇒ aws}
+import com.amazonaws.services.identitymanagement.{AmazonIdentityManagementAsync, model => aws}
 import com.monsanto.arch.awsutil.converters.IamConverters._
 import com.monsanto.arch.awsutil.identitymanagement.model._
 import com.monsanto.arch.awsutil._
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 private[awsutil] class DefaultStreamingIdentityManagementClient(iam: AmazonIdentityManagementAsync) extends StreamingIdentityManagementClient {
   override val roleLister =
@@ -21,12 +21,12 @@ private[awsutil] class DefaultStreamingIdentityManagementClient(iam: AmazonIdent
     Flow[CreateRoleRequest]
       .map(_.asAws)
       .via[aws.CreateRoleResult,NotUsed](AWSFlow.simple(iam.createRoleAsync))
-      .map(r ⇒ r.getRole.asScala)
+      .map(r => r.getRole.asScala)
       .named("IAM.roleCreator")
 
   override val roleDeleter =
     Flow[String]
-      .map(n ⇒ new aws.DeleteRoleRequest().withRoleName(n))
+      .map(n => new aws.DeleteRoleRequest().withRoleName(n))
       .via(AWSFlow.simple(AWSFlowAdapter.returnInput[aws.DeleteRoleRequest,aws.DeleteRoleResult](iam.deleteRoleAsync)))
       .map(_.getRoleName)
       .named("IAM.roleDeleter")
@@ -57,7 +57,7 @@ private[awsutil] class DefaultStreamingIdentityManagementClient(iam: AmazonIdent
     Flow[GetUserRequest]
       .map(_.asAws)
       .via[aws.GetUserResult,NotUsed](AWSFlow.simple(iam.getUserAsync))
-      .map(r ⇒ r.getUser.asScala)
+      .map(r => r.getUser.asScala)
       .named("IAM.userGetter")
 
   override val policyCreator =
@@ -69,17 +69,17 @@ private[awsutil] class DefaultStreamingIdentityManagementClient(iam: AmazonIdent
 
   override val policyDeleter =
     Flow[PolicyArn]
-      .flatMapConcat { arn ⇒
+      .flatMapConcat { arn =>
         val request = new aws.DeletePolicyRequest().withPolicyArn(arn.arnString)
         Source.single(request)
           .via[aws.DeletePolicyResult, NotUsed](AWSFlow.simple(iam.deletePolicyAsync))
-          .map(_ ⇒ arn)
+          .map(_ => arn)
       }
       .named("IAM.policyDeleter")
 
   override val policyGetter =
     Flow[PolicyArn]
-      .map(arn ⇒ new aws.GetPolicyRequest().withPolicyArn(arn.arnString))
+      .map(arn => new aws.GetPolicyRequest().withPolicyArn(arn.arnString))
       .via[aws.GetPolicyResult, NotUsed](AWSFlow.simple(iam.getPolicyAsync))
       .map(_.getPolicy.asScala)
       .named("IAM.policyGetter")
@@ -100,10 +100,10 @@ private[awsutil] class DefaultStreamingIdentityManagementClient(iam: AmazonIdent
 
   override val policyVersionDeleter =
     Flow[DeletePolicyVersionRequest]
-      .flatMapConcat { request ⇒
+      .flatMapConcat { request =>
         Source.single(request.asAws)
           .via[aws.DeletePolicyVersionResult,NotUsed](AWSFlow.simple(iam.deletePolicyVersionAsync))
-          .map(_ ⇒ request.arn)
+          .map(_ => request.arn)
       }
       .named("IAM.policyVersionDeleter")
 
@@ -116,17 +116,17 @@ private[awsutil] class DefaultStreamingIdentityManagementClient(iam: AmazonIdent
 
   override val policyVersionLister =
     Flow[PolicyArn]
-      .map(arn ⇒ new aws.ListPolicyVersionsRequest().withPolicyArn(arn.arnString))
+      .map(arn => new aws.ListPolicyVersionsRequest().withPolicyArn(arn.arnString))
       .via[aws.ListPolicyVersionsResult,NotUsed](AWSFlow.pagedByMarker(iam.listPolicyVersionsAsync))
       .mapConcat(_.getVersions.asScala.toList.map(_.asScala))
       .named("IAM.policyVersionLister")
 
   override val defaultPolicyVersionSetter =
     Flow[SetDefaultPolicyVersionRequest]
-      .flatMapConcat { request ⇒
+      .flatMapConcat { request =>
         Source.single(request.asAws)
           .via[aws.SetDefaultPolicyVersionResult,NotUsed](AWSFlow.simple(iam.setDefaultPolicyVersionAsync))
-          .map(_ ⇒ request.arn)
+          .map(_ => request.arn)
       }
       .named("IAM.defaultPolicyVersionSetter")
 }

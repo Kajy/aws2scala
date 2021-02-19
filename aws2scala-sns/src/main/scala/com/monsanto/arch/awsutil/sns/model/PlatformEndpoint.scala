@@ -1,7 +1,7 @@
 package com.monsanto.arch.awsutil.sns.model
 
 import akka.Done
-import akka.stream.Materializer
+import akka.actor.ActorSystem
 import akka.stream.scaladsl.{Flow, Keep, Sink, Source}
 import com.monsanto.arch.awsutil.sns.StreamingSNSClient
 
@@ -26,42 +26,42 @@ case class PlatformEndpoint private[awsutil] (arn: String, attributes: Map[Strin
   def platform: Platform = PlatformEndpointArn.fromArnString(arn).platform
 
   /** Enables/disables delivery to the endpoint. */
-  def setEnabled(enabled: Boolean)(implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+  def setEnabled(enabled: Boolean)(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     setAttribute("Enabled", enabled.toString)
 
   /** Updates the device token for the endpoint. */
-  def setToken(token: String)(implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+  def setToken(token: String)(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     setAttribute("Token", token)
 
   /** Sets the arbitrary user data associated with this endpoint. */
-  def setCustomUserData(customUserData: String)(implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+  def setCustomUserData(customUserData: String)(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     setAttribute("CustomUserData", customUserData)
 
   /** Sets an attribute for the endpoint. */
-  def setAttribute(name: String, value: String)(implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+  def setAttribute(name: String, value: String)(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     Source.single(SetPlatformEndpointAttributesRequest(arn, name, value))
       .via(sns.platformEndpointAttributesSetter)
       .runWith(Sink.ignore)
 
   /** Sets an attribute for the endpoint. `None` values will be converted to an empty string. */
   def setAttribute(name: String, value: Option[String])
-                  (implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+                  (implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     Source.single(SetPlatformEndpointAttributesRequest(arn, name, value))
       .via(sns.platformEndpointAttributesSetter)
       .runWith(Sink.ignore)
 
   /** Sets the attributes for the endpoint. */
-  def setAttributes(attributes: Map[String,String])(implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+  def setAttributes(attributes: Map[String,String])(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     Source.single(SetPlatformEndpointAttributesRequest(arn, attributes))
       .via(sns.platformEndpointAttributesSetter)
       .runWith(Sink.ignore)
 
   /** Retrieves the latest state of this endpoint and returns a refreshed `PlatformEndpoint`. */
-  def refresh()(implicit sns: StreamingSNSClient, m: Materializer): Future[PlatformEndpoint] =
+  def refresh()(implicit sns: StreamingSNSClient, as: ActorSystem): Future[PlatformEndpoint] =
     Source.single(arn).runWith(PlatformEndpoint.toPlatformEndpoint)
 
   /** Requests that the platform endpoint be deleted. */
-  def delete()(implicit sns: StreamingSNSClient, m: Materializer): Future[Done] =
+  def delete()(implicit sns: StreamingSNSClient, as: ActorSystem): Future[Done] =
     Source.single(arn)
       .via(sns.platformEndpointDeleter)
       .runWith(Sink.ignore)
@@ -72,7 +72,7 @@ case class PlatformEndpoint private[awsutil] (arn: String, attributes: Map[Strin
     * @param message the message to send
     * @return the unique identifier of the published message
     */
-  def publish(message: String)(implicit m: Materializer, sns: StreamingSNSClient): Future[String] =
+  def publish(message: String)(implicit as: ActorSystem, sns: StreamingSNSClient): Future[String] =
     Source.single(PublishRequest(arn, message))
       .via(sns.publisher)
       .runWith(Sink.head)
@@ -85,7 +85,7 @@ case class PlatformEndpoint private[awsutil] (arn: String, attributes: Map[Strin
     * @return the unique identifier of the published message
     */
   def publish(message: String, attributes: Map[String,MessageAttributeValue])
-             (implicit m: Materializer, sns: StreamingSNSClient): Future[String] =
+             (implicit as: ActorSystem, sns: StreamingSNSClient): Future[String] =
     Source.single(PublishRequest(arn, message, attributes))
       .via(sns.publisher)
       .runWith(Sink.head)
@@ -98,7 +98,7 @@ case class PlatformEndpoint private[awsutil] (arn: String, attributes: Map[Strin
     *                    extra escaping is necessary.
     * @return the unique identifier of the published message
     */
-  def publishJson(jsonMessage: String)(implicit m: Materializer, sns: StreamingSNSClient): Future[String] =
+  def publishJson(jsonMessage: String)(implicit as: ActorSystem, sns: StreamingSNSClient): Future[String] =
     Source.single(PublishRequest(this, jsonMessage))
       .via(sns.publisher)
       .runWith(Sink.head)
@@ -113,7 +113,7 @@ case class PlatformEndpoint private[awsutil] (arn: String, attributes: Map[Strin
     * @return the unique identifier of the published message
     */
   def publishJson(jsonMessage: String, attributes: Map[String,MessageAttributeValue])
-                 (implicit m: Materializer, sns: StreamingSNSClient): Future[String] =
+                 (implicit as: ActorSystem, sns: StreamingSNSClient): Future[String] =
     Source.single(PublishRequest(this, jsonMessage, attributes))
       .via(sns.publisher)
       .runWith(Sink.head)
@@ -123,10 +123,10 @@ object PlatformEndpoint {
   /** A sink that consumes a single platform endpoint ARN to materialise a `Future[PlatformEndpoint]`. */
   private[model] def toPlatformEndpoint(implicit sns: StreamingSNSClient) =
     Flow[String]
-      .flatMapConcat { arn ⇒
+      .flatMapConcat { arn =>
         Source.single(arn)
           .via(sns.platformEndpointAttributesGetter)
-          .map(attrs ⇒ PlatformEndpoint(arn, attrs))
+          .map(attrs => PlatformEndpoint(arn, attrs))
       }
       .toMat(Sink.head)(Keep.right)
 }

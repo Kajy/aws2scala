@@ -10,10 +10,10 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class GetPolicyVersionRequestSpec extends AnyFreeSpec with AwsMatcherSupport {
   "a GetPolicyVersionRequest should" - {
     "convert to the correct AWS equivalent" in {
-      forAll { request: GetPolicyVersionRequest ⇒
+      forAll { request: GetPolicyVersionRequest =>
         request.asAws should have (
-          'PolicyArn (request.arn.arnString),
-          'VersionId (request.versionId)
+          Symbol("PolicyArn") (request.arn.arnString),
+          Symbol("VersionId") (request.versionId)
         )
       }
     }

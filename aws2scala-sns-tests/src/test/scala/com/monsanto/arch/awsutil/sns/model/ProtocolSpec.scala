@@ -9,7 +9,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class ProtocolSpec extends AnyFreeSpec {
   "the Protocol object should" - {
     "round-trip protocol strings" in {
-      forAll { protocol: Protocol ⇒
+      forAll { protocol: Protocol =>
         protocol.asAws.asScala shouldBe protocol
       }
     }
@@ -21,7 +21,7 @@ class ProtocolSpec extends AnyFreeSpec {
 
   "individual protocols should" - {
     "generate SubscriptionEndpoints" in {
-      forAll { subscriptionEndpoint: SubscriptionEndpoint ⇒
+      forAll { subscriptionEndpoint: SubscriptionEndpoint =>
         val SubscriptionEndpoint(protocol, endpoint) =  subscriptionEndpoint
         val result = protocol(endpoint)
         result shouldBe subscriptionEndpoint

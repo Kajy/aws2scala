@@ -15,44 +15,44 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class DefaultAsyncS3ClientSpec extends AnyFreeSpec with MockFactory with Materialised with FlowMockUtils {
   "the async S3 client can" - {
     "create buckets" in {
-      forAll(S3Gen.bucketName, arbitrary[Bucket]) { (bucketName, bucket) ⇒
+      forAll(S3Gen.bucketName, arbitrary[Bucket]) { (bucketName, bucket) =>
         val streaming = mock[StreamingS3Client]("streaming")
         val async = new DefaultAsyncS3Client(streaming)
 
-        (streaming.bucketCreator _)
+        (() => streaming.bucketCreator)
           .expects()
           .returningFlow(CreateBucketRequest(bucketName), bucket)
 
-        val result = async.createBucket(bucketName).futureValue
+        val result = async.createBucket(bucketName).futureValue()
         result shouldBe bucket
       }
     }
 
     "check if buckets exist" in {
-      forAll(S3Gen.bucketName, arbitrary[Boolean]) { (bucketName, exists) ⇒
+      forAll(S3Gen.bucketName, arbitrary[Boolean]) { (bucketName, exists) =>
         val streaming = mock[StreamingS3Client]("streaming")
         val async = new DefaultAsyncS3Client(streaming)
 
-        (streaming.bucketExistenceChecker _)
+        (() => streaming.bucketExistenceChecker)
           .expects()
           .returningFlow(bucketName, exists)
 
-        val result = async.doesBucketExist(bucketName).futureValue
+        val result = async.doesBucketExist(bucketName).futureValue()
         result shouldBe exists
       }
     }
   }
 
   "list buckets" in {
-    forAll(SizeRange(25)) { buckets: List[Bucket] ⇒
+    forAll(SizeRange(25)) { buckets: List[Bucket] =>
       val streaming = mock[StreamingS3Client]("streaming")
       val async = new DefaultAsyncS3Client(streaming)
 
-      (streaming.bucketLister _)
+      (() => streaming.bucketLister)
         .expects()
         .returning(Source(buckets))
 
-      val result = async.listBuckets().futureValue
+      val result = async.listBuckets().futureValue()
       result shouldBe buckets
     }
   }

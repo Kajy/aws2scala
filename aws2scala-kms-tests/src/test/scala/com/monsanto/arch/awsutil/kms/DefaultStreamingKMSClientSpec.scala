@@ -2,7 +2,7 @@ package com.monsanto.arch.awsutil.kms
 
 import akka.stream.scaladsl.{Sink, Source}
 import com.amazonaws.handlers.AsyncHandler
-import com.amazonaws.services.kms.{AWSKMSAsync, model ⇒ aws}
+import com.amazonaws.services.kms.{AWSKMSAsync, model => aws}
 import com.monsanto.arch.awsutil.converters.KmsConverters._
 import com.monsanto.arch.awsutil.kms.model.{CreateKeyWithAliasRequest, KeyMetadata}
 import com.monsanto.arch.awsutil.test_support.AdaptableScalaFutures._
@@ -16,31 +16,31 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class DefaultStreamingKMSClientSpec extends AnyFreeSpec with MockFactory with Materialised with AwsMockUtils {
   "the DefaultStreamingKMSClient should provide" - {
     "a key+alias creation flow" in {
-      forAll { (request: CreateKeyWithAliasRequest, metadata: KeyMetadata) ⇒
+      forAll { (request: CreateKeyWithAliasRequest, metadata: KeyMetadata) =>
         val kms = mock[AWSKMSAsync]("kms")
         val streaming = new DefaultStreamingKMSClient(kms)
 
         (kms.createKeyAsync(_: aws.CreateKeyRequest, _: AsyncHandler[aws.CreateKeyRequest, aws.CreateKeyResult]))
-          .expects(whereRequest { r ⇒
+          .expects(whereRequest { r =>
             r shouldBe request.asAws
             true
           })
           .withAwsSuccess(new aws.CreateKeyResult().withKeyMetadata(metadata.asAws))
 
         (kms.createAliasAsync(_: aws.CreateAliasRequest, _: AsyncHandler[aws.CreateAliasRequest, aws.CreateAliasResult]))
-          .expects(whereRequest { r ⇒
+          .expects(whereRequest { r =>
             r should have (
-              'AliasName (
+              Symbol("AliasName") (
                 if (request.alias.startsWith("alias/")) request.alias
                 else s"alias/${request.alias}"
               ),
-              'TargetKeyId (metadata.id)
+              Symbol("TargetKeyId") (metadata.id)
             )
             true
           })
           .withVoidAwsSuccess()
 
-        val result = Source.single(request).via(streaming.keyWithAliasCreator).runWith(Sink.head).futureValue
+        val result = Source.single(request).via(streaming.keyWithAliasCreator).runWith(Sink.head).futureValue()
         result shouldBe metadata
       }
     }

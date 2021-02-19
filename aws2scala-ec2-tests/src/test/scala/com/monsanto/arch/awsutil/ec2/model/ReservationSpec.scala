@@ -9,7 +9,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class ReservationSpec extends AnyFreeSpec {
   "a Reservation should" - {
     "be constructible from its AWS equivalent" in {
-      forAll { reservation: Reservation ⇒
+      forAll { reservation: Reservation =>
         Reservation.fromAws(reservation.toAws) shouldBe reservation
       }
     }

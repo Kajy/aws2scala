@@ -9,18 +9,18 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class CreatePolicyRequestSpec extends AnyFreeSpec {
   "a CreatePolicyRequest should" - {
     "transform to the correct AWS request" in {
-      forAll { request: CreatePolicyRequest ⇒
+      forAll { request: CreatePolicyRequest =>
         request.asAws should have (
-          'Description (request.description.orNull),
-          'Path (request.path.pathString),
-          'PolicyDocument (request.document.toJson),
-          'PolicyName (request.name)
+          Symbol("Description") (request.description.orNull),
+          Symbol("Path") (request.path.pathString),
+          Symbol("PolicyDocument") (request.document.toJson),
+          Symbol("PolicyName") (request.name)
         )
       }
     }
 
     "round-trip via an AWS request" in {
-      forAll { request: CreatePolicyRequest ⇒
+      forAll { request: CreatePolicyRequest =>
         request.asAws.asScala shouldBe request
       }
     }

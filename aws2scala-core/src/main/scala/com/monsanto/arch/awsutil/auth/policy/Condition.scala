@@ -464,11 +464,11 @@ object Condition {
     object fromParts {
       def unapply(parts: (String, String, Seq[String])): Option[ArnCondition] =
         parts match {
-          case (key, WithoutIfExists(ArnComparisonType.fromId(arnComparisonType)), values) ⇒
+          case (key, WithoutIfExists(ArnComparisonType.fromId(arnComparisonType)), values) =>
             Some(ArnCondition(key, arnComparisonType, values, ignoreMissing = true))
-          case (key, ArnComparisonType.fromId(arnComparisonType), values) ⇒
+          case (key, ArnComparisonType.fromId(arnComparisonType), values) =>
             Some(ArnCondition(key, arnComparisonType, values, ignoreMissing = false))
-          case _ ⇒ None
+          case _ => None
         }
     }
   }
@@ -510,7 +510,7 @@ object Condition {
 
     override def comparisonType: String = if (ignoreMissing) "BinaryIfExists" else "Binary"
 
-    override def comparisonValues: Seq[String] = values.map(v ⇒ Base64.getEncoder.encodeToString(v.toArray))
+    override def comparisonValues: Seq[String] = values.map(v => Base64.getEncoder.encodeToString(v.toArray))
   }
 
   object BinaryCondition {
@@ -520,11 +520,11 @@ object Condition {
     object fromParts {
       def unapply(parts: (String, String, Seq[String])): Option[BinaryCondition] =
         parts match {
-          case (key, "BinaryIfExists", AsByteStrings(values)) ⇒
+          case (key, "BinaryIfExists", AsByteStrings(values)) =>
             Some(BinaryCondition(key, values, ignoreMissing = true))
-          case (key, "Binary", AsByteStrings(values)) ⇒
+          case (key, "Binary", AsByteStrings(values)) =>
             Some(BinaryCondition(key, values, ignoreMissing = false))
-          case _ ⇒ None
+          case _ => None
         }
 
       /** Extractor to base64-decode a sequence of strings. */
@@ -532,7 +532,7 @@ object Condition {
         private val decoder = Base64.getDecoder
 
         def unapply(strings: Seq[String]): Option[Seq[ByteString]] =
-          Try(strings.map(s ⇒ ByteString(decoder.decode(s)))).toOption
+          Try(strings.map(s => ByteString(decoder.decode(s)))).toOption
       }
     }
   }
@@ -578,11 +578,11 @@ object Condition {
     object fromParts {
       def unapply(parts: (String, String, Seq[String])): Option[BooleanCondition] =
         parts match {
-          case (key, "BoolIfExists", BooleanValue(value)) ⇒
+          case (key, "BoolIfExists", BooleanValue(value)) =>
             Some(BooleanCondition(key, value, ignoreMissing = true))
-          case (key, "Bool", BooleanValue(value)) ⇒
+          case (key, "Bool", BooleanValue(value)) =>
             Some(BooleanCondition(key, value, ignoreMissing = false))
-          case _ ⇒
+          case _ =>
             None
         }
     }
@@ -676,17 +676,17 @@ object Condition {
     object fromParts {
       def unapply(parts: (String, String, Seq[String])): Option[DateCondition] =
         parts match {
-          case (key, WithoutIfExists(DateComparisonType.fromId(dateComparisonType)), AsDates(dates)) ⇒
+          case (key, WithoutIfExists(DateComparisonType.fromId(dateComparisonType)), AsDates(dates)) =>
             Some(DateCondition(key, dateComparisonType, dates, ignoreMissing = true))
-          case (key, DateComparisonType.fromId(dateComparisonType), AsDates(dates)) ⇒
+          case (key, DateComparisonType.fromId(dateComparisonType), AsDates(dates)) =>
             Some(DateCondition(key, dateComparisonType, dates, ignoreMissing = false))
-          case _ ⇒ None
+          case _ => None
         }
 
       /** Extractor to parse dates from a sequence of strings. */
       private object AsDates {
         def unapply(strings: Seq[String]): Option[Seq[Date]] =
-          Try(strings.map(s ⇒ new Date(Instant.parse(s).toEpochMilli))).toOption
+          Try(strings.map(s => new Date(Instant.parse(s).toEpochMilli))).toOption
       }
     }
   }
@@ -758,11 +758,11 @@ object Condition {
     object fromParts {
       def unapply(parts: (String, String, Seq[String])): Option[IpAddressCondition] =
         parts match {
-          case (key, WithoutIfExists(IpAddressComparisonType.fromId(ipAddressComparisonType)), cidrBlocks) ⇒
+          case (key, WithoutIfExists(IpAddressComparisonType.fromId(ipAddressComparisonType)), cidrBlocks) =>
             Some(IpAddressCondition(key, ipAddressComparisonType, cidrBlocks, ignoreMissing = true))
-          case (key, IpAddressComparisonType.fromId(ipAddressComparisonType), cidrBlocks) ⇒
+          case (key, IpAddressComparisonType.fromId(ipAddressComparisonType), cidrBlocks) =>
             Some(IpAddressCondition(key, ipAddressComparisonType, cidrBlocks, ignoreMissing = false))
-          case _ ⇒ None
+          case _ => None
         }
     }
   }
@@ -827,11 +827,11 @@ object Condition {
     object fromParts {
       def unapply(parts: (String, String, Seq[String])): Option[NumericCondition] =
         parts match {
-          case (key, WithoutIfExists(NumericComparisonType.fromId(numericComparisonType)), AsDoubles(values)) ⇒
+          case (key, WithoutIfExists(NumericComparisonType.fromId(numericComparisonType)), AsDoubles(values)) =>
             Some(NumericCondition(key, numericComparisonType, values, ignoreMissing = true))
-          case (key, NumericComparisonType.fromId(numericComparisonType), AsDoubles(values)) ⇒
+          case (key, NumericComparisonType.fromId(numericComparisonType), AsDoubles(values)) =>
             Some(NumericCondition(key, numericComparisonType, values, ignoreMissing = false))
-          case _ ⇒ None
+          case _ => None
         }
 
       /** Extractor to parse doubles from a sequence of strings. */
@@ -943,11 +943,11 @@ object Condition {
     object fromParts {
       def unapply(parts: (String, String, Seq[String])): Option[StringCondition] =
         parts match {
-          case (key, WithoutIfExists(StringComparisonType.fromId(stringComparisonType)), values) ⇒
+          case (key, WithoutIfExists(StringComparisonType.fromId(stringComparisonType)), values) =>
             Some(StringCondition(key, stringComparisonType, values, ignoreMissing = true))
-          case (key, StringComparisonType.fromId(stringComparisonType), values) ⇒
+          case (key, StringComparisonType.fromId(stringComparisonType), values) =>
             Some(StringCondition(key, stringComparisonType, values, ignoreMissing = false))
-          case _ ⇒ None
+          case _ => None
         }
     }
   }
@@ -1010,8 +1010,8 @@ object Condition {
     object fromParts {
       def unapply(parts: (String, String, Seq[String])): Option[NullCondition] =
         parts match {
-          case (key, "Null", BooleanValue(value)) ⇒ Some(NullCondition(key, value))
-          case _                                  ⇒ None
+          case (key, "Null", BooleanValue(value)) => Some(NullCondition(key, value))
+          case _                                  => None
         }
     }
   }
@@ -1032,7 +1032,7 @@ object Condition {
       */
     object fromComparisonTypeString {
       def unapply(comparisonTypeString: String): Option[SetOperation] =
-        values.find(op ⇒ comparisonTypeString.startsWith(op.prefix))
+        values.find(op => comparisonTypeString.startsWith(op.prefix))
     }
   }
 
@@ -1058,14 +1058,14 @@ object Condition {
     object fromParts {
       def unapply(parts: (String, String, Seq[String])): Option[MultipleKeyValueCondition] =
         parts match {
-          case (key, SetOpAndComparisonType(op, comparisonType), values) ⇒
+          case (key, SetOpAndComparisonType(op, comparisonType), values) =>
             (key, comparisonType, values) match {
-              case Condition.fromParts(c: Condition with MultipleKeyValueSupport) ⇒
+              case Condition.fromParts(c: Condition with MultipleKeyValueSupport) =>
                 Some(MultipleKeyValueCondition(op, c))
-              case _ ⇒
+              case _ =>
                 None
             }
-          case _ ⇒
+          case _ =>
             None
         }
     }
@@ -1074,9 +1074,9 @@ object Condition {
     private object SetOpAndComparisonType {
       def unapply(comparisonType: String): Option[(SetOperation, String)] =
         comparisonType match {
-          case SetOperation.fromComparisonTypeString(op) ⇒
+          case SetOperation.fromComparisonTypeString(op) =>
             Some((op, comparisonType.substring(op.prefix.length)))
-          case _ ⇒
+          case _ =>
             None
         }
     }
@@ -1085,7 +1085,7 @@ object Condition {
   /** Adds support to a condition so that set operations may be applied to
     * it.
     */
-  sealed trait MultipleKeyValueSupport { this: Condition ⇒
+  sealed trait MultipleKeyValueSupport { this: Condition =>
     /** Converts this condition into a condition that supports keys that contain
       * multiple values by enforcing that all values meet the condition.
       */
@@ -1121,16 +1121,16 @@ object Condition {
       */
     def unapply(parts: (String, String, Seq[String])): Option[Condition] =
       parts match {
-        case ArnCondition.fromParts(condition)              ⇒ Some(condition)
-        case BinaryCondition.fromParts(condition)           ⇒ Some(condition)
-        case BooleanCondition.fromParts(condition)          ⇒ Some(condition)
-        case DateCondition.fromParts(condition)             ⇒ Some(condition)
-        case IpAddressCondition.fromParts(condition)        ⇒ Some(condition)
-        case NumericCondition.fromParts(condition)          ⇒ Some(condition)
-        case StringCondition.fromParts(condition)           ⇒ Some(condition)
-        case NullCondition.fromParts(condition)             ⇒ Some(condition)
-        case MultipleKeyValueCondition.fromParts(condition) ⇒ Some(condition)
-        case _ ⇒ None
+        case ArnCondition.fromParts(condition)              => Some(condition)
+        case BinaryCondition.fromParts(condition)           => Some(condition)
+        case BooleanCondition.fromParts(condition)          => Some(condition)
+        case DateCondition.fromParts(condition)             => Some(condition)
+        case IpAddressCondition.fromParts(condition)        => Some(condition)
+        case NumericCondition.fromParts(condition)          => Some(condition)
+        case StringCondition.fromParts(condition)           => Some(condition)
+        case NullCondition.fromParts(condition)             => Some(condition)
+        case MultipleKeyValueCondition.fromParts(condition) => Some(condition)
+        case _ => None
       }
   }
 
@@ -1149,8 +1149,8 @@ object Condition {
   private object BooleanValue {
     def unapply(strings: Seq[String]): Option[Boolean] =
       strings match {
-        case Seq(string) ⇒ Try(string.toBoolean).toOption
-        case _           ⇒ None
+        case Seq(string) => Try(string.toBoolean).toOption
+        case _           => None
       }
   }
 }

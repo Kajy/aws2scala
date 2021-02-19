@@ -10,30 +10,30 @@ object S3ScalaCheckImplicits {
   implicit lazy val arbBucket: Arbitrary[Bucket] =
     Arbitrary {
       for {
-        name ← S3Gen.bucketName
-        owner ← arbitrary[Owner]
-        creationDate ← arbitrary[Date]
+        name <- S3Gen.bucketName
+        owner <- arbitrary[Owner]
+        creationDate <- arbitrary[Date]
       } yield Bucket(name, owner, creationDate)
     }
 
   implicit lazy val shrinkBucket: Shrink[Bucket] =
-    Shrink { bucket ⇒
-      Shrink.shrink(bucket.name).filter(Bucket.validName).map(n ⇒ bucket.copy(name = n)) append
-        Shrink.shrink(bucket.owner).map(o ⇒ bucket.copy(owner = o)) append
-        Shrink.shrink(bucket.creationDate).map(d ⇒ bucket.copy(creationDate = d))
+    Shrink { bucket =>
+      Shrink.shrink(bucket.name).filter(Bucket.validName).map(n => bucket.copy(name = n)) lazyAppendedAll
+        Shrink.shrink(bucket.owner).map(o => bucket.copy(owner = o)) lazyAppendedAll
+        Shrink.shrink(bucket.creationDate).map(d => bucket.copy(creationDate = d))
     }
 
   implicit lazy val arbOwner: Arbitrary[Owner] =
     Arbitrary {
       for {
-        id ← S3Gen.canonicalIdentifier
-        displayName ← UtilGen.nonEmptyString
+        id <- S3Gen.canonicalIdentifier
+        displayName <- UtilGen.nonEmptyString
       } yield Owner(id, displayName)
     }
 
   implicit lazy val shrinkOwner: Shrink[Owner] =
-    Shrink { owner ⇒
-      Shrink.shrink(owner.displayName).filter(_.nonEmpty).map(x ⇒ owner.copy(displayName = x))
+    Shrink { owner =>
+      Shrink.shrink(owner.displayName).filter(_.nonEmpty).map(x => owner.copy(displayName = x))
     }
 
   implicit lazy val arbRegion: Arbitrary[Region] = Arbitrary(Gen.oneOf(Region.values))
@@ -41,16 +41,16 @@ object S3ScalaCheckImplicits {
   implicit lazy val arbCreateBucketRequest: Arbitrary[CreateBucketRequest] =
     Arbitrary {
       for {
-        name ← S3Gen.bucketName
-        region ← arbitrary[Option[Region]]
-        acl ← arbitrary[Option[Either[CannedAccessControlList,Seq[Grant]]]]
+        name <- S3Gen.bucketName
+        region <- arbitrary[Option[Region]]
+        acl <- arbitrary[Option[Either[CannedAccessControlList,Seq[Grant]]]]
       } yield {
         acl match {
-          case None ⇒
+          case None =>
             CreateBucketRequest.CreateBucketWithNoAcl(name, region)
-          case Some(Left(cannedAcl)) ⇒
+          case Some(Left(cannedAcl)) =>
             CreateBucketRequest.CreateBucketWithCannedAcl(name, cannedAcl, region)
-          case Some(Right(grants)) ⇒
+          case Some(Right(grants)) =>
             CreateBucketRequest.CreateBucketWithGrants(name, grants, region)
         }
       }
@@ -58,16 +58,16 @@ object S3ScalaCheckImplicits {
 
   implicit lazy val shrinkCreateBucketRequest: Shrink[CreateBucketRequest] =
     Shrink {
-      case r @ CreateBucketRequest.CreateBucketWithNoAcl(name, region) ⇒
-        Shrink.shrink(name).filter(Bucket.validName).map(n ⇒ r.copy(bucketName = n)) append
-          Shrink.shrink(region).map(x ⇒ r.copy(region = x))
-      case r @ CreateBucketRequest.CreateBucketWithCannedAcl(name, _, region) ⇒
-        Shrink.shrink(name).filter(Bucket.validName).map(n ⇒ r.copy(bucketName = n)) append
-          Shrink.shrink(region).map(x ⇒ r.copy(region = x))
-      case r @ CreateBucketRequest.CreateBucketWithGrants(name, grants, region) ⇒
-        Shrink.shrink(name).filter(Bucket.validName).map(n ⇒ r.copy(bucketName = n)) append
-          Shrink.shrink(grants).map(g ⇒ r.copy(grants = g)) append
-          Shrink.shrink(region).map(x ⇒ r.copy(region = x))
+      case r @ CreateBucketRequest.CreateBucketWithNoAcl(name, region) =>
+        Shrink.shrink(name).filter(Bucket.validName).map(n => r.copy(bucketName = n)) lazyAppendedAll
+          Shrink.shrink(region).map(x => r.copy(region = x))
+      case r @ CreateBucketRequest.CreateBucketWithCannedAcl(name, _, region) =>
+        Shrink.shrink(name).filter(Bucket.validName).map(n => r.copy(bucketName = n)) lazyAppendedAll
+          Shrink.shrink(region).map(x => r.copy(region = x))
+      case r @ CreateBucketRequest.CreateBucketWithGrants(name, grants, region) =>
+        Shrink.shrink(name).filter(Bucket.validName).map(n => r.copy(bucketName = n)) lazyAppendedAll
+          Shrink.shrink(grants).map(g => r.copy(grants = g)) lazyAppendedAll
+          Shrink.shrink(region).map(x => r.copy(region = x))
     }
 
   implicit lazy val arbGrant: Arbitrary[Grant] = Arbitrary(Gen.resultOf(Grant.apply _))
@@ -84,30 +84,30 @@ object S3ScalaCheckImplicits {
 
   implicit lazy val shrinkGrantee: Shrink[Grantee] =
     Shrink {
-      case c: Grantee.Canonical ⇒ Shrink.shrink(c)
-      case e: Grantee.EmailAddress ⇒ Shrink.shrink(e)
-      case _: Grantee.GroupGrantee ⇒ Stream.empty
+      case c: Grantee.Canonical => Shrink.shrink(c)
+      case e: Grantee.EmailAddress => Shrink.shrink(e)
+      case _: Grantee.GroupGrantee => LazyList.empty.toStream
     }
 
   implicit lazy val arbGranteeCanonical: Arbitrary[Grantee.Canonical] =
     Arbitrary {
       for {
-        id ← S3Gen.canonicalIdentifier
-        displayName ← arbitrary[Option[String]]
+        id <- S3Gen.canonicalIdentifier
+        displayName <- arbitrary[Option[String]]
       } yield Grantee.Canonical(id, displayName)
     }
 
   implicit lazy val shrinkGranteeCanonical: Shrink[Grantee.Canonical] =
-    Shrink { grantee ⇒
-      Shrink.shrink(grantee.displayName).map(x ⇒ grantee.copy(displayName = x))
+    Shrink { grantee =>
+      Shrink.shrink(grantee.displayName).map(x => grantee.copy(displayName = x))
     }
 
   implicit lazy val arbGranteeEmailAddress: Arbitrary[Grantee.EmailAddress] =
     Arbitrary(UtilGen.emailAddress.map(Grantee.EmailAddress))
 
   implicit lazy val shrinkGranteeEmailAddress: Shrink[Grantee.EmailAddress] =
-    Shrink { grantee ⇒
-      Shrink.shrink(grantee.emailAddress).filter(_.matches("^.+@example.com$")).map(x ⇒ grantee.copy(emailAddress = x))
+    Shrink { grantee =>
+      Shrink.shrink(grantee.emailAddress).filter(_.matches("^.+@example.com$")).map(x => grantee.copy(emailAddress = x))
     }
 
   implicit lazy val arbPermission: Arbitrary[Permission] = Arbitrary(Gen.oneOf(Permission.values))

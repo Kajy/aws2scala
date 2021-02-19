@@ -3,7 +3,7 @@ package com.monsanto.arch.awsutil.s3.model
 import java.util.{Date, UUID}
 
 import akka.stream.scaladsl.Source
-import com.amazonaws.services.s3.{model ⇒ aws}
+import com.amazonaws.services.s3.{model => aws}
 import com.monsanto.arch.awsutil.s3.StreamingS3Client
 import com.monsanto.arch.awsutil.s3.model.AwsConverters._
 import com.monsanto.arch.awsutil.test_support.AdaptableScalaFutures._
@@ -23,16 +23,16 @@ class S3Spec extends AnyFreeSpec with MockFactory with Materialised {
         val theBucket = buckets(12)
 
         implicit val client = mock[StreamingS3Client]
-        (client.bucketLister _).expects().returning(Source(awsBuckets.toList.map(_.asScala)))
+        (() => client.bucketLister).expects().returning(Source(awsBuckets.toList.map(_.asScala)))
 
-        S3.find(theBucket.name).futureValue shouldBe Some(theBucket)
+        S3.find(theBucket.name).futureValue() shouldBe Some(theBucket)
       }
 
       "and indicate it does not exist" in {
         val awsBuckets = makeAwsBuckets()
         implicit val client = mock[StreamingS3Client]
-        (client.bucketLister _).expects().returning(Source(awsBuckets.toList.map(_.asScala)))
-        S3.find("not-found").futureValue shouldBe None
+        (() => client.bucketLister).expects().returning(Source(awsBuckets.toList.map(_.asScala)))
+        S3.find("not-found").futureValue() shouldBe None
       }
     }
   }

@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.s3.model
 
-import com.amazonaws.services.s3.{model ⇒ aws}
+import com.amazonaws.services.s3.{model => aws}
 import com.monsanto.arch.awsutil.util.{AwsEnumeration, AwsEnumerationCompanion}
 
 abstract class Permission(val toAws: aws.Permission) extends AwsEnumeration[aws.Permission]

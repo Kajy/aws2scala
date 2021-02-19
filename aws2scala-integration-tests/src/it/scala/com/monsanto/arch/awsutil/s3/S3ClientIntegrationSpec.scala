@@ -25,69 +25,69 @@ class S3ClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with S
   val stringKey = "string.txt"
   val stringContent = "This is a string."
   val bytesKey = "bytes.data"
-  val bytesContent = Array.tabulate[Byte](200)(i ⇒ i.toByte)
+  val bytesContent = Array.tabulate[Byte](200)(i => i.toByte)
   val fileKey = "file.uuids"
   val fileContent = Seq.fill(100){ UUID.randomUUID() }.mkString("\n")
   val defaultPolicy = JsonParser(AwsSettings.Default.s3.defaultBucketPolicy.get.replaceAll("@BUCKET_NAME@", bucketName))
 
   "the default Async S3 client can" - {
     "create a bucket" in {
-      val result = asyncClient.createBucket(bucketName).futureValue
+      val result = asyncClient.createBucket(bucketName).futureValue()
       result.name shouldBe bucketName
       logger.info(s"Created bucket $bucketName")
       eventually {
-        asyncClient.doesBucketExist(bucketName).futureValue shouldBe true
+        asyncClient.doesBucketExist(bucketName).futureValue() shouldBe true
       }
       setDefaultBucketTags()
     }
 
     "check the bucket exists" in {
-      val result = asyncClient.doesBucketExist(bucketName).futureValue
+      val result = asyncClient.doesBucketExist(bucketName).futureValue()
       result shouldBe true
     }
 
     "list the buckets" in {
-      val result = asyncClient.listBuckets().futureValue
+      val result = asyncClient.listBuckets().futureValue()
       (result should contain (bucketName)) (decided by theBucketName)
     }
 
     "remove the policy from the bucket" in {
-      val setResult = asyncClient.deleteBucketPolicy(bucketName).futureValue
+      val setResult = asyncClient.deleteBucketPolicy(bucketName).futureValue()
       setResult shouldBe bucketName
 
-      val getResult = asyncClient.getBucketPolicy(bucketName).futureValue
+      val getResult = asyncClient.getBucketPolicy(bucketName).futureValue()
       getResult shouldBe empty
     }
 
     "set a policy for the bucket" in {
-      val setResult = asyncClient.setBucketPolicy(bucketName, defaultPolicy.prettyPrint).futureValue
+      val setResult = asyncClient.setBucketPolicy(bucketName, defaultPolicy.prettyPrint).futureValue()
       setResult shouldBe bucketName
 
-      val getResult = asyncClient.getBucketPolicy(bucketName).futureValue
+      val getResult = asyncClient.getBucketPolicy(bucketName).futureValue()
       getResult shouldBe defined
       JsonParser(getResult.get) shouldBe defaultPolicy
     }
 
     "verify that the bucket has the default tags" in {
-      val result = asyncClient.getBucketTags(bucketName).futureValue
+      val result = asyncClient.getBucketTags(bucketName).futureValue()
       result shouldBe TestDefaults.Tags
     }
 
     "set some tags on the bucket" in {
-      val tags = TestDefaults.Tags ++ Map("test" → "tag")
+      val tags = TestDefaults.Tags ++ Map("test" ->"tag")
 
-      val setResult = asyncClient.setBucketTags(bucketName, tags).futureValue
+      val setResult = asyncClient.setBucketTags(bucketName, tags).futureValue()
       setResult shouldBe bucketName
 
-      val getResult = asyncClient.getBucketTags(bucketName).futureValue
+      val getResult = asyncClient.getBucketTags(bucketName).futureValue()
       getResult shouldBe tags
     }
 
     "clear the tags on the bucket" in {
-      val setResult = asyncClient.deleteBucketTags(bucketName).futureValue
+      val setResult = asyncClient.deleteBucketTags(bucketName).futureValue()
       setResult shouldBe bucketName
 
-      val getResult = asyncClient.getBucketTags(bucketName).futureValue
+      val getResult = asyncClient.getBucketTags(bucketName).futureValue()
       getResult shouldBe empty
 
       setDefaultBucketTags()
@@ -95,13 +95,13 @@ class S3ClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with S
 
     "upload" - {
       "a byte array" in {
-        val result = asyncClient.upload(bucketName, bytesKey, bytesContent).futureValue
+        val result = asyncClient.upload(bucketName, bytesKey, bytesContent).futureValue()
         result.getBucketName shouldBe bucketName
         result.getKey shouldBe bytesKey
       }
 
       "a string" in {
-        val result = asyncClient.upload(bucketName, stringKey, stringContent).futureValue
+        val result = asyncClient.upload(bucketName, stringKey, stringContent).futureValue()
         result.getBucketName shouldBe bucketName
         result.getKey shouldBe stringKey
       }
@@ -114,7 +114,7 @@ class S3ClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with S
           try {
             out.print(fileContent)
           } finally out.close()
-          val result = asyncClient.upload(bucketName, fileKey, sourceFile).futureValue
+          val result = asyncClient.upload(bucketName, fileKey, sourceFile).futureValue()
           result.getBucketName shouldBe bucketName
           result.getKey shouldBe fileKey
         } finally sourceFile.delete()
@@ -131,13 +131,13 @@ class S3ClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with S
       }
 
       "using a prefix" in {
-        val keyListing = asyncClient.listObjects(bucketName, stringKey).futureValue
+        val keyListing = asyncClient.listObjects(bucketName, stringKey).futureValue()
         keyListing should have size 1
         (keyListing should contain(stringKey)) (decided by theKey)
       }
 
       "all contents" in {
-        val allListing = asyncClient.listObjects(bucketName).futureValue
+        val allListing = asyncClient.listObjects(bucketName).futureValue()
         (allListing should contain(stringKey)) (decided by theKey)
         (allListing should contain(bytesKey)) (decided by theKey)
         (allListing should contain(fileKey)) (decided by theKey)
@@ -146,12 +146,12 @@ class S3ClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with S
 
     "download" - {
       "a byte array" in {
-        val result = asyncClient.download[Array[Byte]](bucketName, bytesKey).futureValue
+        val result = asyncClient.download[Array[Byte]](bucketName, bytesKey).futureValue()
         result shouldBe bytesContent
       }
 
       "a string" in {
-        val result = asyncClient.download[String](bucketName, stringKey).futureValue
+        val result = asyncClient.download[String](bucketName, stringKey).futureValue()
         result shouldBe stringContent
       }
 
@@ -159,7 +159,7 @@ class S3ClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with S
         val dest = File.createTempFile("file", "uuids")
         dest.deleteOnExit()
         try {
-          val result = asyncClient.downloadTo(bucketName, fileKey, dest).futureValue
+          val result = asyncClient.downloadTo(bucketName, fileKey, dest).futureValue()
           result shouldBe dest
           io.Source.fromFile(dest).mkString shouldBe fileContent
         } finally dest.delete()
@@ -169,25 +169,25 @@ class S3ClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with S
     "copy an object" in {
       val destKey = "copy.txt"
 
-      val copyResult = asyncClient.copy(bucketName, stringKey, destKey).futureValue
+      val copyResult = asyncClient.copy(bucketName, stringKey, destKey).futureValue()
       copyResult.getBucketName shouldBe bucketName
       copyResult.getKey shouldBe destKey
 
-      val downloadResult = asyncClient.download[String](bucketName, destKey).futureValue
+      val downloadResult = asyncClient.download[String](bucketName, destKey).futureValue()
       downloadResult shouldBe stringContent
     }
 
     "get the URL of an object" in {
-      val result = asyncClient.getUrl(bucketName, stringKey).futureValue
+      val result = asyncClient.getUrl(bucketName, stringKey).futureValue()
       result shouldBe new URL(s"https://$bucketName.s3.amazonaws.com/$stringKey")
     }
 
     "empty and delete the bucket" in {
       logger.info(s"Removing bucket $bucketName…")
-      val result = asyncClient.emptyAndDeleteBucket(bucketName).futureValue
+      val result = asyncClient.emptyAndDeleteBucket(bucketName).futureValue()
       result shouldBe bucketName
       eventually {
-        asyncClient.doesBucketExist(bucketName).futureValue shouldBe false
+        asyncClient.doesBucketExist(bucketName).futureValue() shouldBe false
       }
     }
 
@@ -203,6 +203,6 @@ class S3ClientIntegrationSpec extends AnyFreeSpec with AwsIntegrationSpec with S
   }
 
   private def setDefaultBucketTags(): Unit = {
-    asyncClient.setBucketTags(bucketName, TestDefaults.Tags).futureValue
+    asyncClient.setBucketTags(bucketName, TestDefaults.Tags).futureValue()
   }
 }

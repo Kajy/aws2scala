@@ -11,13 +11,13 @@ class InstanceProfileArnSpec extends AnyFreeSpec {
 
   "a InstanceProfileArn should" - {
     "provide the correct resource" in {
-      forAll { arn: InstanceProfileArn ⇒
+      forAll { arn: InstanceProfileArn =>
         arn.resource shouldBe s"instance-profile${arn.path.pathString}${arn.name}"
       }
     }
 
     "produce the correct ARN" in {
-      forAll { arn: InstanceProfileArn ⇒
+      forAll { arn: InstanceProfileArn =>
         val partition = arn.account.partition.id
         val accountId = arn.account.id
         val path = arn.path.pathString
@@ -28,7 +28,7 @@ class InstanceProfileArnSpec extends AnyFreeSpec {
     }
 
     "can round-trip via an ARN" in {
-      forAll { arn: InstanceProfileArn ⇒
+      forAll { arn: InstanceProfileArn =>
         InstanceProfileArn.fromArnString(arn.arnString) shouldBe arn
       }
     }

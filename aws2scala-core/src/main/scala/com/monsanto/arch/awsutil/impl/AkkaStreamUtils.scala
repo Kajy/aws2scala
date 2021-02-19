@@ -10,7 +10,7 @@ private[awsutil] object AkkaStreamUtils {
       /** A `Sink` that keeps on counting elements until upstream terminates.  Materialises into a `Future[Long]`
         * containing a count of the elements.
         */
-      def count[T]: Sink[T, Future[Long]] = Sink.fold(0L)((count, _: T) ⇒ count + 1)
+      def count[T]: Sink[T, Future[Long]] = Sink.fold(0L)((count, _: T) => count + 1)
     }
   }
 }

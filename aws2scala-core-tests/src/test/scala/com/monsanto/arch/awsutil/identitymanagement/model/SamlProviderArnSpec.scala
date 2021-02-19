@@ -8,19 +8,19 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class SamlProviderArnSpec extends AnyFreeSpec {
   "a SamlProviderArn should" - {
     "have the correct resource" in {
-      forAll { arn: SamlProviderArn ⇒
+      forAll { arn: SamlProviderArn =>
         arn.resource shouldBe s"saml-provider/${arn.name}"
       }
     }
 
     "produce the correct ARN" in {
-      forAll { arn: SamlProviderArn ⇒
+      forAll { arn: SamlProviderArn =>
         arn.arnString shouldBe s"arn:${arn.account.partition}:iam::${arn.account.id}:saml-provider/${arn.name}"
       }
     }
 
     "round-trip via an ARN" in {
-      forAll { arn: SamlProviderArn ⇒
+      forAll { arn: SamlProviderArn =>
         SamlProviderArn.fromArnString(arn.arnString) shouldBe arn
       }
     }

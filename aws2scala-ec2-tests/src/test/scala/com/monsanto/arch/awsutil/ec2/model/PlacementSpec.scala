@@ -9,7 +9,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class PlacementSpec extends AnyFreeSpec {
   "an Placement should" - {
     "be constructible from its AWS equivalent" in {
-      forAll { placement: Placement ⇒
+      forAll { placement: Placement =>
         Placement.fromAws(placement.toAws) shouldBe placement
       }
     }

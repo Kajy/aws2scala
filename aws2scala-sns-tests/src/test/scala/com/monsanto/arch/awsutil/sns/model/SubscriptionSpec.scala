@@ -17,30 +17,30 @@ class SubscriptionSpec extends AnyFreeSpec with Materialised with MockFactory wi
   "the Subscription companion object" - {
     "can build a subscription using" - {
       "a set of attributes" in {
-        forAll { attributes: SubscriptionAttributes ⇒
+        forAll { attributes: SubscriptionAttributes =>
           val subscription = Subscription(attributes.asMap)
 
           subscription should have (
-            'arn (attributes.arn.arnString),
-            'confirmationWasAuthenticated (attributes.confirmationWasAuthenticated),
-            'deliveryPolicy (attributes.deliveryPolicy.map(_.toJson.compactPrint)),
-            'effectiveDeliveryPolicy (attributes.effectiveDeliveryPolicy.map(_.toJson.compactPrint)),
-            'endpoint (attributes.endpoint),
-            'owner (attributes.arn.account.id),
-            'topicArn (attributes.arn.arnString.replaceAll(":[^:]+$", ""))
+            Symbol("arn") (attributes.arn.arnString),
+            Symbol("confirmationWasAuthenticated") (attributes.confirmationWasAuthenticated),
+            Symbol("deliveryPolicy") (attributes.deliveryPolicy.map(_.toJson.compactPrint)),
+            Symbol("effectiveDeliveryPolicy") (attributes.effectiveDeliveryPolicy.map(_.toJson.compactPrint)),
+            Symbol("endpoint") (attributes.endpoint),
+            Symbol("owner") (attributes.arn.account.id),
+            Symbol("topicArn") (attributes.arn.arnString.replaceAll(":[^:]+$", ""))
           )
         }
       }
 
       "a subscription ARN" in {
-        forAll { subscription: Subscription ⇒
+        forAll { subscription: Subscription =>
           implicit val sns = mock[StreamingSNSClient]("sns")
 
-          (sns.subscriptionAttributesGetter _)
+          (() => sns.subscriptionAttributesGetter)
             .expects()
             .returningFlow(subscription.arn, subscription.attributes)
 
-          val result = Subscription(subscription.arn).futureValue
+          val result = Subscription(subscription.arn).futureValue()
           result shouldBe subscription
         }
       }
@@ -49,79 +49,79 @@ class SubscriptionSpec extends AnyFreeSpec with Materialised with MockFactory wi
 
   "a Subscription instance should" - {
     "refresh" in {
-      forAll { (subscription: Subscription, newRawMessageDelivery: Boolean, newDeliveryPolicy: Option[SubscriptionDeliveryPolicy]) ⇒
+      forAll { (subscription: Subscription, newRawMessageDelivery: Boolean, newDeliveryPolicy: Option[SubscriptionDeliveryPolicy]) =>
         implicit val sns = mock[StreamingSNSClient]("sns")
 
         val newAttributes = newDeliveryPolicy match {
-          case None ⇒
+          case None =>
             subscription.attributes +
-              ("RawMessageDelivery" → newRawMessageDelivery.toString) -
+              ("RawMessageDelivery" ->newRawMessageDelivery.toString) -
               "DeliveryPolicy" -
               "EffectiveDeliveryPolicy"
-          case Some(p) ⇒
+          case Some(p) =>
             val json = p.toJson.compactPrint
             subscription.attributes +
-              ("RawMessageDelivery" → newRawMessageDelivery.toString) +
-              ("DeliveryPolicy" → json) +
-              ("EffectiveDeliveryPolicy" → json)
+              ("RawMessageDelivery" ->newRawMessageDelivery.toString) +
+              ("DeliveryPolicy" ->json) +
+              ("EffectiveDeliveryPolicy" ->json)
         }
         val newSubscription = Subscription(newAttributes)
 
-        (sns.subscriptionAttributesGetter _)
+        (() => sns.subscriptionAttributesGetter)
           .expects()
           .returningFlow(subscription.arn, newAttributes)
 
-        val result = subscription.refresh().futureValue
+        val result = subscription.refresh().futureValue()
         result shouldBe newSubscription
       }
     }
 
     "have a toString that is mainly the ARN" in {
-      forAll { subscription: Subscription ⇒
+      forAll { subscription: Subscription =>
         subscription.toString shouldBe s"Subscription(${subscription.arn})"
       }
     }
 
     "allow setting the raw message delivery attribute" in {
-      forAll { (subscription: Subscription, rawMessageDelivery: Boolean) ⇒
+      forAll { (subscription: Subscription, rawMessageDelivery: Boolean) =>
         implicit val sns = mock[StreamingSNSClient]("sns")
 
-        (sns.subscriptionAttributeSetter _)
+        (() => sns.subscriptionAttributeSetter)
           .expects()
           .returningFlow(
             SetSubscriptionAttributesRequest(subscription.arn, "RawMessageDelivery", rawMessageDelivery.toString),
             subscription.arn)
 
-        val result = subscription.setRawMessageDelivery(rawMessageDelivery).futureValue
+        val result = subscription.setRawMessageDelivery(rawMessageDelivery).futureValue()
         result shouldBe Done
       }
     }
 
     "allow setting the delivery policy attribute" in {
-      forAll { (subscription: Subscription, deliveryPolicy: Option[SubscriptionDeliveryPolicy]) ⇒
+      forAll { (subscription: Subscription, deliveryPolicy: Option[SubscriptionDeliveryPolicy]) =>
         implicit val sns = mock[StreamingSNSClient]("sns")
         val maybeDeliveryPolicy = deliveryPolicy.map(_.toJson.compactPrint)
 
-        (sns.subscriptionAttributeSetter _)
+        (() => sns.subscriptionAttributeSetter)
           .expects()
           .returningFlow(
             SetSubscriptionAttributesRequest(subscription.arn, "DeliveryPolicy", maybeDeliveryPolicy),
             subscription.arn)
 
-        val result = subscription.setDeliveryPolicy(maybeDeliveryPolicy).futureValue
+        val result = subscription.setDeliveryPolicy(maybeDeliveryPolicy).futureValue()
         result shouldBe Done
       }
     }
 
     "delete itself" in {
-      forAll { subscription: Subscription ⇒
+      forAll { subscription: Subscription =>
         implicit val sns = mock[StreamingSNSClient]("sns")
 
-        (sns.unsubscriber _)
+        (() => sns.unsubscriber)
           .expects()
           .returningFlow(subscription.arn, subscription.arn)
 
-        val result = subscription.unsubscribe().futureValue
+        val result = subscription.unsubscribe().futureValue()
         result shouldBe Done
       }
     }

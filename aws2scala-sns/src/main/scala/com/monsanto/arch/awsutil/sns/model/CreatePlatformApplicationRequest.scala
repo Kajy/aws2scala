@@ -1,8 +1,8 @@
 package com.monsanto.arch.awsutil.sns.model
 
-import com.amazonaws.services.sns.{model ⇒ aws}
+import com.amazonaws.services.sns.{model => aws}
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /** Contains all of the information necessary to create an SNS platform application.
   *
@@ -45,5 +45,5 @@ object CreatePlatformApplicationRequest {
             platformPrincipal: String,
             platformCredential: String,
             attributes: Map[String,String]): CreatePlatformApplicationRequest =
-    apply(name, platform, attributes + ("PlatformPrincipal" → platformPrincipal) + ("PlatformCredential" → platformCredential))
+    apply(name, platform, attributes + ("PlatformPrincipal" ->platformPrincipal) + ("PlatformCredential" ->platformCredential))
 }

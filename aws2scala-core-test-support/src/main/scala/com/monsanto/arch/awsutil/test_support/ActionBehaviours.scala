@@ -6,27 +6,27 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers._
 import org.scalatest.prop.TableDrivenPropertyChecks._
 
-trait ActionBehaviours extends AwsEnumerationBehaviours { this: AnyFreeSpec ⇒
+trait ActionBehaviours extends AwsEnumerationBehaviours { this: AnyFreeSpec =>
   def anAction[ScalaAction <: Action, AwsAction <: aws.Action](awsActions: Array[AwsAction],
                                                                scalaActions: Seq[ScalaAction],
-                                                               asAws: ScalaAction ⇒ AwsAction,
-                                                               asScala: AwsAction ⇒ ScalaAction): Unit = {
+                                                               asAws: ScalaAction => AwsAction,
+                                                               asScala: AwsAction => ScalaAction): Unit = {
     val actionsTable = Table("Action", scalaActions: _*)
 
     "the action name matches its AWS value" in {
-      forAll(actionsTable) { action ⇒
+      forAll(actionsTable) { action =>
         action.name shouldBe asAws(action).getActionName
       }
     }
 
     "actions can be round-tripped through their name" in {
-      forAll(actionsTable) { action ⇒
+      forAll(actionsTable) { action =>
         Action.fromName.unapply(action.name) shouldBe Some(action)
       }
     }
 
     "the action can be recovered from its name" in {
-      forAll(actionsTable) { action ⇒
+      forAll(actionsTable) { action =>
         Action.fromName(action.name) shouldBe action
       }
     }

@@ -24,13 +24,13 @@ object AssumedRoleArn {
     /** Extracts a `AssumedRoleArn` object from the given ARN string. */
     def unapply(arnString: String): Option[AssumedRoleArn] =
       arnString match {
-        case Arn.fromArnString(arn: AssumedRoleArn) ⇒ Some(arn)
-        case _                                      ⇒ None
+        case Arn.fromArnString(arn: AssumedRoleArn) => Some(arn)
+        case _                                      => None
       }
   }
 
   private[awsutil] val assumeRoleArnPF: PartialFunction[Arn.ArnParts, AssumedRoleArn] = {
-    case (_, Arn.Namespace.AwsSTS, None, Some(account), AssumedRoleResourceRegex(roleName, sessionName)) ⇒
+    case (_, Arn.Namespace.AwsSTS, None, Some(account), AssumedRoleResourceRegex(roleName, sessionName)) =>
       AssumedRoleArn(account, roleName, sessionName)
   }
 

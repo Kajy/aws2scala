@@ -12,20 +12,20 @@ import org.scalatest.freespec.FixtureAnyFreeSpec
 import org.scalatest.Outcome
 
 class DefaultAwsClientSpec extends FixtureAnyFreeSpec with MockFactory {
-  def clientCreationBehaviours[T <: Client: Manifest](createClient: (AwsClient) ⇒ T): Unit = {
-    "creating client instances" in { f ⇒
+  def clientCreationBehaviours[T <: Client: Manifest](createClient: (AwsClient) => T): Unit = {
+    "creating client instances" in { f =>
       val result = createClient(f.awsClient)
       result shouldBe a[T]
     }
 
-    "caching created client instances" in { f ⇒
+    "caching created client instances" in { f =>
       val result1 = createClient(f.awsClient)
       val result2 = createClient(f.awsClient)
 
       result1 shouldBe theSameInstanceAs (result2)
     }
 
-    "shutting down the client" in { f ⇒
+    "shutting down the client" in { f =>
       val client = createClient(f.awsClient)
 
       client.isShutdown shouldBe false
@@ -35,14 +35,14 @@ class DefaultAwsClientSpec extends FixtureAnyFreeSpec with MockFactory {
       client.isShutdown shouldBe true
     }
 
-    "not being able to create client instances after a shutdown" in { f ⇒
+    "not being able to create client instances after a shutdown" in { f =>
       f.awsClient.shutdown()
       an[IllegalStateException] shouldBe thrownBy {
         createClient(f.awsClient)
       }
     }
 
-    "having its children create clients with the right credentials provider" in { f ⇒
+    "having its children create clients with the right credentials provider" in { f =>
       val credentialsProvider = mock[AWSCredentialsProvider]("credentialsProvider")
       val child = f.awsClient.withCredentialsProvider(credentialsProvider)
 
@@ -53,7 +53,7 @@ class DefaultAwsClientSpec extends FixtureAnyFreeSpec with MockFactory {
   }
 
   "the DefaultAwsClient should" - {
-    "allow shutdown to be called multiple times" in { f ⇒
+    "allow shutdown to be called multiple times" in { f =>
       f.awsClient.shutdownInvoked shouldBe false
       f.awsClient.shutdown()
       f.awsClient.shutdownInvoked shouldBe true
@@ -68,14 +68,14 @@ class DefaultAwsClientSpec extends FixtureAnyFreeSpec with MockFactory {
       behave like clientCreationBehaviours((_: AwsClient).streaming(TestClientProvider))
     }
 
-    "allow creation of child clients" in { f ⇒
+    "allow creation of child clients" in { f =>
       val credentialsProvider = mock[AWSCredentialsProvider]("credentialsProvider")
       val child = f.awsClient.withCredentialsProvider(credentialsProvider)
 
       child.shutdownInvoked shouldBe false
     }
 
-    "not be affected by a child shutting down" in { f ⇒
+    "not be affected by a child shutting down" in { f =>
       val credentialsProvider = mock[AWSCredentialsProvider]("credentialsProvider")
       val child = f.awsClient.withCredentialsProvider(credentialsProvider)
 
@@ -88,7 +88,7 @@ class DefaultAwsClientSpec extends FixtureAnyFreeSpec with MockFactory {
       f.awsClient.shutdownInvoked shouldBe false
     }
 
-    "shut down its children" in { f ⇒
+    "shut down its children" in { f =>
       val credentialsProvider = mock[AWSCredentialsProvider]("credentialsProvider")
       val child = f.awsClient.withCredentialsProvider(credentialsProvider)
 
@@ -101,7 +101,7 @@ class DefaultAwsClientSpec extends FixtureAnyFreeSpec with MockFactory {
       f.awsClient.shutdownInvoked shouldBe true
     }
 
-    "not allow the creation of new children once a shut down has been invoked" in { f ⇒
+    "not allow the creation of new children once a shut down has been invoked" in { f =>
       f.awsClient.shutdown()
       an[IllegalStateException] shouldBe thrownBy {
         val credentialsProvider = mock[AWSCredentialsProvider]("credentialsProvider")

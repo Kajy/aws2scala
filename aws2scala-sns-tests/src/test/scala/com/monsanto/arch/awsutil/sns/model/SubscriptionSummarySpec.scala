@@ -17,14 +17,14 @@ class SubscriptionSummarySpec extends AnyFreeSpec with MockFactory with Material
 
   "a SubscriptionSummary should" - {
     "indicate if it is pending" in {
-      forAll { summary: SubscriptionSummary ⇒
+      forAll { summary: SubscriptionSummary =>
         val result = summary.isPending
         result shouldBe summary.arn.isEmpty
       }
     }
 
     "indicate if it is confirmed" in {
-      forAll { summary: SubscriptionSummary ⇒
+      forAll { summary: SubscriptionSummary =>
         val result = summary.isConfirmed
         result shouldBe summary.arn.isDefined
       }
@@ -33,24 +33,24 @@ class SubscriptionSummarySpec extends AnyFreeSpec with MockFactory with Material
     "convert to a full subscription" in {
       val summaryAndMaybeSubscription =
         for {
-          summary ← arbitrary[SubscriptionSummary]
-          maybeSubscription ← subscriptionFrom(summary)
+          summary <- arbitrary[SubscriptionSummary]
+          maybeSubscription <- subscriptionFrom(summary)
         } yield (summary, maybeSubscription)
-      forAll(summaryAndMaybeSubscription → "summaryAndMaybeSubscription") { case (summary, maybeSubscription) ⇒
+      forAll(summaryAndMaybeSubscription ->"summaryAndMaybeSubscription") { case (summary, maybeSubscription) =>
         implicit val sns = mock[StreamingSNSClient]("sns")
 
-        (sns.subscriptionAttributesGetter _)
+        (() => sns.subscriptionAttributesGetter)
           .expects()
-          .returning(Flow[String].map { arn ⇒
+          .returning(Flow[String].map { arn =>
             maybeSubscription match {
-              case None ⇒ fail("Should not be called.")
-              case Some(sub) ⇒
+              case None => fail("Should not be called.")
+              case Some(sub) =>
                 arn shouldBe sub.arn
                 sub.attributes
             }
           })
 
-        val result = summary.asSubscription().futureValue
+        val result = summary.asSubscription().futureValue()
         result shouldBe maybeSubscription
       }
     }
@@ -58,12 +58,12 @@ class SubscriptionSummarySpec extends AnyFreeSpec with MockFactory with Material
 
   private def subscriptionFrom(subscriptionSummary: SubscriptionSummary): Gen[Option[Subscription]] = {
     subscriptionSummary.arn match {
-      case Some(arn) ⇒
+      case Some(arn) =>
         for {
-          confirmationWasAuthenticated ← arbitrary[Boolean]
-          rawMessageDelivery ← arbitrary[Boolean]
-          deliveryPolicy ← arbitrary[Option[SubscriptionDeliveryPolicy]]
-          effectiveDeliveryPolicy ← arbitrary[Option[SubscriptionDeliveryPolicy]]
+          confirmationWasAuthenticated <- arbitrary[Boolean]
+          rawMessageDelivery <- arbitrary[Boolean]
+          deliveryPolicy <- arbitrary[Option[SubscriptionDeliveryPolicy]]
+          effectiveDeliveryPolicy <- arbitrary[Option[SubscriptionDeliveryPolicy]]
         } yield {
           val attrs = SubscriptionAttributes(
             SubscriptionArn.fromArnString(arn),
@@ -74,7 +74,7 @@ class SubscriptionSummarySpec extends AnyFreeSpec with MockFactory with Material
             effectiveDeliveryPolicy)
           Some(Subscription(attrs.asMap))
         }
-      case None ⇒ Gen.const(Option.empty[Subscription])
+      case None => Gen.const(Option.empty[Subscription])
     }
   }
 

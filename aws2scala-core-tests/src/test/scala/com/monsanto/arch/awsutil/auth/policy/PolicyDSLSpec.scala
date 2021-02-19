@@ -7,7 +7,7 @@ import org.scalacheck.Gen
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks.forAll
-import org.scalatest.prop.TableDrivenPropertyChecks.{Table, forAll ⇒ forAllIn}
+import org.scalatest.prop.TableDrivenPropertyChecks.{Table, forAll => forAllIn}
 
 class PolicyDSLSpec extends AnyFreeSpec {
   TestAction.registerActions()
@@ -16,13 +16,13 @@ class PolicyDSLSpec extends AnyFreeSpec {
     "policy, which will" - {
       "build policies using" - {
         "only a statement list" in {
-          forAll { statements: Seq[Statement] ⇒
+          forAll { statements: Seq[Statement] =>
             policy(statements) shouldBe Policy(Some(Policy.Version.`2012-10-17`), None, statements)
           }
         }
 
         "an identifier and a statement list" in {
-          forAll(arbitrary[Seq[Statement]], Gen.identifier) { (statements, policyId) ⇒
+          forAll(arbitrary[Seq[Statement]], Gen.identifier) { (statements, policyId) =>
             policy(
               id(policyId),
               statements
@@ -31,7 +31,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "a statement list and an identifier" in {
-          forAll(arbitrary[Seq[Statement]], Gen.identifier) { (statements, policyId) ⇒
+          forAll(arbitrary[Seq[Statement]], Gen.identifier) { (statements, policyId) =>
             policy(
               statements,
               id(policyId)
@@ -40,7 +40,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "a version and a statement list" in {
-          forAll { (statements: Seq[Statement], policyVersion: Policy.Version) ⇒
+          forAll { (statements: Seq[Statement], policyVersion: Policy.Version) =>
             policy(
               version(policyVersion),
               statements
@@ -49,7 +49,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "a statement list and a version" in {
-          forAll { (statements: Seq[Statement], policyVersion: Policy.Version) ⇒
+          forAll { (statements: Seq[Statement], policyVersion: Policy.Version) =>
             policy(
               statements,
               version(policyVersion)
@@ -59,10 +59,10 @@ class PolicyDSLSpec extends AnyFreeSpec {
 
         "a version, identifier, and statements" in {
           forAll(
-            arbitrary[Policy.Version] → "version",
-            Gen.identifier → "id",
-            arbitrary[Seq[Statement]] → "statements"
-          ) { (policyVersion, policyId, statements) ⇒
+            arbitrary[Policy.Version] ->"version",
+            Gen.identifier ->"id",
+            arbitrary[Seq[Statement]] ->"statements"
+          ) { (policyVersion, policyId, statements) =>
             policy (
               version(policyVersion),
               id(policyId),
@@ -73,10 +73,10 @@ class PolicyDSLSpec extends AnyFreeSpec {
 
         "a version, statements, and identifier" in {
           forAll(
-            arbitrary[Policy.Version] → "version",
-            Gen.identifier → "id",
-            arbitrary[Seq[Statement]] → "statements"
-          ) { (policyVersion, policyId, statements) ⇒
+            arbitrary[Policy.Version] ->"version",
+            Gen.identifier ->"id",
+            arbitrary[Seq[Statement]] ->"statements"
+          ) { (policyVersion, policyId, statements) =>
             policy (
               version(policyVersion),
               statements,
@@ -87,10 +87,10 @@ class PolicyDSLSpec extends AnyFreeSpec {
 
         "an identifier, version, and statements" in {
           forAll(
-            arbitrary[Policy.Version] → "version",
-            Gen.identifier → "id",
-            arbitrary[Seq[Statement]] → "statements"
-          ) { (policyVersion, policyId, statements) ⇒
+            arbitrary[Policy.Version] ->"version",
+            Gen.identifier ->"id",
+            arbitrary[Seq[Statement]] ->"statements"
+          ) { (policyVersion, policyId, statements) =>
             policy(
               id(policyId),
               version(policyVersion),
@@ -101,10 +101,10 @@ class PolicyDSLSpec extends AnyFreeSpec {
 
         "an identifier, statements, and version" in {
           forAll(
-            arbitrary[Policy.Version] → "version",
-            Gen.identifier → "id",
-            arbitrary[Seq[Statement]] → "statements"
-          ) { (policyVersion, policyId, statements) ⇒
+            arbitrary[Policy.Version] ->"version",
+            Gen.identifier ->"id",
+            arbitrary[Seq[Statement]] ->"statements"
+          ) { (policyVersion, policyId, statements) =>
             policy(
               id(policyId),
               statements,
@@ -115,10 +115,10 @@ class PolicyDSLSpec extends AnyFreeSpec {
 
         "statements, an identifier, and a version" in {
           forAll(
-            arbitrary[Policy.Version] → "version",
-            Gen.identifier → "id",
-            arbitrary[Seq[Statement]] → "statements"
-          ) { (policyVersion, policyId, statements) ⇒
+            arbitrary[Policy.Version] ->"version",
+            Gen.identifier ->"id",
+            arbitrary[Seq[Statement]] ->"statements"
+          ) { (policyVersion, policyId, statements) =>
             policy (
               statements,
               id(policyId),
@@ -129,10 +129,10 @@ class PolicyDSLSpec extends AnyFreeSpec {
 
         "statements, a version, and an identifier" in {
           forAll(
-            arbitrary[Policy.Version] → "version",
-            Gen.identifier → "id",
-            arbitrary[Seq[Statement]] → "statements"
-          ) { (policyVersion, policyId, statements) ⇒
+            arbitrary[Policy.Version] ->"version",
+            Gen.identifier ->"id",
+            arbitrary[Seq[Statement]] ->"statements"
+          ) { (policyVersion, policyId, statements) =>
             policy (
               statements,
               version(policyVersion),
@@ -150,7 +150,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "two statement lists" in {
-          forAll { (statements1: Seq[Statement], statements2: Seq[Statement]) ⇒
+          forAll { (statements1: Seq[Statement], statements2: Seq[Statement]) =>
             the [IllegalStateException] thrownBy {
               policy(
                 statements1,
@@ -161,7 +161,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "two identifiers" in {
-          forAll(Gen.identifier, Gen.identifier) { (id1, id2) ⇒
+          forAll(Gen.identifier, Gen.identifier) { (id1, id2) =>
             the [IllegalStateException] thrownBy {
               policy(
                 id(id1),
@@ -172,7 +172,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "two versions" in {
-          forAll { (v1: Policy.Version, v2: Policy.Version) ⇒
+          forAll { (v1: Policy.Version, v2: Policy.Version) =>
             the [IllegalStateException] thrownBy {
               policy(
                 version(v1),
@@ -185,57 +185,57 @@ class PolicyDSLSpec extends AnyFreeSpec {
     }
 
     "version, which wraps a single Policy.Version" in {
-      forAllIn(versions) { ver ⇒
+      forAllIn(versions) { ver =>
         version(ver) shouldBe theSameInstanceAs (ver)
       }
     }
 
     "statements, which builds a statements sequence" - {
       "with a single statement" in {
-        forAll { statement: Statement ⇒
+        forAll { statement: Statement =>
           statements(statement) shouldBe Seq(statement)
         }
       }
 
       "with two statements" in {
-        forAll { (s1: Statement, s2: Statement) ⇒
+        forAll { (s1: Statement, s2: Statement) =>
           statements(s1, s2) shouldBe Seq(s1, s2)
         }
       }
 
       "with three statements" in {
-        forAll { (s1: Statement, s2: Statement, s3: Statement) ⇒
+        forAll { (s1: Statement, s2: Statement, s3: Statement) =>
           statements(s1, s2, s3) shouldBe Seq(s1, s2, s3)
         }
       }
 
       "arbitrary numbers of statements" in {
-        forAll { statementList: Seq[Statement] ⇒
+        forAll { statementList: Seq[Statement] =>
           statements(statementList.head, statementList.tail: _*) shouldBe statementList
         }
       }
     }
 
     "id, which wraps a statement or policy ID" in {
-      forAll(Gen.identifier) { identifier ⇒
+      forAll(Gen.identifier) { identifier =>
         id(identifier).value shouldBe theSameInstanceAs (identifier)
       }
     }
 
     "principals, which returns a list of Principal objects" in {
-      forAll { principalList: Seq[Principal] ⇒
+      forAll { principalList: Seq[Principal] =>
         principals(principalList: _*) shouldBe principalList.toSet
       }
     }
 
     "actions, which returns a list of Action objects" in {
-      forAll { actionList: Seq[Action] ⇒
+      forAll { actionList: Seq[Action] =>
         actions(actionList: _*) shouldBe actionList
       }
     }
 
     "conditions, which returns a list of Action objects" in {
-      forAll { conditionSet: Set[Condition] ⇒
+      forAll { conditionSet: Set[Condition] =>
         conditions(conditionSet.toSeq: _*) shouldBe conditionSet
       }
     }
@@ -243,7 +243,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
     "allow, which will" - {
       "create policies" - {
         "with a sid argument" in {
-          forAll(Gen.identifier) { identifier ⇒
+          forAll(Gen.identifier) { identifier =>
             allow (
               id(identifier)
             ) shouldBe Statement(Some(identifier), Set.empty, Statement.Effect.Allow, Seq.empty, Seq.empty, Set.empty)
@@ -251,7 +251,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "with a principals argument" in {
-          forAll { principals: Set[Principal] ⇒
+          forAll { principals: Set[Principal] =>
             allow (
               principals
             ) shouldBe Statement(None, principals, Statement.Effect.Allow, Seq.empty, Seq.empty, Set.empty)
@@ -259,7 +259,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "with an actions argument" in {
-          forAll { actions: Seq[Action] ⇒
+          forAll { actions: Seq[Action] =>
             allow (
               actions
             ) shouldBe Statement(None, Set.empty, Statement.Effect.Allow, actions, Seq.empty, Set.empty)
@@ -267,7 +267,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "with a resources argument" in {
-          forAll { resources: Seq[Resource] ⇒
+          forAll { resources: Seq[Resource] =>
             allow (
               resources
             ) shouldBe Statement(None, Set.empty, Statement.Effect.Allow, Seq.empty, resources, Set.empty)
@@ -275,7 +275,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "with a conditions argument" in {
-          forAll { conditions: Set[Condition] ⇒
+          forAll { conditions: Set[Condition] =>
             allow (
               conditions
             ) shouldBe Statement(None, Set.empty, Statement.Effect.Allow, Seq.empty, Seq.empty, conditions)
@@ -284,9 +284,9 @@ class PolicyDSLSpec extends AnyFreeSpec {
 
         "with two arguments" in {
           forAll(
-            arbitrary[Set[Condition]] → "conditions",
-            arbitrary[Seq[Action]] → "actions"
-          ) { (conditions, actions) ⇒
+            arbitrary[Set[Condition]] ->"conditions",
+            arbitrary[Seq[Action]] ->"actions"
+          ) { (conditions, actions) =>
             allow (
               conditions,
               actions
@@ -296,10 +296,10 @@ class PolicyDSLSpec extends AnyFreeSpec {
 
         "with three arguments" in {
           forAll(
-            arbitrary[Set[Condition]] → "conditions",
-            arbitrary[Seq[Action]] → "actions",
-            arbitrary[Set[Principal]] → "principals"
-          ) { (conditions, actions, principals) ⇒
+            arbitrary[Set[Condition]] ->"conditions",
+            arbitrary[Seq[Action]] ->"actions",
+            arbitrary[Set[Principal]] ->"principals"
+          ) { (conditions, actions, principals) =>
             allow (
               conditions,
               actions,
@@ -310,11 +310,11 @@ class PolicyDSLSpec extends AnyFreeSpec {
 
         "with four arguments" in {
           forAll(
-            arbitrary[Set[Condition]] → "conditions",
-            arbitrary[Seq[Action]] → "actions",
-            arbitrary[Set[Principal]] → "principals",
-            Gen.identifier → "statementId"
-          ) { (conditions, actions, principals, statementId) ⇒
+            arbitrary[Set[Condition]] ->"conditions",
+            arbitrary[Seq[Action]] ->"actions",
+            arbitrary[Set[Principal]] ->"principals",
+            Gen.identifier ->"statementId"
+          ) { (conditions, actions, principals, statementId) =>
             allow (
               conditions,
               actions,
@@ -326,12 +326,12 @@ class PolicyDSLSpec extends AnyFreeSpec {
 
         "with five arguments" in {
           forAll(
-            arbitrary[Set[Condition]] → "conditions",
-            arbitrary[Seq[Action]] → "actions",
-            arbitrary[Set[Principal]] → "principals",
-            Gen.identifier → "statementId",
-            arbitrary[Seq[Resource]] → "resources"
-          ) { (conditions, actions, principals, statementId, resources) ⇒
+            arbitrary[Set[Condition]] ->"conditions",
+            arbitrary[Seq[Action]] ->"actions",
+            arbitrary[Set[Principal]] ->"principals",
+            Gen.identifier ->"statementId",
+            arbitrary[Seq[Resource]] ->"resources"
+          ) { (conditions, actions, principals, statementId, resources) =>
             allow (
               conditions,
               actions,
@@ -345,7 +345,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
 
       "fail to create policies with duplicated" - {
         "statement identifiers" in {
-          forAll(Gen.identifier, Gen.identifier) { (id1, id2) ⇒
+          forAll(Gen.identifier, Gen.identifier) { (id1, id2) =>
             the [IllegalStateException] thrownBy {
               allow (
                 id(id1),
@@ -356,7 +356,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "principal lists" in {
-          forAll { (p1: Set[Principal], p2: Set[Principal]) ⇒
+          forAll { (p1: Set[Principal], p2: Set[Principal]) =>
             the [IllegalStateException] thrownBy {
               allow ( p1, p2 )
             } should have message "A statement may only have one set of principals."
@@ -364,7 +364,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "action lists" in {
-          forAll { (a1: Seq[Action], a2: Seq[Action]) ⇒
+          forAll { (a1: Seq[Action], a2: Seq[Action]) =>
             the [IllegalStateException] thrownBy {
               allow ( a1, a2 )
             } should have message "A statement may only have one list of actions."
@@ -372,7 +372,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "resource lists" in {
-          forAll { (r1: Seq[Resource], r2: Seq[Resource]) ⇒
+          forAll { (r1: Seq[Resource], r2: Seq[Resource]) =>
             the [IllegalStateException] thrownBy {
               allow ( r1, r2 )
             } should have message "A statement may only have one list of resources."
@@ -380,7 +380,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "condition lists" in {
-          forAll { (c1: Set[Condition], c2: Set[Condition]) ⇒
+          forAll { (c1: Set[Condition], c2: Set[Condition]) =>
             the [IllegalStateException] thrownBy {
               allow ( c1, c2 )
             } should have message "A statement may only have one set of conditions."
@@ -392,7 +392,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
     "deny, which will" - {
       "create policies" - {
         "with a sid argument" in {
-          forAll(Gen.identifier) { identifier ⇒
+          forAll(Gen.identifier) { identifier =>
             deny (
               id(identifier)
             ) shouldBe Statement(Some(identifier), Set.empty, Statement.Effect.Deny, Seq.empty, Seq.empty, Set.empty)
@@ -400,7 +400,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "with a principals argument" in {
-          forAll { principals: Set[Principal] ⇒
+          forAll { principals: Set[Principal] =>
             deny (
               principals
             ) shouldBe Statement(None, principals, Statement.Effect.Deny, Seq.empty, Seq.empty, Set.empty)
@@ -408,7 +408,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "with an actions argument" in {
-          forAll { actions: Seq[Action] ⇒
+          forAll { actions: Seq[Action] =>
             deny (
               actions
             ) shouldBe Statement(None, Set.empty, Statement.Effect.Deny, actions, Seq.empty, Set.empty)
@@ -416,7 +416,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "with a resources argument" in {
-          forAll { resources: Seq[Resource] ⇒
+          forAll { resources: Seq[Resource] =>
             deny (
               resources
             ) shouldBe Statement(None, Set.empty, Statement.Effect.Deny, Seq.empty, resources, Set.empty)
@@ -424,7 +424,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "with a conditions argument" in {
-          forAll { conditions: Set[Condition] ⇒
+          forAll { conditions: Set[Condition] =>
             deny (
               conditions
             ) shouldBe Statement(None, Set.empty, Statement.Effect.Deny, Seq.empty, Seq.empty, conditions)
@@ -433,9 +433,9 @@ class PolicyDSLSpec extends AnyFreeSpec {
 
         "with two arguments" in {
           forAll(
-            arbitrary[Set[Condition]] → "conditions",
-            arbitrary[Seq[Action]] → "actions"
-          ) { (conditions, actions) ⇒
+            arbitrary[Set[Condition]] ->"conditions",
+            arbitrary[Seq[Action]] ->"actions"
+          ) { (conditions, actions) =>
             deny (
               conditions,
               actions
@@ -445,10 +445,10 @@ class PolicyDSLSpec extends AnyFreeSpec {
 
         "with three arguments" in {
           forAll(
-            arbitrary[Set[Condition]] → "conditions",
-            arbitrary[Seq[Action]] → "actions",
-            arbitrary[Set[Principal]] → "principals"
-          ) { (conditions, actions, principals) ⇒
+            arbitrary[Set[Condition]] ->"conditions",
+            arbitrary[Seq[Action]] ->"actions",
+            arbitrary[Set[Principal]] ->"principals"
+          ) { (conditions, actions, principals) =>
             deny (
               conditions,
               actions,
@@ -459,11 +459,11 @@ class PolicyDSLSpec extends AnyFreeSpec {
 
         "with four arguments" in {
           forAll(
-            arbitrary[Set[Condition]] → "conditions",
-            arbitrary[Seq[Action]] → "actions",
-            arbitrary[Set[Principal]] → "principals",
-            Gen.identifier → "statementId"
-          ) { (conditions, actions, principals, statementId) ⇒
+            arbitrary[Set[Condition]] ->"conditions",
+            arbitrary[Seq[Action]] ->"actions",
+            arbitrary[Set[Principal]] ->"principals",
+            Gen.identifier ->"statementId"
+          ) { (conditions, actions, principals, statementId) =>
             deny (
               conditions,
               actions,
@@ -475,12 +475,12 @@ class PolicyDSLSpec extends AnyFreeSpec {
 
         "with five arguments" in {
           forAll(
-            arbitrary[Set[Condition]] → "conditions",
-            arbitrary[Seq[Action]] → "actions",
-            arbitrary[Set[Principal]] → "principals",
-            Gen.identifier → "statementId",
-            arbitrary[Seq[Resource]] → "resources"
-          ) { (conditions, actions, principals, statementId, resources) ⇒
+            arbitrary[Set[Condition]] ->"conditions",
+            arbitrary[Seq[Action]] ->"actions",
+            arbitrary[Set[Principal]] ->"principals",
+            Gen.identifier ->"statementId",
+            arbitrary[Seq[Resource]] ->"resources"
+          ) { (conditions, actions, principals, statementId, resources) =>
             deny (
               conditions,
               actions,
@@ -494,7 +494,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
 
       "fail to create policies with duplicated" - {
         "statement identifiers" in {
-          forAll(Gen.identifier, Gen.identifier) { (id1, id2) ⇒
+          forAll(Gen.identifier, Gen.identifier) { (id1, id2) =>
             the [IllegalStateException] thrownBy {
               deny (
                 id(id1),
@@ -505,7 +505,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "principal lists" in {
-          forAll { (p1: Set[Principal], p2: Set[Principal]) ⇒
+          forAll { (p1: Set[Principal], p2: Set[Principal]) =>
             the [IllegalStateException] thrownBy {
               deny ( p1, p2 )
             } should have message "A statement may only have one set of principals."
@@ -513,7 +513,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "action lists" in {
-          forAll { (a1: Seq[Action], a2: Seq[Action]) ⇒
+          forAll { (a1: Seq[Action], a2: Seq[Action]) =>
             the [IllegalStateException] thrownBy {
               deny ( a1, a2 )
             } should have message "A statement may only have one list of actions."
@@ -521,7 +521,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "resource lists" in {
-          forAll { (r1: Seq[Resource], r2: Seq[Resource]) ⇒
+          forAll { (r1: Seq[Resource], r2: Seq[Resource]) =>
             the [IllegalStateException] thrownBy {
               deny ( r1, r2 )
             } should have message "A statement may only have one list of resources."
@@ -529,7 +529,7 @@ class PolicyDSLSpec extends AnyFreeSpec {
         }
 
         "condition lists" in {
-          forAll { (c1: Set[Condition], c2: Set[Condition]) ⇒
+          forAll { (c1: Set[Condition], c2: Set[Condition]) =>
             the [IllegalStateException] thrownBy {
               deny ( c1, c2 )
             } should have message "A statement may only have one set of conditions."

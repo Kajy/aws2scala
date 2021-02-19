@@ -16,13 +16,13 @@ object RetryPolicy {
   implicit lazy val arbRetryPolicy: Arbitrary[RetryPolicy] =
     Arbitrary {
       for {
-        numRetries ← Gen.choose(0,100)
-        numNoDelayRetries ← Gen.choose(0,numRetries)
-        minDelayTarget ← Gen.choose(0,120)
-        numMinDelayRetries ← Gen.choose(0,numRetries)
-        maxDelayTarget ← Gen.choose(minDelayTarget,3600)
-        numMaxDelayRetries ← Gen.choose(0,numRetries)
-        backoffFunction ← Gen.oneOf(BackoffFunction.values)
+        numRetries <- Gen.choose(0,100)
+        numNoDelayRetries <- Gen.choose(0,numRetries)
+        minDelayTarget <- Gen.choose(0,120)
+        numMinDelayRetries <- Gen.choose(0,numRetries)
+        maxDelayTarget <- Gen.choose(minDelayTarget,3600)
+        numMaxDelayRetries <- Gen.choose(0,numRetries)
+        backoffFunction <- Gen.oneOf(BackoffFunction.values)
       } yield
         RetryPolicy(
           minDelayTarget,
@@ -49,19 +49,19 @@ object RetryPolicy {
     implicit lazy val jsonFormat: JsonFormat[BackoffFunction] = new JsonFormat[BackoffFunction] {
       override def read(json: JsValue): BackoffFunction =
         json match {
-          case JsString("linear")      ⇒ Linear
-          case JsString("arithmetic")  ⇒ Arithmetic
-          case JsString("geometric")   ⇒ Geometric
-          case JsString("exponential") ⇒ Exponential
-          case x                       ⇒ deserializationError(s"Expected a backoff function name, but got a $x")
+          case JsString("linear")      => Linear
+          case JsString("arithmetic")  => Arithmetic
+          case JsString("geometric")   => Geometric
+          case JsString("exponential") => Exponential
+          case x                       => deserializationError(s"Expected a backoff function name, but got a $x")
         }
 
       override def write(obj: BackoffFunction): JsValue =
         obj match {
-          case Linear      ⇒ JsString("linear")
-          case Arithmetic  ⇒ JsString("arithmetic")
-          case Geometric   ⇒ JsString("geometric")
-          case Exponential ⇒ JsString("exponential")
+          case Linear      => JsString("linear")
+          case Arithmetic  => JsString("arithmetic")
+          case Geometric   => JsString("geometric")
+          case Exponential => JsString("exponential")
         }
     }
   }

@@ -15,7 +15,7 @@ class SNSSpec extends AnyFreeSpec with MockFactory with AwsClientProviderBehavio
     behave like anAwsClientProvider(SNS)
 
     "register the SNS actions" in {
-      forAll(actions) { action ⇒
+      forAll(actions) { action =>
         action.asAws.asScala shouldBe action
       }
     }

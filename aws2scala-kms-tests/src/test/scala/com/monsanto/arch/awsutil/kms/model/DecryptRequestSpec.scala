@@ -3,7 +3,7 @@ package com.monsanto.arch.awsutil.kms.model
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers._
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 
 class DecryptRequestSpec extends AnyFreeSpec {
@@ -20,7 +20,7 @@ class DecryptRequestSpec extends AnyFreeSpec {
       }
 
       "with a context" in {
-        val context = Map("some" → "context")
+        val context = Map("some" ->"context")
         val request = DecryptRequest(ciphertext, context).toAws
 
         request.getCiphertextBlob.array shouldBe ciphertext

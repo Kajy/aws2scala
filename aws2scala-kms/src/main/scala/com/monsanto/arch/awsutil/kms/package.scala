@@ -13,10 +13,10 @@ package object kms {
     */
   private[kms] def asKeyIdentifier(idOrAlias: String): String = {
     idOrAlias match {
-      case UuidParser(uuid) ⇒ uuid
-      case arn if arn.startsWith("arn:") ⇒ arn
-      case alias if alias.startsWith("alias/") ⇒ alias
-      case alias ⇒ s"alias/$alias"
+      case UuidParser(uuid) => uuid
+      case arn if arn.startsWith("arn:") => arn
+      case alias if alias.startsWith("alias/") => alias
+      case alias => s"alias/$alias"
     }
   }
 
@@ -25,7 +25,7 @@ package object kms {
       try {
         Some(UUID.fromString(str).toString)
       } catch {
-        case _: IllegalArgumentException ⇒ None
+        case _: IllegalArgumentException => None
       }
     }
   }

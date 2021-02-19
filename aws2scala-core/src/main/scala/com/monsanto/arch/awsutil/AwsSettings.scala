@@ -61,24 +61,24 @@ class AwsSettings(config: Config) {
     val defaultPutObjectHeaders: Map[String,Object] = getObjectHeaders("awsutil.s3.default-put-object-headers")
 
     private def getObjectHeaders(path: String): Map[String, Object] = {
-      import scala.collection.JavaConverters._
+      import scala.jdk.CollectionConverters._
       if (config.hasPath(path)) {
-        config.getConfig(path).entrySet().asScala.map { entry ⇒
+        config.getConfig(path).entrySet().asScala.map { entry =>
           val key = entry.getKey.replaceAll("^\"(.*)\"$", "$1")
           val rawValue = entry.getValue
           val value = rawValue.valueType match {
-            case ConfigValueType.BOOLEAN ⇒ rawValue.unwrapped().toString
-            case ConfigValueType.STRING ⇒ rawValue.unwrapped()
-            case ConfigValueType.NUMBER ⇒ rawValue.unwrapped()
-            case ConfigValueType.NULL ⇒ null // apparently, cannot happen
-            case ConfigValueType.OBJECT ⇒ null // apparently, cannot happen
-            case ConfigValueType.LIST ⇒
+            case ConfigValueType.BOOLEAN => rawValue.unwrapped().toString
+            case ConfigValueType.STRING => rawValue.unwrapped()
+            case ConfigValueType.NUMBER => rawValue.unwrapped()
+            case ConfigValueType.NULL => null // apparently, cannot happen
+            case ConfigValueType.OBJECT => null // apparently, cannot happen
+            case ConfigValueType.LIST =>
               throw new ConfigException.BadValue(
                 rawValue.origin(),
                 s"$path.$key",
                 "An object header may not be a list")
           }
-          key → value
+          key ->value
         }.toMap
       } else {
         Map.empty
@@ -89,7 +89,7 @@ class AwsSettings(config: Config) {
       val path = "awsutil.s3.parallelism"
       val value = config.getValue(path)
       value.valueType() match {
-        case ConfigValueType.STRING ⇒
+        case ConfigValueType.STRING =>
           if (value.unwrapped() != "auto") {
             throw new ConfigException.BadValue(
               value.origin(),
@@ -97,19 +97,19 @@ class AwsSettings(config: Config) {
               s"must be a positive integer or ‘auto’ (got ${value.unwrapped()}")
           }
           AwsSettings.DefaultS3Parallelism
-        case ConfigValueType.NUMBER ⇒
+        case ConfigValueType.NUMBER =>
           value.unwrapped() match {
-            case d: java.lang.Double ⇒
+            case d: java.lang.Double =>
               throw new ConfigException.BadValue(
                 value.origin(),
                 path,
                 s"must be a positive integer or ‘auto’ (got $d, a double)")
-            case l: java.lang.Long ⇒
+            case l: java.lang.Long =>
               throw new ConfigException.BadValue(
                 value.origin(),
                 path,
                 s"must be a positive integer or ‘auto’ (got $l, a long)")
-            case i: java.lang.Integer ⇒
+            case i: java.lang.Integer =>
               if (i > 0) {
                 i
               } else {
@@ -118,8 +118,13 @@ class AwsSettings(config: Config) {
                   path,
                   s"must be a positive integer or ‘auto’ (got $i, a non-positive integer)")
               }
+            case _ =>
+              throw new ConfigException.BadValue(
+                value.origin(),
+                path,
+                s"must be a positive integer or ‘auto’ (got an unknown type)")
           }
-        case _ ⇒
+        case _ =>
           throw new ConfigException.BadValue(
             value.origin(),
             path,

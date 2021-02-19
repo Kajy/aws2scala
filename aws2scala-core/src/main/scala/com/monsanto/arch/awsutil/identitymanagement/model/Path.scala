@@ -8,7 +8,7 @@ case class Path(elements: Seq[String]) {
   /** Returns a string representing the path. */
   val pathString = if (elements.isEmpty) "/" else elements.mkString("/", "/", "/")
 
-  /** Allows appending to a path using the `/` character. */
+  /** Allows lazyAppendedAlling to a path using the `/` character. */
   def /(element: String): Path = {
     require(!element.contains("/"), "A path element may not contain a slash.")
     Path(elements :+ element)
@@ -33,9 +33,9 @@ object Path {
     def unapply(str: String): Option[Path] = {
       if (str.nonEmpty) {
         str.split("/").toList match {
-          case Nil        ⇒ Some(Path.empty)
-          case "" :: rest ⇒ Some(Path(rest))
-          case _          ⇒ None
+          case Nil        => Some(Path.empty)
+          case "" :: rest => Some(Path(rest))
+          case _          => None
         }
       } else {
         None

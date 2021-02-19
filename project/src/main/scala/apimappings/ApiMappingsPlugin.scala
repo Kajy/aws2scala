@@ -1,6 +1,6 @@
 package apimappings
 
-import java.io.{File ⇒ JFile}
+import java.io.{File => JFile}
 import sbt._
 import sbt.Keys._
 
@@ -17,12 +17,12 @@ object ApiMappingsPlugin extends AutoPlugin {
       Def.task {
         val docDir = docTask.value
         val javadocURLs = apiMappingsJava.value.values.toSeq :+ JavaApiLocation
-        def hasJavadocLink(f: File): Boolean = javadocURLs.exists { javadocURL ⇒
+        def hasJavadocLink(f: File): Boolean = javadocURLs.exists { javadocURL =>
           javadocURLRegex(javadocURL).findFirstIn(IO.read(f)).nonEmpty
         }
-        (docDir ** "*.html").get.filter(hasJavadocLink).foreach { f ⇒
+        (docDir ** "*.html").get.filter(hasJavadocLink).foreach { f =>
           val newContent = javadocURLs.foldLeft(IO.read(f)) {
-            case (oldContent, javadocURL) ⇒
+            case (oldContent, javadocURL) =>
               javadocURLRegex(javadocURL).replaceAllIn(oldContent, fixJavaLinks)
           }
           IO.write(f, newContent)
@@ -40,30 +40,30 @@ object ApiMappingsPlugin extends AutoPlugin {
     apiMappings := {
       val dependencyMap = {
         for {
-          entry ← (fullClasspath in Compile).value
+          entry <- (fullClasspath in Compile).value
           maybeModule = entry.get(moduleID.key)
           if maybeModule.isDefined
-          module ← maybeModule
+          module <- maybeModule
           name = module.name.replaceAll(s"_${scalaBinaryVersion.value}$$", "")
-        } yield (module.organization, name) → (entry.data, module.revision)
+        } yield (module.organization, name) ->(entry.data, module.revision)
       }.toMap
       val findMapping: PartialFunction[((String,String),String), (File,URL)] = {
-        case (orgName, urlFormat) if dependencyMap.contains(orgName) ⇒
-          dependencyMap.get(orgName).map { data ⇒
-            data._1 → url(urlFormat.format(data._2))
+        case (orgName, urlFormat) if dependencyMap.contains(orgName) =>
+          dependencyMap.get(orgName).map { data =>
+            data._1 ->url(urlFormat.format(data._2))
           }.get
       }
-      (apiMappingsJava.value ++ apiMappingsScala.value).collect(findMapping) + (RtJar → url(JavaApiLocation))
+      (apiMappingsJava.value ++ apiMappingsScala.value).collect(findMapping) + (RtJar ->url(JavaApiLocation))
     }
 //    (doc in Compile) := apiMappingsFixJavaLinks(doc in Compile)
   )
 
   private lazy val RtJar = System.getProperty("sun.boot.class.path").split(JFile.pathSeparator).collectFirst {
-    case str: String if str.endsWith(JFile.separator + "rt.jar") ⇒ file(str)
+    case str: String if str.endsWith(JFile.separator + "rt.jar") => file(str)
   }.get
 
   private val JavaApiLocation = "http://docs.oracle.com/javase/8/docs/api"
 
   private def javadocURLRegex(url: String) = ("""\"(\Q""" + url + """\E)/index.html#([^"]*)\"""").r
-  private val fixJavaLinks: Regex.Match ⇒ String = m ⇒ m.group(1) + "/" + m.group(2).replace(".", "/") + ".html"
+  private val fixJavaLinks: Regex.Match => String = m => m.group(1) + "/" + m.group(2).replace(".", "/") + ".html"
 }

@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.regions
 
-import com.amazonaws.{regions ⇒ aws}
+import com.amazonaws.{regions => aws}
 import com.monsanto.arch.awsutil.converters.CoreConverters._
 import com.monsanto.arch.awsutil.test_support.AwsEnumerationBehaviours
 import org.scalatest.freespec.AnyFreeSpec

@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.sns.model
 
-import com.amazonaws.services.sns.model.{SetSubscriptionAttributesRequest ⇒ AwsSetSubscriptionAttributesRequest }
+import com.amazonaws.services.sns.model.{SetSubscriptionAttributesRequest => AwsSetSubscriptionAttributesRequest }
 
 /** Contains the necessary information to set an attribute of a subscription to a new value.
   *

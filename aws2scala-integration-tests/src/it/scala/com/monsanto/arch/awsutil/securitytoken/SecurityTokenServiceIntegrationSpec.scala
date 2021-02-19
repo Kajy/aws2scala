@@ -41,12 +41,12 @@ class SecurityTokenServiceIntegrationSpec extends AnyFreeSpec with AwsIntegratio
 
       eventually {
         logger.debug("Attempting to assume role…")
-        val result = async.assumeRole(AssumeRoleRequest(testRole.arn.arnString, "aws2scala-it-sts")).futureValue
+        val result = async.assumeRole(AssumeRoleRequest(testRole.arn.arnString, "aws2scala-it-sts")).futureValue()
         logger.info(s"Assumed role with ID ${result.assumedRoleUser.assumedRoleId}")
         credentialsPromise.success(result.credentials)
       }
 
-      credentials = credentialsPromise.future.futureValue
+      credentials = credentialsPromise.future.futureValue()
     }
 
     "can use the credentials" - {
@@ -59,7 +59,7 @@ class SecurityTokenServiceIntegrationSpec extends AnyFreeSpec with AwsIntegratio
 
       "to list buckets" in {
         val s3 = awsClient.withCredentialsProvider(credentials).async(S3)
-        s3.listBuckets().futureValue
+        s3.listBuckets().futureValue()
       }
     }
 
@@ -73,13 +73,13 @@ class SecurityTokenServiceIntegrationSpec extends AnyFreeSpec with AwsIntegratio
         .via(iam.userGetter)
         .map(makeCreateRoleRequest)
         .via(iam.roleCreator)
-        .flatMapConcat { role ⇒
+        .flatMapConcat { role =>
           Source.single(AttachRolePolicyRequest(role.name, testRolePolicyArn))
             .via(iam.rolePolicyAttacher)
-            .map(_ ⇒ role)
+            .map(_ => role)
         }
         .runWith(Sink.head)
-        .futureValue
+        .futureValue()
     logger.info(s"Created STS test role ${testRole.name} at ${testRole.arn}")
   }
 
@@ -90,7 +90,7 @@ class SecurityTokenServiceIntegrationSpec extends AnyFreeSpec with AwsIntegratio
           .via(iam.rolePolicyDetacher)
           .via(iam.roleDeleter)
           .runWith(Sink.head)
-          .futureValue
+          .futureValue()
       logger.info(s"Deleted STS test role $deletedRole")
     } finally super.afterAll()
   }

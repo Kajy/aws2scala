@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.s3.model
 
-import com.amazonaws.services.s3.{model ⇒ aws}
+import com.amazonaws.services.s3.{model => aws}
 
 /** Encapsulates a bucket name and key.  Big surprise. */
 case class BucketNameAndKey(bucketName: String, key: String)

@@ -2,7 +2,7 @@ package com.monsanto.arch.awsutil.cloudformation
 
 import akka.NotUsed
 import akka.stream.scaladsl.Flow
-import com.amazonaws.services.cloudformation.{model ⇒ aws}
+import com.amazonaws.services.cloudformation.{model => aws}
 import com.monsanto.arch.awsutil.StreamingAwsClient
 import com.monsanto.arch.awsutil.cloudformation.model.{DeleteStackRequest, ValidatedTemplate}
 

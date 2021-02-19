@@ -10,8 +10,8 @@ object KmsGen {
     val aliasChars = ('a' to 'z') ++ ('A' to 'Z') ++ ('0' to '9') :+ ':' :+ '/' :+ '_' :+ '-'
     val aliasGen =
       for {
-        alias ← UtilGen.stringOf(Gen.oneOf(aliasChars), 1, 250)
-        addPrefix ← arbitrary[Boolean]
+        alias <- UtilGen.stringOf(Gen.oneOf(aliasChars), 1, 250)
+        addPrefix <- arbitrary[Boolean]
       } yield if (addPrefix) s"alias/$alias" else alias
     aliasGen.suchThat(_.nonEmpty)
   }

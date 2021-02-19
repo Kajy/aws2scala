@@ -9,7 +9,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class IamInstanceProfileSpec extends AnyFreeSpec {
   "a IamInstanceProfile should" - {
     "be constructible from its AWS equivalent" in {
-      forAll { profile: IamInstanceProfile ⇒
+      forAll { profile: IamInstanceProfile =>
         IamInstanceProfile.fromAws(profile.toAws) shouldBe profile
       }
     }

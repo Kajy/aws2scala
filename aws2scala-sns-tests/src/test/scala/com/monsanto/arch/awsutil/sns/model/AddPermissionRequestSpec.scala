@@ -6,17 +6,17 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class AddPermissionRequestSpec extends AnyFreeSpec {
   "a AddPermissionRequest should" - {
     "be convertible to its AWS equivalent" in {
-      forAll { request: AddPermissionRequest ⇒
+      forAll { request: AddPermissionRequest =>
         request.asAws should have (
-          'TopicArn (request.topicArn),
-          'Label (request.label),
-          'AWSAccountIds (request.accounts.asJava),
-          'ActionNames (request.actions.map(_.toString).asJava)
+          Symbol("TopicArn")(request.topicArn),
+          Symbol("Label") (request.label),
+          Symbol("AWSAccountIds") (request.accounts.asJava),
+          Symbol("ActionNames") (request.actions.map(_.toString).asJava)
         )
       }
     }

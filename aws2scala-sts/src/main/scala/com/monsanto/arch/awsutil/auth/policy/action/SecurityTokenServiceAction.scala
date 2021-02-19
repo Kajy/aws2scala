@@ -33,14 +33,14 @@ object SecurityTokenServiceAction {
 
   private[awsutil] def registerActions(): Unit =
     Action.registerActions(
-      SecurityTokenServiceActions.AllSecurityTokenServiceActions → AllSecurityTokenServiceActions,
-      SecurityTokenServiceActions.AssumeRole → AssumeRole,
-      SecurityTokenServiceActions.AssumeRoleWithSAML → AssumeRoleWithSAML,
-      SecurityTokenServiceActions.AssumeRoleWithWebIdentity → AssumeRoleWithWebIdentity,
-      SecurityTokenServiceActions.DecodeAuthorizationMessage → DecodeAuthorizationMessage,
-      SecurityTokenServiceActions.GetAccessKeyInfo → GetAccessKeyInfo,
-      SecurityTokenServiceActions.GetCallerIdentity → GetCallerIdentity,
-      SecurityTokenServiceActions.GetFederationToken → GetFederationToken,
-      SecurityTokenServiceActions.GetSessionToken → GetSessionToken
+      SecurityTokenServiceActions.AllSecurityTokenServiceActions ->AllSecurityTokenServiceActions,
+      SecurityTokenServiceActions.AssumeRole ->AssumeRole,
+      SecurityTokenServiceActions.AssumeRoleWithSAML ->AssumeRoleWithSAML,
+      SecurityTokenServiceActions.AssumeRoleWithWebIdentity ->AssumeRoleWithWebIdentity,
+      SecurityTokenServiceActions.DecodeAuthorizationMessage ->DecodeAuthorizationMessage,
+      SecurityTokenServiceActions.GetAccessKeyInfo ->GetAccessKeyInfo,
+      SecurityTokenServiceActions.GetCallerIdentity ->GetCallerIdentity,
+      SecurityTokenServiceActions.GetFederationToken ->GetFederationToken,
+      SecurityTokenServiceActions.GetSessionToken ->GetSessionToken
     )
 }

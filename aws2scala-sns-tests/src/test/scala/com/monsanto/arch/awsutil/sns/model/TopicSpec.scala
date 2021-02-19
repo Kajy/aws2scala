@@ -24,32 +24,32 @@ class TopicSpec extends AnyFreeSpec with MockFactory with Materialised with Flow
   "the Topic companion object" - {
     "can create a Topic instance from" - {
       "an attribute map" in {
-        forAll { attributes: TopicAttributes ⇒
+        forAll { attributes: TopicAttributes =>
           Topic(attributes.asMap) should have(
-            'arn (attributes.arn.arnString),
-            'attributes (attributes.asMap),
-            'deliveryPolicy (attributes.deliveryPolicy.map(_.toString)),
-            'displayName (attributes.displayName),
-            'effectiveDeliveryPolicy (attributes.effectiveDeliveryPolicy.toString),
-            'name (attributes.arn.name),
-            'owner (attributes.arn.account.id),
-            'policy (attributes.policy.toString),
-            'subscriptionsConfirmed (attributes.subscriptionsConfirmed),
-            'subscriptionsDeleted (attributes.subscriptionsDeleted),
-            'subscriptionsPending (attributes.subscriptionsPending)
+            Symbol("arn") (attributes.arn.arnString),
+            Symbol("attributes") (attributes.asMap),
+            Symbol("deliveryPolicy") (attributes.deliveryPolicy.map(_.toString)),
+            Symbol("displayName") (attributes.displayName),
+            Symbol("effectiveDeliveryPolicy") (attributes.effectiveDeliveryPolicy.toString),
+            Symbol("name") (attributes.arn.name),
+            Symbol("owner") (attributes.arn.account.id),
+            Symbol("policy") (attributes.policy.toString),
+            Symbol("subscriptionsConfirmed") (attributes.subscriptionsConfirmed),
+            Symbol("subscriptionsDeleted") (attributes.subscriptionsDeleted),
+            Symbol("subscriptionsPending") (attributes.subscriptionsPending)
           )
         }
       }
 
       "a topic ARN" in {
-        forAll { topic: Topic ⇒
+        forAll { topic: Topic =>
           implicit val sns = mock[StreamingSNSClient]("sns")
 
-          (sns.topicAttributesGetter _)
+          (() => sns.topicAttributesGetter)
             .expects()
             .returningFlow(topic.arn, topic.attributes)
 
-          Topic(topic.arn).futureValue shouldBe topic
+          Topic(topic.arn).futureValue() shouldBe topic
         }
       }
     }
@@ -57,7 +57,7 @@ class TopicSpec extends AnyFreeSpec with MockFactory with Materialised with Flow
     "will not create a topic from something that does not look like a topic ARN" in {
       implicit val sns = mock[StreamingSNSClient]("sns")
 
-      forAll(Gen.alphaStr → "badArn") { badArn ⇒
+      forAll(Gen.alphaStr ->"badArn") { badArn =>
         an[IllegalArgumentException] shouldBe thrownBy(Topic(badArn))
       }
     }
@@ -66,165 +66,166 @@ class TopicSpec extends AnyFreeSpec with MockFactory with Materialised with Flow
   "a Topic instance" - {
     "can refresh itself" in {
       val topicAndNewAttributes = for {
-        topic ← arbitrary[Topic]
-        newAttributes ← arbitrary[Topic].map(_.attributes.updated("TopicArn", topic.arn))
+        topic <- arbitrary[Topic]
+        newAttributes <- arbitrary[Topic].map(_.attributes.updated("TopicArn", topic.arn))
       } yield (topic, newAttributes)
 
-      forAll(topicAndNewAttributes) { case (topic, newAttributes) ⇒
+      forAll(topicAndNewAttributes) { case (topic, newAttributes) =>
         implicit val sns = mock[StreamingSNSClient]("sns")
         val refreshedTopic = Topic(newAttributes)
 
-        (sns.topicAttributesGetter _).expects()
+        (() => sns.topicAttributesGetter)
+          .expects()
           .returningFlow(topic.arn, newAttributes)
 
-        val result = topic.refresh().futureValue
+        val result = topic.refresh().futureValue()
         result shouldBe refreshedTopic
       }
     }
 
     "has a toString that features the topic ARN" in {
-      forAll { topic: Topic ⇒
+      forAll { topic: Topic =>
         topic.toString shouldBe s"Topic(${topic.arn})"
       }
     }
 
     "should provide a name extracted from the ARN" in {
       val NameRegex = "^.*:([A-Za-z0-9_-]+)$".r
-      forAll { topic: Topic ⇒
+      forAll { topic: Topic =>
         val name = NameRegex.unapplySeq(topic.arn).get.head
         topic.name shouldBe name
       }
     }
 
     "can update its display name" in {
-      forAll { (topic: Topic, displayName: String) ⇒
+      forAll { (topic: Topic, displayName: String) =>
         implicit val sns = mock[StreamingSNSClient]("sns")
 
-        (sns.topicAttributeSetter _)
+        (() => sns.topicAttributeSetter)
           .expects()
           .returningFlow(SetTopicAttributesRequest(topic.arn, "DisplayName", displayName), topic.arn)
 
-        val result = topic.setDisplayName(displayName).futureValue
+        val result = topic.setDisplayName(displayName).futureValue()
         result shouldBe Done
       }
     }
 
     "can update its policy" in {
-      forAll { (topic: Topic, policy: Policy) ⇒
+      forAll { (topic: Topic, policy: Policy) =>
         implicit val sns = mock[StreamingSNSClient]("sns")
 
-        (sns.topicAttributeSetter _)
+        (() => sns.topicAttributeSetter)
           .expects()
           .returningFlow(SetTopicAttributesRequest(topic.arn, "Policy", policy.toString), topic.arn)
 
-        val result = topic.setPolicy(policy.toString).futureValue
+        val result = topic.setPolicy(policy.toString).futureValue()
         result shouldBe Done
       }
     }
 
     "can update its delivery policy" in {
-      forAll { (topic: Topic, maybeDeliveryPolicy: Option[TopicDeliveryPolicy]) ⇒
+      forAll { (topic: Topic, maybeDeliveryPolicy: Option[TopicDeliveryPolicy]) =>
         implicit val sns = mock[StreamingSNSClient]("sns")
         val deliveryPolicy = maybeDeliveryPolicy.map(_.toString)
 
-        (sns.topicAttributeSetter _)
+        (() => sns.topicAttributeSetter)
           .expects()
           .returningFlow(SetTopicAttributesRequest(topic.arn, "DeliveryPolicy", deliveryPolicy), topic.arn)
 
-        val result = topic.setDeliveryPolicy(deliveryPolicy).futureValue
+        val result = topic.setDeliveryPolicy(deliveryPolicy).futureValue()
         result shouldBe Done
       }
     }
 
     "can add a permission" in {
       forAll(
-        arbitrary[Topic] → "topic",
-        UtilGen.nonEmptyString → "label",
-        Gen.nonEmptyListOf(arbitrary[Account].map(_.id)) → "accounts",
-        Gen.nonEmptyListOf(arbitrary[SNSAction]) → "actions"
-      ) { (topic, label, accounts, actions) ⇒
+        arbitrary[Topic] ->"topic",
+        UtilGen.nonEmptyString ->"label",
+        Gen.nonEmptyListOf(arbitrary[Account].map(_.id)) ->"accounts",
+        Gen.nonEmptyListOf(arbitrary[SNSAction]) ->"actions"
+      ) { (topic, label, accounts, actions) =>
         implicit val sns = mock[StreamingSNSClient]("sns")
 
-        (sns.permissionAdder _)
+        (() => sns.permissionAdder)
           .expects()
           .returningFlow(AddPermissionRequest(topic.arn, label, accounts, actions), topic.arn)
 
-        val result = topic.addPermission(label, accounts, actions).futureValue
+        val result = topic.addPermission(label, accounts, actions).futureValue()
         result shouldBe Done
       }
     }
 
     "can remove a permission" in {
-      forAll(arbitrary[Topic] → "topic", UtilGen.nonEmptyString → "label") { (topic, label) ⇒
+      forAll(arbitrary[Topic] ->"topic", UtilGen.nonEmptyString ->"label") { (topic, label) =>
         implicit val sns = mock[StreamingSNSClient]("sns")
 
-        (sns.permissionRemover _)
+        (() => sns.permissionRemover)
           .expects()
           .returningFlow(RemovePermissionRequest(topic.arn, label), topic.arn)
 
-        val result = topic.removePermission(label).futureValue
+        val result = topic.removePermission(label).futureValue()
         result shouldBe Done
       }
     }
 
     "can delete itself" in {
-      forAll { topic: Topic ⇒
+      forAll { topic: Topic =>
         implicit val sns = mock[StreamingSNSClient]("sns")
 
-        (sns.topicDeleter _)
+        (() => sns.topicDeleter)
           .expects()
           .returningFlow(topic.arn, topic.arn)
 
-        topic.delete().futureValue shouldBe Done
+        topic.delete().futureValue() shouldBe Done
       }
     }
 
     "lists subscriptions to itself" in {
-      forAll { topicAndSummaries: (Topic, List[SubscriptionSummary]) ⇒
+      forAll { topicAndSummaries: (Topic, List[SubscriptionSummary]) =>
         implicit val sns = mock[StreamingSNSClient]("sns")
         val (topic, summaries) = topicAndSummaries
 
-        (sns.subscriptionLister _)
+        (() => sns.subscriptionLister)
           .expects()
           .returningConcatFlow(ListSubscriptionsRequest.forTopic(topic.arn), summaries)
 
-        val result = topic.listSubscriptions().futureValue
+        val result = topic.listSubscriptions().futureValue()
         result shouldBe summaries
       }
     }
 
     "can initiate a subscription" - {
       "that succeeds immediately" in {
-        forAll { topicWithSubscription: (Topic,Subscription) ⇒
+        forAll { topicWithSubscription: (Topic,Subscription) =>
           implicit val sns = mock[StreamingSNSClient]("sns")
           val (topic, subscription) = topicWithSubscription
           val SubscriptionEndpoint(protocol, endpoint) = subscription.endpoint
 
-          (sns.subscriber _)
+          (() => sns.subscriber)
             .expects()
             .returningFlow(SubscribeRequest(topic.arn, protocol.asAws, endpoint), Some(subscription.arn))
-          (sns.subscriptionAttributesGetter _)
+          (() => sns.subscriptionAttributesGetter)
             .expects()
             .returningFlow(subscription.arn, subscription.attributes)
 
-          val result = topic.subscribe(subscription.endpoint).futureValue
+          val result = topic.subscribe(subscription.endpoint).futureValue()
           result shouldBe Some(subscription)
         }
       }
 
       "that requires confirmation" in {
-        forAll { (topic: Topic, subscriptionEndpoint: SubscriptionEndpoint) ⇒
+        forAll { (topic: Topic, subscriptionEndpoint: SubscriptionEndpoint) =>
           implicit val sns = mock[StreamingSNSClient]("sns")
           val SubscriptionEndpoint(protocol, endpoint) = subscriptionEndpoint
 
-          (sns.subscriber _)
+          (() => sns.subscriber)
             .expects()
             .returningFlow(SubscribeRequest(topic.arn, protocol.asAws, endpoint), None)
-          (sns.subscriptionAttributesGetter _)
+          (() => sns.subscriptionAttributesGetter)
             .expects()
             .returningFailingFlow()
 
-          val result = topic.subscribe(subscriptionEndpoint).futureValue
+          val result = topic.subscribe(subscriptionEndpoint).futureValue()
           result shouldBe None
         }
       }
@@ -233,41 +234,41 @@ class TopicSpec extends AnyFreeSpec with MockFactory with Materialised with Flow
     "can confirm a subscription" - {
       "without specifying authenticate on unsubscribe" in {
         forAll(
-          arbitrary[(Topic,Subscription)] → "topicWithSubscription",
-          SnsGen.confirmationToken → "confirmationToken"
-        ) { (topicWithSubscription, token) ⇒
+          arbitrary[(Topic,Subscription)] ->"topicWithSubscription",
+          SnsGen.confirmationToken ->"confirmationToken"
+        ) { (topicWithSubscription, token) =>
           implicit val sns = mock[StreamingSNSClient]("sns")
           val (topic, subscription) = topicWithSubscription
 
-          (sns.subscriptionConfirmer _)
+          (() => sns.subscriptionConfirmer)
             .expects()
             .returningFlow(ConfirmSubscriptionRequest(topic.arn, token), subscription.arn)
-          (sns.subscriptionAttributesGetter _)
+          (() => sns.subscriptionAttributesGetter)
             .expects()
             .returningFlow(subscription.arn, subscription.attributes)
 
-          val result = topic.confirmSubscription(token).futureValue
+          val result = topic.confirmSubscription(token).futureValue()
           result shouldBe subscription
         }
       }
 
       "specifying authenticate on unsubscribe" in {
         forAll(
-          arbitrary[(Topic,Subscription)] → "topicAndSub",
-          SnsGen.confirmationToken → "token",
-          arbitrary[Boolean] → "authOnUnsubscribe"
-        ) { (topicAndSub, token, authOnUnsubscribe) ⇒
+          arbitrary[(Topic,Subscription)] ->"topicAndSub",
+          SnsGen.confirmationToken ->"token",
+          arbitrary[Boolean] ->"authOnUnsubscribe"
+        ) { (topicAndSub, token, authOnUnsubscribe) =>
           implicit val sns = mock[StreamingSNSClient]("sns")
           val (topic, subscription) = topicAndSub
 
-          (sns.subscriptionConfirmer _)
+          (() => sns.subscriptionConfirmer)
             .expects()
             .returningFlow(ConfirmSubscriptionRequest(topic.arn, token, Some(authOnUnsubscribe)), subscription.arn)
-          (sns.subscriptionAttributesGetter _)
+          (() => sns.subscriptionAttributesGetter)
             .expects()
             .returningFlow(subscription.arn, subscription.attributes)
 
-          val result = topic.confirmSubscription(token, authOnUnsubscribe).futureValue
+          val result = topic.confirmSubscription(token, authOnUnsubscribe).futureValue()
           result shouldBe subscription
         }
       }
@@ -277,72 +278,72 @@ class TopicSpec extends AnyFreeSpec with MockFactory with Materialised with Flow
       "simple messages" - {
         "using just the message" in {
           forAll(
-            arbitrary[Topic] → "topic",
-            UtilGen.nonEmptyString → "message",
-            SnsGen.messageId → "messageId"
-          ) { (topic, message, messageId) ⇒
+            arbitrary[Topic] ->"topic",
+            UtilGen.nonEmptyString ->"message",
+            SnsGen.messageId ->"messageId"
+          ) { (topic, message, messageId) =>
             implicit val sns = mock[StreamingSNSClient]("sns")
 
-            (sns.publisher _)
+            (() => sns.publisher)
               .expects()
               .returningFlow(PublishRequest(topic.arn, message), messageId)
 
-            val result = topic.publish(message).futureValue
+            val result = topic.publish(message).futureValue()
             result shouldBe messageId
           }
         }
 
         "using the message and a subject" in {
           forAll(
-            arbitrary[Topic] → "topic",
-            UtilGen.nonEmptyString → "message",
-            UtilGen.nonEmptyString → "subject",
-            SnsGen.messageId → "messageId"
-          ) { (topic, message, subject, messageId) ⇒
+            arbitrary[Topic] ->"topic",
+            UtilGen.nonEmptyString ->"message",
+            UtilGen.nonEmptyString ->"subject",
+            SnsGen.messageId ->"messageId"
+          ) { (topic, message, subject, messageId) =>
             implicit val sns = mock[StreamingSNSClient]("sns")
 
-            (sns.publisher _)
+            (() => sns.publisher)
               .expects()
               .returningFlow(PublishRequest(topic.arn, message, subject), messageId)
 
-            val result = topic.publish(message, subject).futureValue
+            val result = topic.publish(message, subject).futureValue()
             result shouldBe messageId
           }
         }
 
         "using the message and some attributes" in {
           forAll(
-            arbitrary[Topic] → "topic",
-            UtilGen.nonEmptyString → "message",
-            arbitrary[Map[String,MessageAttributeValue]] → "attributes",
-            SnsGen.messageId → "messageId"
-          ) { (topic, message, attributes, messageId) ⇒
+            arbitrary[Topic] ->"topic",
+            UtilGen.nonEmptyString ->"message",
+            arbitrary[Map[String,MessageAttributeValue]] ->"attributes",
+            SnsGen.messageId ->"messageId"
+          ) { (topic, message, attributes, messageId) =>
             implicit val sns = mock[StreamingSNSClient]("sns")
 
-            (sns.publisher _)
+            (() => sns.publisher)
               .expects()
               .returningFlow(PublishRequest(topic.arn, message, attributes), messageId)
 
-            val result = topic.publish(message, attributes).futureValue
+            val result = topic.publish(message, attributes).futureValue()
             result shouldBe messageId
           }
         }
 
         "using the message, a subject, and some attributes" in {
           forAll(
-            arbitrary[Topic] → "topic",
-            UtilGen.nonEmptyString → "message",
-            UtilGen.nonEmptyString → "subject",
-            arbitrary[Map[String,MessageAttributeValue]] → "attributes",
-            SnsGen.messageId → "messageId"
-          ) { (topic, message, subject, attributes, messageId) ⇒
+            arbitrary[Topic] ->"topic",
+            UtilGen.nonEmptyString ->"message",
+            UtilGen.nonEmptyString ->"subject",
+            arbitrary[Map[String,MessageAttributeValue]] ->"attributes",
+            SnsGen.messageId ->"messageId"
+          ) { (topic, message, subject, attributes, messageId) =>
             implicit val sns = mock[StreamingSNSClient]("sns")
 
-            (sns.publisher _)
+            (() => sns.publisher)
               .expects()
               .returningFlow(PublishRequest(topic.arn, message, subject, attributes), messageId)
 
-            val result = topic.publish(message, subject, attributes).futureValue
+            val result = topic.publish(message, subject, attributes).futureValue()
             result shouldBe messageId
           }
         }
@@ -351,72 +352,72 @@ class TopicSpec extends AnyFreeSpec with MockFactory with Materialised with Flow
       "compound messages" - {
         "using just the message map" in {
           forAll(
-            arbitrary[Topic] → "topic",
-            SnsGen.messageMap → "messageMap",
-            SnsGen.messageId → "messageId"
-          ) { (topic, messageMap, messageId) ⇒
+            arbitrary[Topic] ->"topic",
+            SnsGen.messageMap ->"messageMap",
+            SnsGen.messageId ->"messageId"
+          ) { (topic, messageMap, messageId) =>
             implicit val sns = mock[StreamingSNSClient]("sns")
 
-            (sns.publisher _)
+            (() => sns.publisher)
               .expects()
               .returningFlow(PublishRequest(topic.arn, messageMap), messageId)
 
-            val result = topic.publish(messageMap).futureValue
+            val result = topic.publish(messageMap).futureValue()
             result shouldBe messageId
           }
         }
 
         "using the message and a subject" in {
           forAll(
-            arbitrary[Topic] → "topic",
-            SnsGen.messageMap → "messageMap",
-            UtilGen.nonEmptyString → "subject",
-            SnsGen.messageId → "messageId"
-          ) { (topic, messageMap, subject, messageId) ⇒
+            arbitrary[Topic] ->"topic",
+            SnsGen.messageMap ->"messageMap",
+            UtilGen.nonEmptyString ->"subject",
+            SnsGen.messageId ->"messageId"
+          ) { (topic, messageMap, subject, messageId) =>
             implicit val sns = mock[StreamingSNSClient]("sns")
 
-            (sns.publisher _)
+            (() => sns.publisher)
               .expects()
               .returningFlow(PublishRequest(topic.arn, messageMap, subject), messageId)
 
-            val result = topic.publish(messageMap, subject).futureValue
+            val result = topic.publish(messageMap, subject).futureValue()
             result shouldBe messageId
           }
         }
 
         "using the message and some attributes" in {
           forAll(
-            arbitrary[Topic] → "topic",
-            SnsGen.messageMap → "messageMap",
-            arbitrary[Map[String,MessageAttributeValue]] → "attributes",
-            SnsGen.messageId → "messageId"
-          ) { (topic, messageMap, attributes, messageId) ⇒
+            arbitrary[Topic] ->"topic",
+            SnsGen.messageMap ->"messageMap",
+            arbitrary[Map[String,MessageAttributeValue]] ->"attributes",
+            SnsGen.messageId ->"messageId"
+          ) { (topic, messageMap, attributes, messageId) =>
             implicit val sns = mock[StreamingSNSClient]("sns")
 
-            (sns.publisher _)
+            (() => sns.publisher)
               .expects()
               .returningFlow(PublishRequest(topic.arn, messageMap, attributes), messageId)
 
-            val result = topic.publish(messageMap, attributes).futureValue
+            val result = topic.publish(messageMap, attributes).futureValue()
             result shouldBe messageId
           }
         }
 
         "using the message, a subject, and some attributes" in {
           forAll(
-            arbitrary[Topic] → "topic",
-            SnsGen.messageMap → "messageMap",
-            UtilGen.nonEmptyString → "subject",
-            arbitrary[Map[String,MessageAttributeValue]] → "attributes",
-            SnsGen.messageId → "messageId"
-          ) { (topic, messageMap, subject, attributes, messageId) ⇒
+            arbitrary[Topic] ->"topic",
+            SnsGen.messageMap ->"messageMap",
+            UtilGen.nonEmptyString ->"subject",
+            arbitrary[Map[String,MessageAttributeValue]] ->"attributes",
+            SnsGen.messageId ->"messageId"
+          ) { (topic, messageMap, subject, attributes, messageId) =>
             implicit val sns = mock[StreamingSNSClient]("sns")
 
-            (sns.publisher _)
+            (() => sns.publisher)
               .expects()
               .returningFlow(PublishRequest(topic.arn, messageMap, subject, attributes), messageId)
 
-            val result = topic.publish(messageMap, subject, attributes).futureValue
+            val result = topic.publish(messageMap, subject, attributes).futureValue()
             result shouldBe messageId
           }
         }
@@ -427,13 +428,13 @@ class TopicSpec extends AnyFreeSpec with MockFactory with Materialised with Flow
   implicit val arbTopicWithSubscription: Arbitrary[(Topic, Subscription)] =
     Arbitrary {
       for {
-        topic ← arbitrary[Topic]
-        subscriptionId ← SnsGen.subscriptionId
-        endpoint ← arbitrary[SubscriptionEndpoint]
-        confirmationWasAuthenticated ← arbitrary[Boolean]
-        rawMessageDelivery ← arbitrary[Boolean]
-        deliveryPolicy ← arbitrary[Option[SubscriptionDeliveryPolicy]]
-        effectiveDeliveryPolicy ← arbitrary[Option[SubscriptionDeliveryPolicy]]
+        topic <- arbitrary[Topic]
+        subscriptionId <- SnsGen.subscriptionId
+        endpoint <- arbitrary[SubscriptionEndpoint]
+        confirmationWasAuthenticated <- arbitrary[Boolean]
+        rawMessageDelivery <- arbitrary[Boolean]
+        deliveryPolicy <- arbitrary[Option[SubscriptionDeliveryPolicy]]
+        effectiveDeliveryPolicy <- arbitrary[Option[SubscriptionDeliveryPolicy]]
       } yield {
         val topicArn = TopicArn.fromArnString(topic.arn)
         val arn = SubscriptionArn(topicArn.account, topicArn.region, topic.name, subscriptionId)
@@ -446,20 +447,20 @@ class TopicSpec extends AnyFreeSpec with MockFactory with Materialised with Flow
   implicit val arbTopicWithSummaries: Arbitrary[(Topic, List[SubscriptionSummary])] =
     Arbitrary {
       for {
-        topic ← arbitrary[Topic]
-        summaries ← UtilGen.nonEmptyListOfSqrtN( subscriptionSummaryForTopic(topic))
+        topic <- arbitrary[Topic]
+        summaries <- UtilGen.nonEmptyListOfSqrtN( subscriptionSummaryForTopic(topic))
       } yield (topic, summaries)
     }
 
   def subscriptionSummaryForTopic(topic: Topic): Gen[SubscriptionSummary] = {
     val pendingSubscription =
       for {
-        endpoint ← arbitrary[SubscriptionEndpoint]
+        endpoint <- arbitrary[SubscriptionEndpoint]
       } yield SubscriptionSummary(None, topic.arn, endpoint, topic.owner)
     val confirmedSubscription =
       for {
-        subscriptionId ← SnsGen.subscriptionId
-        endpoint ← arbitrary[SubscriptionEndpoint]
+        subscriptionId <- SnsGen.subscriptionId
+        endpoint <- arbitrary[SubscriptionEndpoint]
       } yield {
         val topicArn = TopicArn.fromArnString(topic.arn)
         val subscriptionArn = SubscriptionArn(topicArn.account, topicArn.region, topicArn.name, subscriptionId)
@@ -467,8 +468,8 @@ class TopicSpec extends AnyFreeSpec with MockFactory with Materialised with Flow
       }
 
     Gen.frequency(
-      9 → confirmedSubscription,
-      1 → pendingSubscription
+      9 ->confirmedSubscription,
+      1 ->pendingSubscription
     )
   }
 }

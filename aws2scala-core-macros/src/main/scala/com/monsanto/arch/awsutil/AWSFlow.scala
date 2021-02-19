@@ -74,8 +74,8 @@ object AWSFlow {
       (val flow: Flow[Request,Either[AmazonClientException,Result],NotUsed]) extends AnyVal {
     def toResult: Flow[Request,Result,NotUsed] =
       flow.map {
-        case Left(exception) ⇒ throw exception
-        case Right(result) ⇒ result
+        case Left(exception) => throw exception
+        case Right(result) => result
       }
   }
 }

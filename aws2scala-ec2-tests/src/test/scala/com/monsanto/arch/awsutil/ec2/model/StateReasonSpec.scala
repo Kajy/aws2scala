@@ -9,7 +9,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 class StateReasonSpec extends AnyFreeSpec {
   "an StateReason should" - {
     "be constructible from its AWS equivalent" in {
-      forAll { stateReason: StateReason ⇒
+      forAll { stateReason: StateReason =>
         StateReason.fromAws(stateReason.toAws) shouldBe stateReason
       }
     }

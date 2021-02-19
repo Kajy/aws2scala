@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.kms.model
 
-import com.amazonaws.services.kms.{model ⇒ aws}
+import com.amazonaws.services.kms.{model => aws}
 import com.monsanto.arch.awsutil.converters.KmsConverters._
 import com.monsanto.arch.awsutil.test_support.AwsEnumerationBehaviours
 import org.scalatest.freespec.AnyFreeSpec
@@ -12,13 +12,13 @@ class KeyStateSpec extends AnyFreeSpec with AwsEnumerationBehaviours {
     val keyStates = Table("key state", KeyState.values: _*)
 
     "have an ID that matches AWS string enumeration name" in {
-      forAll(keyStates) { keyState ⇒
+      forAll(keyStates) { keyState =>
         keyState.name shouldBe keyState.asAws.name()
       }
     }
 
     "be buildable from an identifier string" in {
-      forAll(keyStates) { keyState ⇒
+      forAll(keyStates) { keyState =>
         KeyState.fromName(keyState.name) shouldBe keyState
       }
     }

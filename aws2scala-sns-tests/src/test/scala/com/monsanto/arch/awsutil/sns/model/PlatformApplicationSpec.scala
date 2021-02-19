@@ -23,17 +23,17 @@ class PlatformApplicationSpec extends AnyFreeSpec with MockFactory with Material
     "build an object from an ARN" in {
       val args =
         for {
-          arn ← arbitrary[PlatformApplicationArn]
-          attrs ← SnsGen.platformApplicationAttributes(arn)
+          arn <- arbitrary[PlatformApplicationArn]
+          attrs <- SnsGen.platformApplicationAttributes(arn)
         } yield (arn, attrs)
-      forAll(args) { case (arn, attributes) ⇒
+      forAll(args) { case (arn, attributes) =>
         implicit val sns = mock[StreamingSNSClient]("sns")
 
-        (sns.platformApplicationAttributesGetter _)
+        (() => sns.platformApplicationAttributesGetter)
           .expects()
           .returningFlow(arn.arnString, attributes)
 
-        val result = PlatformApplication(arn.arnString).futureValue
+        val result = PlatformApplication(arn.arnString).futureValue()
 
         result shouldBe PlatformApplication(arn.arnString, attributes)
       }
@@ -43,19 +43,19 @@ class PlatformApplicationSpec extends AnyFreeSpec with MockFactory with Material
   "a PlatformApplication instance" - {
     "can get its" - {
       val arn = arbitrarySample[PlatformApplicationArn].arnString
-      val baseMap = Map("Enabled" → "true")
+      val baseMap = Map("Enabled" ->"true")
 
       "Enabled attribute" in {
-        forAll { enabled: Boolean ⇒
-          val application = PlatformApplication(arn, Map("Enabled" → enabled.toString))
+        forAll { enabled: Boolean =>
+          val application = PlatformApplication(arn, Map("Enabled" ->enabled.toString))
 
           application.enabled shouldBe enabled
         }
       }
 
       "EventEndpointCreated attribute" in {
-        forAll { topicArn: Option[TopicArn] ⇒
-          val attrs = topicArn.map(t ⇒ baseMap + ("EventEndpointCreated" → t.arnString)).getOrElse(baseMap)
+        forAll { topicArn: Option[TopicArn] =>
+          val attrs = topicArn.map(t => baseMap + ("EventEndpointCreated" ->t.arnString)).getOrElse(baseMap)
           val application = PlatformApplication(arn, attrs)
 
           application.eventEndpointCreated shouldBe topicArn.map(_.arnString)
@@ -63,8 +63,8 @@ class PlatformApplicationSpec extends AnyFreeSpec with MockFactory with Material
       }
 
       "EventEndpointDeleted attribute" in {
-        forAll { topicArn: Option[TopicArn] ⇒
-          val attrs = topicArn.map(t ⇒ baseMap + ("EventEndpointDeleted" → t.arnString)).getOrElse(baseMap)
+        forAll { topicArn: Option[TopicArn] =>
+          val attrs = topicArn.map(t => baseMap + ("EventEndpointDeleted" ->t.arnString)).getOrElse(baseMap)
           val application = PlatformApplication(arn, attrs)
 
           application.eventEndpointDeleted shouldBe topicArn.map(_.arnString)
@@ -72,8 +72,8 @@ class PlatformApplicationSpec extends AnyFreeSpec with MockFactory with Material
       }
 
       "EventEndpointUpdated attribute" in {
-        forAll { topicArn: Option[TopicArn] ⇒
-          val attrs = topicArn.map(t ⇒ baseMap + ("EventEndpointUpdated" → t.arnString)).getOrElse(baseMap)
+        forAll { topicArn: Option[TopicArn] =>
+          val attrs = topicArn.map(t => baseMap + ("EventEndpointUpdated" ->t.arnString)).getOrElse(baseMap)
           val application = PlatformApplication(arn, attrs)
 
           application.eventEndpointUpdated shouldBe topicArn.map(_.arnString)
@@ -81,8 +81,8 @@ class PlatformApplicationSpec extends AnyFreeSpec with MockFactory with Material
       }
 
       "EventDeliveryFailure attribute" in {
-        forAll { topicArn: Option[TopicArn] ⇒
-          val attrs = topicArn.map(t ⇒ baseMap + ("EventDeliveryFailure" → t.arnString)).getOrElse(baseMap)
+        forAll { topicArn: Option[TopicArn] =>
+          val attrs = topicArn.map(t => baseMap + ("EventDeliveryFailure" ->t.arnString)).getOrElse(baseMap)
           val application = PlatformApplication(arn, attrs)
 
           application.eventDeliveryFailure shouldBe topicArn.map(_.arnString)
@@ -91,8 +91,8 @@ class PlatformApplicationSpec extends AnyFreeSpec with MockFactory with Material
 
       "SuccessFeedbackRoleArn attribute" - {
         "when possibly missing" in {
-          forAll { roleArn: Option[RoleArn] ⇒
-            val attrs = roleArn.map(t ⇒ baseMap + ("SuccessFeedbackRoleArn" → t.arnString)).getOrElse(baseMap)
+          forAll { roleArn: Option[RoleArn] =>
+            val attrs = roleArn.map(t => baseMap + ("SuccessFeedbackRoleArn" ->t.arnString)).getOrElse(baseMap)
             val application = PlatformApplication(arn, attrs)
 
             application.successFeedbackRoleArn shouldBe roleArn.map(_.arnString)
@@ -100,8 +100,8 @@ class PlatformApplicationSpec extends AnyFreeSpec with MockFactory with Material
         }
 
         "when possibly empty" in {
-          forAll { roleArn: Option[RoleArn] ⇒
-            val attrs = baseMap + ("SuccessFeedbackRoleArn" → roleArn.map(_.arnString).getOrElse(""))
+          forAll { roleArn: Option[RoleArn] =>
+            val attrs = baseMap + ("SuccessFeedbackRoleArn" ->roleArn.map(_.arnString).getOrElse(""))
             val application = PlatformApplication(arn, attrs)
 
             application.successFeedbackRoleArn shouldBe roleArn.map(_.arnString)
@@ -111,8 +111,8 @@ class PlatformApplicationSpec extends AnyFreeSpec with MockFactory with Material
 
       "FailureFeedbackRoleArn attribute" - {
         "when possibly missing" in {
-          forAll { roleArn: Option[RoleArn] ⇒
-            val attrs = roleArn.map(t ⇒ baseMap + ("FailureFeedbackRoleArn" → t.arnString)).getOrElse(baseMap)
+          forAll { roleArn: Option[RoleArn] =>
+            val attrs = roleArn.map(t => baseMap + ("FailureFeedbackRoleArn" ->t.arnString)).getOrElse(baseMap)
             val application = PlatformApplication(arn, attrs)
 
             application.failureFeedbackRoleArn shouldBe roleArn.map(_.arnString)
@@ -120,8 +120,8 @@ class PlatformApplicationSpec extends AnyFreeSpec with MockFactory with Material
         }
 
         "when possibly empty" in {
-          forAll { roleArn: Option[RoleArn] ⇒
-            val attrs = baseMap + ("FailureFeedbackRoleArn" → roleArn.map(_.arnString).getOrElse(""))
+          forAll { roleArn: Option[RoleArn] =>
+            val attrs = baseMap + ("FailureFeedbackRoleArn" ->roleArn.map(_.arnString).getOrElse(""))
             val application = PlatformApplication(arn, attrs)
 
             application.failureFeedbackRoleArn shouldBe roleArn.map(_.arnString)
@@ -131,8 +131,8 @@ class PlatformApplicationSpec extends AnyFreeSpec with MockFactory with Material
 
       "SuccessFeedbackSampleRate attribute" in {
         val sampleRateGen: Gen[Option[Int]] = Gen.option(Gen.choose(0, 100))
-        forAll(sampleRateGen) { sampleRate ⇒
-          val attrs = sampleRate.map(r ⇒ baseMap + ("SuccessFeedbackSampleRate" → r.toString)).getOrElse(baseMap)
+        forAll(sampleRateGen) { sampleRate =>
+          val attrs = sampleRate.map(r => baseMap + ("SuccessFeedbackSampleRate" ->r.toString)).getOrElse(baseMap)
           val application = PlatformApplication(arn, attrs)
 
           application.successFeedbackSampleRate shouldBe sampleRate
@@ -140,7 +140,7 @@ class PlatformApplicationSpec extends AnyFreeSpec with MockFactory with Material
       }
 
       "name from the ARN" in {
-        forAll { arn: PlatformApplicationArn ⇒
+        forAll { arn: PlatformApplicationArn =>
           val application = PlatformApplication(arn.arnString, baseMap)
 
           application.name shouldBe arn.name
@@ -148,7 +148,7 @@ class PlatformApplicationSpec extends AnyFreeSpec with MockFactory with Material
       }
 
       "platform from the ARN" in {
-        forAll { arn: PlatformApplicationArn ⇒
+        forAll { arn: PlatformApplicationArn =>
           val application = PlatformApplication(arn.arnString, baseMap)
 
           application.platform shouldBe arn.platform
@@ -159,147 +159,147 @@ class PlatformApplicationSpec extends AnyFreeSpec with MockFactory with Material
     "provides a refresh method" in {
       val args =
         for {
-          app ← arbitrary[PlatformApplication]
-          attrs ← SnsGen.platformApplicationAttributes(PlatformApplicationArn.fromArnString(app.arn))
+          app <- arbitrary[PlatformApplication]
+          attrs <- SnsGen.platformApplicationAttributes(PlatformApplicationArn.fromArnString(app.arn))
         } yield (app, attrs)
-      forAll(args) { case (platformApplication, newAttributes) ⇒
+      forAll(args) { case (platformApplication, newAttributes) =>
         implicit val sns = mock[StreamingSNSClient]("sns")
 
-        (sns.platformApplicationAttributesGetter _)
+        (() => sns.platformApplicationAttributesGetter)
           .expects()
           .returningFlow(platformApplication.arn, newAttributes)
 
-        val result = platformApplication.refresh().futureValue
+        val result = platformApplication.refresh().futureValue()
         result shouldBe PlatformApplication(platformApplication.arn, newAttributes)
       }
     }
 
     "can update its" - {
       "enabled attribute" in {
-        forAll { (application: PlatformApplication, enabled: Boolean) ⇒
+        forAll { (application: PlatformApplication, enabled: Boolean) =>
           implicit val sns = mock[StreamingSNSClient]("sns")
 
-          (sns.platformApplicationAttributesSetter _)
+          (() => sns.platformApplicationAttributesSetter)
             .expects()
             .returningFlow(
               SetPlatformApplicationAttributesRequest(application.arn, "Enabled", enabled.toString),
               application.arn)
 
-          val result = application.setEnabled(enabled).futureValue
+          val result = application.setEnabled(enabled).futureValue()
           result shouldBe Done
         }
       }
 
       "endpoint created topic" in {
-        forAll { (application: PlatformApplication, maybeTopicArnObj: Option[TopicArn]) ⇒
+        forAll { (application: PlatformApplication, maybeTopicArnObj: Option[TopicArn]) =>
           val maybeTopicArn = maybeTopicArnObj.map(_.arnString)
           implicit val sns = mock[StreamingSNSClient]("sns")
 
-          (sns.platformApplicationAttributesSetter _)
+          (() => sns.platformApplicationAttributesSetter)
             .expects()
             .returningFlow(
               SetPlatformApplicationAttributesRequest(application.arn, "EventEndpointCreated", maybeTopicArn),
               application.arn)
 
-          val result = application.setEventEndpointCreated(maybeTopicArn).futureValue
+          val result = application.setEventEndpointCreated(maybeTopicArn).futureValue()
           result shouldBe Done
         }
       }
 
       "endpoint deleted topic" in {
-        forAll { (application: PlatformApplication, maybeTopicArnObj: Option[TopicArn]) ⇒
+        forAll { (application: PlatformApplication, maybeTopicArnObj: Option[TopicArn]) =>
           val maybeTopicArn = maybeTopicArnObj.map(_.arnString)
           implicit val sns = mock[StreamingSNSClient]("sns")
 
-          (sns.platformApplicationAttributesSetter _)
+          (() => sns.platformApplicationAttributesSetter)
             .expects()
             .returningFlow(
               SetPlatformApplicationAttributesRequest(application.arn, "EventEndpointDeleted", maybeTopicArn),
               application.arn)
 
-          val result = application.setEventEndpointDeleted(maybeTopicArn).futureValue
+          val result = application.setEventEndpointDeleted(maybeTopicArn).futureValue()
           result shouldBe Done
         }
       }
 
       "endpoint updated topic" in {
-        forAll { (application: PlatformApplication, maybeTopicArnObj: Option[TopicArn]) ⇒
+        forAll { (application: PlatformApplication, maybeTopicArnObj: Option[TopicArn]) =>
           val maybeTopicArn = maybeTopicArnObj.map(_.arnString)
           implicit val sns = mock[StreamingSNSClient]("sns")
 
-          (sns.platformApplicationAttributesSetter _)
+          (() => sns.platformApplicationAttributesSetter)
             .expects()
             .returningFlow(
               SetPlatformApplicationAttributesRequest(application.arn, "EventEndpointUpdated", maybeTopicArn),
               application.arn)
 
-          val result = application.setEventEndpointUpdated(maybeTopicArn).futureValue
+          val result = application.setEventEndpointUpdated(maybeTopicArn).futureValue()
           result shouldBe Done
         }
       }
 
       "delivery failure topic" in {
-        forAll { (application: PlatformApplication, maybeTopicArnObj: Option[TopicArn]) ⇒
+        forAll { (application: PlatformApplication, maybeTopicArnObj: Option[TopicArn]) =>
           val maybeTopicArn = maybeTopicArnObj.map(_.arnString)
           implicit val sns = mock[StreamingSNSClient]("sns")
 
-          (sns.platformApplicationAttributesSetter _)
+          (() => sns.platformApplicationAttributesSetter)
             .expects()
             .returningFlow(
               SetPlatformApplicationAttributesRequest(application.arn, "EventDeliveryFailure", maybeTopicArn),
               application.arn)
 
-          val result = application.setEventDeliveryFailure(maybeTopicArn).futureValue
+          val result = application.setEventDeliveryFailure(maybeTopicArn).futureValue()
           result shouldBe Done
         }
       }
 
       "success feedback role" in {
-        forAll { (application: PlatformApplication, maybeRoleArnObj: Option[RoleArn]) ⇒
+        forAll { (application: PlatformApplication, maybeRoleArnObj: Option[RoleArn]) =>
           val maybeRoleArn = maybeRoleArnObj.map(_.arnString)
           implicit val sns = mock[StreamingSNSClient]("sns")
 
-          (sns.platformApplicationAttributesSetter _)
+          (() => sns.platformApplicationAttributesSetter)
             .expects()
             .returningFlow(
               SetPlatformApplicationAttributesRequest(application.arn, "SuccessFeedbackRoleArn", maybeRoleArn),
               application.arn)
 
-          val result = application.setSuccessFeedbackRoleArn(maybeRoleArn).futureValue
+          val result = application.setSuccessFeedbackRoleArn(maybeRoleArn).futureValue()
           result shouldBe Done
         }
       }
 
       "failure feedback role" in {
-        forAll { (application: PlatformApplication, maybeRoleArnObj: Option[RoleArn]) ⇒
+        forAll { (application: PlatformApplication, maybeRoleArnObj: Option[RoleArn]) =>
           val maybeRoleArn = maybeRoleArnObj.map(_.arnString)
           implicit val sns = mock[StreamingSNSClient]("sns")
 
-          (sns.platformApplicationAttributesSetter _)
+          (() => sns.platformApplicationAttributesSetter)
             .expects()
             .returningFlow(
               SetPlatformApplicationAttributesRequest(application.arn, "FailureFeedbackRoleArn", maybeRoleArn),
               application.arn)
 
-          val result = application.setFailureFeedbackRoleArn(maybeRoleArn).futureValue
+          val result = application.setFailureFeedbackRoleArn(maybeRoleArn).futureValue()
           result shouldBe Done
         }
       }
 
       "success feedback sample rate" in {
         forAll(
-          arbitrary[PlatformApplication] → "application",
-          Gen.choose(0, 100) → "sampleRate"
-        ) { (application, sampleRate) ⇒
+          arbitrary[PlatformApplication] ->"application",
+          Gen.choose(0, 100) ->"sampleRate"
+        ) { (application, sampleRate) =>
           implicit val sns = mock[StreamingSNSClient]("sns")
 
-          (sns.platformApplicationAttributesSetter _)
+          (() => sns.platformApplicationAttributesSetter)
             .expects()
             .returningFlow(
               SetPlatformApplicationAttributesRequest(application.arn, "SuccessFeedbackSampleRate", sampleRate.toString),
               application.arn)
 
-          val result = application.setSuccessFeedbackSampleRate(sampleRate).futureValue
+          val result = application.setSuccessFeedbackSampleRate(sampleRate).futureValue()
           result shouldBe Done
         }
       }
@@ -308,23 +308,23 @@ class PlatformApplicationSpec extends AnyFreeSpec with MockFactory with Material
         "when the platform matches" in {
           val argsGen =
             for {
-              application ← arbitrary[PlatformApplication]
-              credentials ← SnsGen.platformApplicationCredentials(application.platform)
+              application <- arbitrary[PlatformApplication]
+              credentials <- SnsGen.platformApplicationCredentials(application.platform)
             } yield (application, credentials)
 
-          forAll(argsGen) { args ⇒
+          forAll(argsGen) { args =>
             val (application, credentials @ PlatformApplicationCredentials(_, principal, credential)) = args
             implicit val sns = mock[StreamingSNSClient]("sns")
 
-            (sns.platformApplicationAttributesSetter _)
+            (() => sns.platformApplicationAttributesSetter)
               .expects()
               .returningFlow(
                 SetPlatformApplicationAttributesRequest(
                   application.arn,
-                  Map("PlatformPrincipal" → principal, "PlatformCredential" → credential)),
+                  Map("PlatformPrincipal" ->principal, "PlatformCredential" ->credential)),
                 application.arn)
 
-            val result = application.setCredentials(credentials).futureValue
+            val result = application.setCredentials(credentials).futureValue()
             result shouldBe Done
           }
         }
@@ -332,11 +332,11 @@ class PlatformApplicationSpec extends AnyFreeSpec with MockFactory with Material
         "but not when the platform differs" in {
           val argsGen =
             for {
-              application ← arbitrary[PlatformApplication]
-              credentials ← arbitrary[PlatformApplicationCredentials].suchThat(_.platform != application.platform)
+              application <- arbitrary[PlatformApplication]
+              credentials <- arbitrary[PlatformApplicationCredentials].suchThat(_.platform != application.platform)
             } yield (application, credentials)
 
-          forAll(argsGen) { args ⇒
+          forAll(argsGen) { args =>
             val (application, credentials) = args
             implicit val sns = mock[StreamingSNSClient]("sns")
 
@@ -347,14 +347,14 @@ class PlatformApplicationSpec extends AnyFreeSpec with MockFactory with Material
     }
 
     "can delete itself" in {
-      forAll { application: PlatformApplication ⇒
+      forAll { application: PlatformApplication =>
         implicit val sns = mock[StreamingSNSClient]("sns")
 
-        (sns.platformApplicationDeleter _)
+        (() => sns.platformApplicationDeleter)
           .expects()
           .returningFlow(application.arn, application.arn)
 
-        val result = application.delete().futureValue
+        val result = application.delete().futureValue()
         result shouldBe Done
       }
     }
@@ -362,90 +362,90 @@ class PlatformApplicationSpec extends AnyFreeSpec with MockFactory with Material
     "create endpoints" - {
       val appAndEndpoint =
         for {
-          application ← arbitrary[PlatformApplication]
-          endpoint ← endpointForPlatformApplication(application)
+          application <- arbitrary[PlatformApplication]
+          endpoint <- endpointForPlatformApplication(application)
         } yield (application, endpoint)
       val token = UtilGen.nonEmptyString
       val customUserData = arbitrary[String]
       val attributes = SnsGen.platformEndpointAttributes
 
       "using only a token" in {
-        forAll(appAndEndpoint → "appAndEndpoint", token → "token") { (appAndEndpoint, token) ⇒
+        forAll(appAndEndpoint ->"appAndEndpoint", token ->"token") { (appAndEndpoint, token) =>
           val (application, endpoint) = appAndEndpoint
           implicit val sns = mock[StreamingSNSClient]("sns")
 
-          (sns.platformEndpointCreator _)
+          (() => sns.platformEndpointCreator)
             .expects()
             .returningFlow(CreatePlatformEndpointRequest(application.arn, token), endpoint.arn)
-          (sns.platformEndpointAttributesGetter _)
+          (() => sns.platformEndpointAttributesGetter)
             .expects()
             .returningFlow(endpoint.arn, endpoint.attributes)
 
-          val result = application.createEndpoint(token).futureValue
+          val result = application.createEndpoint(token).futureValue()
           result shouldBe endpoint
         }
       }
 
       "using a token and custom user data" in {
         forAll(
-          appAndEndpoint → "appAndEndpoint",
-          token → "token",
-          customUserData → "customUserData"
-        ) { (appAndEndpoint, token, customUserData) ⇒
+          appAndEndpoint ->"appAndEndpoint",
+          token ->"token",
+          customUserData ->"customUserData"
+        ) { (appAndEndpoint, token, customUserData) =>
           val (application, endpoint) = appAndEndpoint
           implicit val sns = mock[StreamingSNSClient]("sns")
 
-          (sns.platformEndpointCreator _)
+          (() => sns.platformEndpointCreator)
             .expects()
             .returningFlow(CreatePlatformEndpointRequest(application.arn, token, customUserData), endpoint.arn)
-          (sns.platformEndpointAttributesGetter _)
+          (() => sns.platformEndpointAttributesGetter)
             .expects()
             .returningFlow(endpoint.arn, endpoint.attributes)
 
-          val result = application.createEndpoint(token, customUserData).futureValue
+          val result = application.createEndpoint(token, customUserData).futureValue()
           result shouldBe endpoint
         }
       }
 
       "using a token and attributes" in {
         forAll(
-          appAndEndpoint → "appAndEndpoint",
-          token → "token",
-          attributes → "attributes"
-        ) { (appAndEndpoint, token, attributes) ⇒
+          appAndEndpoint ->"appAndEndpoint",
+          token ->"token",
+          attributes ->"attributes"
+        ) { (appAndEndpoint, token, attributes) =>
           val (application, endpoint) = appAndEndpoint
           implicit val sns = mock[StreamingSNSClient]("sns")
 
-          (sns.platformEndpointCreator _)
+          (() => sns.platformEndpointCreator)
             .expects()
             .returningFlow(CreatePlatformEndpointRequest(application.arn, token, attributes), endpoint.arn)
-          (sns.platformEndpointAttributesGetter _)
+          (() => sns.platformEndpointAttributesGetter)
             .expects()
             .returningFlow(endpoint.arn, endpoint.attributes)
 
-          val result = application.createEndpoint(token, attributes).futureValue
+          val result = application.createEndpoint(token, attributes).futureValue()
           result shouldBe endpoint
         }
       }
 
       "using a token, attributes, and custom user data" in {
         forAll(
-          appAndEndpoint → "appAndEndpoint",
-          token → "token",
-          customUserData → "customUserData",
-          attributes → "attributes"
-        ) { (appAndEndpoint, token, customUserData, attributes) ⇒
+          appAndEndpoint ->"appAndEndpoint",
+          token ->"token",
+          customUserData ->"customUserData",
+          attributes ->"attributes"
+        ) { (appAndEndpoint, token, customUserData, attributes) =>
           val (application, endpoint) = appAndEndpoint
           implicit val sns = mock[StreamingSNSClient]("sns")
 
-          (sns.platformEndpointCreator _)
+          (() => sns.platformEndpointCreator)
             .expects()
             .returningFlow(CreatePlatformEndpointRequest(application.arn, token, customUserData, attributes), endpoint.arn)
-          (sns.platformEndpointAttributesGetter _)
+          (() => sns.platformEndpointAttributesGetter)
             .expects()
             .returningFlow(endpoint.arn, endpoint.attributes)
 
-          val result = application.createEndpoint(token, customUserData, attributes).futureValue
+          val result = application.createEndpoint(token, customUserData, attributes).futureValue()
           result shouldBe endpoint
         }
       }
@@ -454,17 +454,17 @@ class PlatformApplicationSpec extends AnyFreeSpec with MockFactory with Material
     "list its endpoints" in {
       val argsGen =
         for {
-          application ← arbitrary[PlatformApplication]
-          endpoints ← Gen.listOf(endpointForPlatformApplication(application))
+          application <- arbitrary[PlatformApplication]
+          endpoints <- Gen.listOf(endpointForPlatformApplication(application))
         } yield (application, endpoints)
-      forAll(argsGen) { case (application, endpoints) ⇒
+      forAll(argsGen) { case (application, endpoints) =>
         implicit val sns = mock[StreamingSNSClient]("sns")
 
-        (sns.platformEndpointLister _)
+        (() => sns.platformEndpointLister)
           .expects()
           .returningConcatFlow(application.arn, endpoints)
 
-        val result = application.listEndpoints().futureValue
+        val result = application.listEndpoints().futureValue()
         result shouldBe endpoints
       }
     }
@@ -473,8 +473,8 @@ class PlatformApplicationSpec extends AnyFreeSpec with MockFactory with Material
   private def endpointForPlatformApplication(application: PlatformApplication): Gen[PlatformEndpoint] = {
     val appArn = PlatformApplicationArn.fromArnString(application.arn)
     for {
-      endpointId ← SnsGen.endpointId
-      attributes ← SnsGen.platformEndpointAttributes
+      endpointId <- SnsGen.endpointId
+      attributes <- SnsGen.platformEndpointAttributes
     } yield {
       val endpointArn = PlatformEndpointArn(appArn.account, appArn.region, appArn.platform, appArn.name, endpointId)
       PlatformEndpoint(endpointArn.arnString, attributes)

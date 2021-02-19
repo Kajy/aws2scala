@@ -21,155 +21,155 @@ class DefaultAsyncIdentityManagementClientSpec extends AnyFreeSpec with MockFact
     "create roles" - {
       "without paths" in {
         forAll(
-          CoreGen.iamName → "roleName",
-          IamGen.assumeRolePolicy → "policy"
-        ) { (roleName, policy) ⇒
+          CoreGen.iamName ->"roleName",
+          IamGen.assumeRolePolicy ->"policy"
+        ) { (roleName, policy) =>
           val streaming = mock[StreamingIdentityManagementClient]("streaming")
           val async = new DefaultAsyncIdentityManagementClient(streaming)
 
           val role = IamGen.role(roleName, policy).reallySample
 
-          (streaming.roleCreator _)
+          (() => streaming.roleCreator)
             .expects()
             .returningFlow(CreateRoleRequest(roleName, policy, None), role)
 
-          val result = async.createRole(roleName, policy).futureValue
+          val result = async.createRole(roleName, policy).futureValue()
           result shouldBe role
         }
       }
 
       "with paths" in {
         forAll(
-          CoreGen.iamName → "roleName",
-          IamGen.assumeRolePolicy → "policy",
-          arbitrary[Path] → "path"
-        ) { (roleName, policy, path) ⇒
+          CoreGen.iamName ->"roleName",
+          IamGen.assumeRolePolicy ->"policy",
+          arbitrary[Path] ->"path"
+        ) { (roleName, policy, path) =>
           val streaming = mock[StreamingIdentityManagementClient]("streaming")
           val async = new DefaultAsyncIdentityManagementClient(streaming)
 
           val role = IamGen.role(roleName, policy, path).reallySample
 
-          (streaming.roleCreator _)
+          (() => streaming.roleCreator)
             .expects()
             .returningFlow(CreateRoleRequest(roleName, policy, Some(path)), role)
 
-          val result = async.createRole(roleName, policy, path).futureValue
+          val result = async.createRole(roleName, policy, path).futureValue()
           result shouldBe role
         }
       }
     }
 
     "delete roles" in {
-      forAll(CoreGen.iamName → "roleName") { roleName ⇒
+      forAll(CoreGen.iamName ->"roleName") { roleName =>
         val streaming = mock[StreamingIdentityManagementClient]("streaming")
         val async = new DefaultAsyncIdentityManagementClient(streaming)
 
-        (streaming.roleDeleter _)
+        (() => streaming.roleDeleter)
           .expects()
           .returningFlow(roleName, roleName)
 
-        val result = async.deleteRole(roleName).futureValue
+        val result = async.deleteRole(roleName).futureValue()
         result shouldBe Done
       }
     }
 
     "list all roles" in {
-      forAll(SizeRange(50)) { roles: List[Role] ⇒
+      forAll(SizeRange(50)) { roles: List[Role] =>
         val streaming = mock[StreamingIdentityManagementClient]("streaming")
         val async = new DefaultAsyncIdentityManagementClient(streaming)
 
-        (streaming.roleLister _)
+        (() => streaming.roleLister)
           .expects()
           .returningConcatFlow(ListRolesRequest.allRoles, roles)
 
-        val result = async.listRoles().futureValue
+        val result = async.listRoles().futureValue()
         result shouldBe roles
       }
     }
 
     "list roles matching a prefix" in {
-      forAll { prefix: Path ⇒
+      forAll { prefix: Path =>
         val streaming = mock[StreamingIdentityManagementClient]("streaming")
         val async = new DefaultAsyncIdentityManagementClient(streaming)
 
         val roles = arbitrarySample[List[Role]](20)
 
-        (streaming.roleLister _)
+        (() => streaming.roleLister)
           .expects()
           .returningConcatFlow(ListRolesRequest.withPrefix(prefix), roles)
 
-        val result = async.listRoles(prefix).futureValue
+        val result = async.listRoles(prefix).futureValue()
         result shouldBe roles
       }
     }
 
     "attach managed policies to roles" in {
       forAll(
-        CoreGen.iamName → "roleName",
-        arbitrary[PolicyArn] → "policyArn"
-      ) { (roleName, policyArn) ⇒
+        CoreGen.iamName ->"roleName",
+        arbitrary[PolicyArn] ->"policyArn"
+      ) { (roleName, policyArn) =>
         val streaming = mock[StreamingIdentityManagementClient]("streaming")
         val async = new DefaultAsyncIdentityManagementClient(streaming)
 
-        (streaming.rolePolicyAttacher _)
+        (() => streaming.rolePolicyAttacher)
           .expects()
           .returningFlow(AttachRolePolicyRequest(roleName, policyArn), roleName)
 
-        val result = async.attachRolePolicy(roleName, policyArn).futureValue
+        val result = async.attachRolePolicy(roleName, policyArn).futureValue()
         result shouldBe Done
       }
     }
 
     "detach managed policies from roles" in {
       forAll(
-        CoreGen.iamName → "roleName",
-        arbitrary[PolicyArn] → "policyArn"
-      ) { (roleName, policyArn) ⇒
+        CoreGen.iamName ->"roleName",
+        arbitrary[PolicyArn] ->"policyArn"
+      ) { (roleName, policyArn) =>
         val streaming = mock[StreamingIdentityManagementClient]("streaming")
         val async = new DefaultAsyncIdentityManagementClient(streaming)
 
-        (streaming.rolePolicyDetacher _)
+        (() => streaming.rolePolicyDetacher)
           .expects()
           .returningFlow(DetachRolePolicyRequest(roleName, policyArn), roleName)
 
-        val result = async.detachRolePolicy(roleName, policyArn).futureValue
+        val result = async.detachRolePolicy(roleName, policyArn).futureValue()
         result shouldBe Done
       }
     }
 
     "list all of the managed policies attached to a role" in {
-      forAll(CoreGen.iamName → "roleName") { roleName ⇒
+      forAll(CoreGen.iamName ->"roleName") { roleName =>
         val streaming = mock[StreamingIdentityManagementClient]("streaming")
         val async = new DefaultAsyncIdentityManagementClient(streaming)
 
         val policies = Gen.resize(20, arbitrary[List[AttachedPolicy]]).reallySample
 
-        (streaming.attachedRolePolicyLister _)
+        (() => streaming.attachedRolePolicyLister)
           .expects()
           .returningConcatFlow(ListAttachedRolePoliciesRequest(roleName), policies)
 
-        val result = async.listAttachedRolePolicies(roleName).futureValue
+        val result = async.listAttachedRolePolicies(roleName).futureValue()
         result shouldBe policies
       }
     }
 
     "list the managed policies attached to a role that match a prefix" in {
       forAll(
-        CoreGen.iamName → "roleName",
-        arbitrary[Path] → "path"
-      ) { (roleName, pathPrefix) ⇒
+        CoreGen.iamName ->"roleName",
+        arbitrary[Path] ->"path"
+      ) { (roleName, pathPrefix) =>
         val streaming = mock[StreamingIdentityManagementClient]("streaming")
         val async = new DefaultAsyncIdentityManagementClient(streaming)
 
         val policies = Gen.resize(20, arbitrary[List[AttachedPolicy]]).reallySample
 
-        (streaming.attachedRolePolicyLister _)
+        (() => streaming.attachedRolePolicyLister)
           .expects()
           .returningConcatFlow(
             ListAttachedRolePoliciesRequest(roleName, pathPrefix),
             policies)
 
-        val result = async.listAttachedRolePolicies(roleName, pathPrefix).futureValue
+        val result = async.listAttachedRolePolicies(roleName, pathPrefix).futureValue()
         result shouldBe policies
       }
     }
@@ -179,27 +179,27 @@ class DefaultAsyncIdentityManagementClientSpec extends AnyFreeSpec with MockFact
       val async = new DefaultAsyncIdentityManagementClient(streaming)
       val user = arbitrarySample[User]
 
-      (streaming.userGetter _)
+      (() => streaming.userGetter)
         .expects()
         .returningFlow(GetUserRequest.currentUser, user)
 
-      val result = async.getCurrentUser().futureValue
+      val result = async.getCurrentUser().futureValue()
       result shouldBe user
     }
 
     "get a named user" in {
       forAll(
-        CoreGen.iamName → "name",
-        arbitrary[User] → "user"
-      ) { (name, user) ⇒
+        CoreGen.iamName ->"name",
+        arbitrary[User] ->"user"
+      ) { (name, user) =>
         val streaming = mock[StreamingIdentityManagementClient]("streaming")
         val async = new DefaultAsyncIdentityManagementClient(streaming)
 
-        (streaming.userGetter _)
+        (() => streaming.userGetter)
           .expects()
           .returningFlow(GetUserRequest.forUserName(name), user)
 
-        val result = async.getUser(name).futureValue
+        val result = async.getUser(name).futureValue()
         result shouldBe user
       }
     }
@@ -207,86 +207,86 @@ class DefaultAsyncIdentityManagementClientSpec extends AnyFreeSpec with MockFact
     "create new managed policies" - {
       "using a name and policy" in {
         forAll(
-          CoreGen.iamName → "name",
-          arbitrary[Policy] → "document",
-          arbitrary[ManagedPolicy] → "managedPolicy"
-        ) { (name, document, managedPolicy) ⇒
+          CoreGen.iamName ->"name",
+          arbitrary[Policy] ->"document",
+          arbitrary[ManagedPolicy] ->"managedPolicy"
+        ) { (name, document, managedPolicy) =>
           val streaming = mock[StreamingIdentityManagementClient]("streaming")
           val async = new DefaultAsyncIdentityManagementClient(streaming)
 
-          (streaming.policyCreator _)
+          (() => streaming.policyCreator)
             .expects()
             .returningFlow(CreatePolicyRequest(name, document, None, Path.empty), managedPolicy)
 
-          val result = async.createPolicy(name, document).futureValue
+          val result = async.createPolicy(name, document).futureValue()
           result shouldBe managedPolicy
         }
       }
 
       "using a name, policy, and description" in {
         forAll(
-          CoreGen.iamName → "name",
-          arbitrary[Policy] → "document",
-          arbitrary[String] → "description",
-          arbitrary[ManagedPolicy] → "managedPolicy"
-        ) { (name, document, description, managedPolicy) ⇒
+          CoreGen.iamName ->"name",
+          arbitrary[Policy] ->"document",
+          arbitrary[String] ->"description",
+          arbitrary[ManagedPolicy] ->"managedPolicy"
+        ) { (name, document, description, managedPolicy) =>
           val streaming = mock[StreamingIdentityManagementClient]("streaming")
           val async = new DefaultAsyncIdentityManagementClient(streaming)
 
-          (streaming.policyCreator _)
+          (() => streaming.policyCreator)
             .expects()
             .returningFlow(CreatePolicyRequest(name, document, Some(description), Path.empty), managedPolicy)
 
-          val result = async.createPolicy(name, document, description).futureValue
+          val result = async.createPolicy(name, document, description).futureValue()
           result shouldBe managedPolicy
         }
       }
 
       "using name, policy, description, and path" in {
         forAll(
-          CoreGen.iamName → "name",
-          arbitrary[Policy] → "document",
-          arbitrary[String] → "description",
-          arbitrary[Path] → "path",
-          arbitrary[ManagedPolicy] → "managedPolicy"
-        ) { (name, document, description, path, managedPolicy) ⇒
+          CoreGen.iamName ->"name",
+          arbitrary[Policy] ->"document",
+          arbitrary[String] ->"description",
+          arbitrary[Path] ->"path",
+          arbitrary[ManagedPolicy] ->"managedPolicy"
+        ) { (name, document, description, path, managedPolicy) =>
           val streaming = mock[StreamingIdentityManagementClient]("streaming")
           val async = new DefaultAsyncIdentityManagementClient(streaming)
 
-          (streaming.policyCreator _)
+          (() => streaming.policyCreator)
             .expects()
             .returningFlow(CreatePolicyRequest(name, document, Some(description), path), managedPolicy)
 
-          val result = async.createPolicy(name, document, description, path).futureValue
+          val result = async.createPolicy(name, document, description, path).futureValue()
           result shouldBe managedPolicy
         }
       }
     }
 
     "delete managed policies" in {
-      forAll { policyArn: PolicyArn ⇒
+      forAll { policyArn: PolicyArn =>
         val streaming = mock[StreamingIdentityManagementClient]("streaming")
         val async = new DefaultAsyncIdentityManagementClient(streaming)
 
-        (streaming.policyDeleter _)
+        (() => streaming.policyDeleter)
           .expects()
           .returningFlow(policyArn, policyArn)
 
-        val result = async.deletePolicy(policyArn).futureValue
+        val result = async.deletePolicy(policyArn).futureValue()
         result shouldBe Done
       }
     }
 
     "get managed policies" in {
-      forAll { (policyArn: PolicyArn, policy: ManagedPolicy) ⇒
+      forAll { (policyArn: PolicyArn, policy: ManagedPolicy) =>
         val streaming = mock[StreamingIdentityManagementClient]("streaming")
         val async = new DefaultAsyncIdentityManagementClient(streaming)
 
-        (streaming.policyGetter _)
+        (() => streaming.policyGetter)
           .expects()
           .returningFlow(policyArn, policy)
 
-        val result = async.getPolicy(policyArn).futureValue
+        val result = async.getPolicy(policyArn).futureValue()
         result shouldBe policy
       }
     }
@@ -297,40 +297,40 @@ class DefaultAsyncIdentityManagementClientSpec extends AnyFreeSpec with MockFact
         val async = new DefaultAsyncIdentityManagementClient(streaming)
         val policies = List.empty[ManagedPolicy]
 
-        (streaming.policyLister _)
+        (() => streaming.policyLister)
           .expects()
           .returningConcatFlow(ListPoliciesRequest.allPolicies, policies)
 
-        val result = async.listPolicies().futureValue
+        val result = async.listPolicies().futureValue()
         result shouldBe policies
       }
 
       "with a prefix" in {
-        forAll { prefix: Path ⇒
+        forAll { prefix: Path =>
           val streaming = mock[StreamingIdentityManagementClient]("streaming")
           val async = new DefaultAsyncIdentityManagementClient(streaming)
           val policies = List.empty[ManagedPolicy]
 
-          (streaming.policyLister _)
+          (() => streaming.policyLister)
             .expects()
             .returningConcatFlow(ListPoliciesRequest.withPrefix(prefix), policies)
 
-          val result = async.listPolicies(prefix).futureValue
+          val result = async.listPolicies(prefix).futureValue()
           result shouldBe policies
         }
       }
 
       "with an arbitrary filter" in {
-        forAll { request: ListPoliciesRequest ⇒
+        forAll { request: ListPoliciesRequest =>
           val streaming = mock[StreamingIdentityManagementClient]("streaming")
           val async = new DefaultAsyncIdentityManagementClient(streaming)
           val policies = List.empty[ManagedPolicy]
 
-          (streaming.policyLister _)
+          (() => streaming.policyLister)
             .expects()
             .returningConcatFlow(request, policies)
 
-          val result = async.listPolicies(request).futureValue
+          val result = async.listPolicies(request).futureValue()
           result shouldBe policies
         }
       }
@@ -340,53 +340,53 @@ class DefaultAsyncIdentityManagementClientSpec extends AnyFreeSpec with MockFact
         val async = new DefaultAsyncIdentityManagementClient(streaming)
         val policies = List.empty[ManagedPolicy]
 
-        (streaming.policyLister _)
+        (() => streaming.policyLister)
           .expects()
           .returningConcatFlow(ListPoliciesRequest.localPolicies, policies)
 
-        val result = async.listLocalPolicies().futureValue
+        val result = async.listLocalPolicies().futureValue()
         result shouldBe policies
       }
     }
 
     "create new policy versions" in {
-      forAll { (arn: PolicyArn, document: Policy, setAsDefault: Boolean, policyVersion: ManagedPolicyVersion) ⇒
+      forAll { (arn: PolicyArn, document: Policy, setAsDefault: Boolean, policyVersion: ManagedPolicyVersion) =>
         val streaming = mock[StreamingIdentityManagementClient]("streaming")
         val async = new DefaultAsyncIdentityManagementClient(streaming)
 
-        (streaming.policyVersionCreator _)
+        (() => streaming.policyVersionCreator)
           .expects()
           .returningFlow(CreatePolicyVersionRequest(arn, document, setAsDefault), policyVersion)
 
-        val result = async.createPolicyVersion(arn, document, setAsDefault).futureValue
+        val result = async.createPolicyVersion(arn, document, setAsDefault).futureValue()
         result shouldBe policyVersion
       }
     }
 
     "delete policy versions" in {
-      forAll { request: DeletePolicyVersionRequest ⇒
+      forAll { request: DeletePolicyVersionRequest =>
         val streaming = mock[StreamingIdentityManagementClient]("streaming")
         val async = new DefaultAsyncIdentityManagementClient(streaming)
 
-        (streaming.policyVersionDeleter _)
+        (() => streaming.policyVersionDeleter)
           .expects()
           .returningFlow(request, request.arn)
 
-        val result = async.deletePolicyVersion(request.arn, request.versionId).futureValue
+        val result = async.deletePolicyVersion(request.arn, request.versionId).futureValue()
         result shouldBe Done
       }
     }
 
     "get policy versions" in {
-      forAll { (request: GetPolicyVersionRequest, policyVersion: ManagedPolicyVersion) ⇒
+      forAll { (request: GetPolicyVersionRequest, policyVersion: ManagedPolicyVersion) =>
         val streaming = mock[StreamingIdentityManagementClient]("streaming")
         val async = new DefaultAsyncIdentityManagementClient(streaming)
 
-        (streaming.policyVersionGetter _)
+        (() => streaming.policyVersionGetter)
           .expects()
           .returningFlow(request, policyVersion)
 
-        val result = async.getPolicyVersion(request.arn, request.versionId).futureValue
+        val result = async.getPolicyVersion(request.arn, request.versionId).futureValue()
         result shouldBe policyVersion
       }
     }
@@ -394,29 +394,29 @@ class DefaultAsyncIdentityManagementClientSpec extends AnyFreeSpec with MockFact
     "list policy versions" in {
       implicit val arbPolicyVersions: Arbitrary[List[ManagedPolicyVersion]] =
         Arbitrary(Gen.resize(10, Gen.nonEmptyListOf(arbitrary[ManagedPolicyVersion])))
-      forAll { (arn: PolicyArn, versions: List[ManagedPolicyVersion]) ⇒
+      forAll { (arn: PolicyArn, versions: List[ManagedPolicyVersion]) =>
         val streaming = mock[StreamingIdentityManagementClient]("streaming")
         val async = new DefaultAsyncIdentityManagementClient(streaming)
 
-        (streaming.policyVersionLister _)
+        (() => streaming.policyVersionLister)
           .expects()
           .returningConcatFlow(arn, versions)
 
-        val result = async.listPolicyVersions(arn).futureValue
+        val result = async.listPolicyVersions(arn).futureValue()
         result shouldBe versions
       }
     }
 
     "set default policy versions" in {
-      forAll { request: SetDefaultPolicyVersionRequest ⇒
+      forAll { request: SetDefaultPolicyVersionRequest =>
         val streaming = mock[StreamingIdentityManagementClient]("streaming")
         val async = new DefaultAsyncIdentityManagementClient(streaming)
 
-        (streaming.defaultPolicyVersionSetter _)
+        (() => streaming.defaultPolicyVersionSetter)
           .expects()
           .returningFlow(request, request.arn)
 
-        val result = async.setDefaultPolicyVersion(request.arn, request.versionId).futureValue
+        val result = async.setDefaultPolicyVersion(request.arn, request.versionId).futureValue()
         result shouldBe Done
       }
     }

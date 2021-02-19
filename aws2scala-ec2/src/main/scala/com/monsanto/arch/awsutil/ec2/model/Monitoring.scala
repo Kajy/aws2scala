@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.ec2.model
 
-import com.amazonaws.services.ec2.{model ⇒ aws}
+import com.amazonaws.services.ec2.{model => aws}
 import com.monsanto.arch.awsutil.util.{AwsEnumeration, AwsEnumerationCompanion}
 
 case class Monitoring(state: Monitoring.State)

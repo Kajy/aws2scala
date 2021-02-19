@@ -11,7 +11,7 @@ object ThrottlePolicy {
     Arbitrary(Gen.posNum[Int].map(ThrottlePolicy.apply))
 
   implicit lazy val shrinkThrottlePolicy: Shrink[ThrottlePolicy] =
-    Shrink { policy ⇒
+    Shrink { policy =>
       Shrink.shrink(policy.maxReceivesPerSecond)
         .filter(_ > 0)
         .map(ThrottlePolicy.apply)

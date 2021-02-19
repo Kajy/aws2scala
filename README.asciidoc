@@ -133,7 +133,7 @@ val eventualRoles: Future[Seq[Role]] =
         val rolesListBuilder = Seq.newBuilder[Role] // <3>
 
         do {
-            Option(request.getMarker).foreach(m ⇒ request.setMarker(m)) // <4>
+            Option(request.getMarker).foreach(m => request.setMarker(m)) // <4>
             result = blocking { iam.listRoles(request) } // <5>
             val pagedRoles = result.getRoles.asScala.map(Role.fromAws) // <6>
             rolesListBuilder ++= pagedRoles // <7>
@@ -206,12 +206,12 @@ val iam = StreamingAwsClient.Default.identityManagement
 val createdRole: Future[Role] =
     Source.single(GetUserRequest.currentUser) // <1>
         .via(iam.userGetter) // <2>
-        .map(user ⇒ CreateRoleRequest("MyRole", createAssumeRolePolicy(user))) // <3>
+        .map(user => CreateRoleRequest("MyRole", createAssumeRolePolicy(user))) // <3>
         .via(iam.roleCreator) // <4>
-        .flatMapConcat { role ⇒
+        .flatMapConcat { role =>
             Source.single(AttachRolePolicyRequest(role.name, s3ReadOnlyPolicy)) // <5>
                 .via(iam.rolePolicyAttacher)
-                .map(_ ⇒ role) // <6>
+                .map(_ => role) // <6>
         }
         .runWith(Sink.head) // <7>
 ----

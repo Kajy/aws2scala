@@ -10,7 +10,7 @@ class AssumeRoleResultSpec extends AnyFreeSpec {
   "an AssumeRoleResult" - {
     "can be round-tripped" - {
       "via its AWS equivalent" in {
-        forAll { result: AssumeRoleResult ⇒
+        forAll { result: AssumeRoleResult =>
           result.asAws.asScala shouldBe result
         }
       }

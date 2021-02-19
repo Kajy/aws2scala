@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.sns.model
 
-import com.amazonaws.services.sns.{model ⇒ aws}
+import com.amazonaws.services.sns.{model => aws}
 
 /** Contains all of the information necessary to list either all of the subscriptions or just the subscriptions for a
   * given topic.
@@ -13,8 +13,8 @@ case class ListSubscriptionsRequest private (topicArn: Option[String]) {
     */
   def toEitherAws: Either[aws.ListSubscriptionsRequest, aws.ListSubscriptionsByTopicRequest] =
     topicArn match {
-      case None ⇒ Left(new aws.ListSubscriptionsRequest)
-      case Some(arn) ⇒  Right(new aws.ListSubscriptionsByTopicRequest(arn))
+      case None => Left(new aws.ListSubscriptionsRequest)
+      case Some(arn) =>  Right(new aws.ListSubscriptionsByTopicRequest(arn))
     }
 }
 

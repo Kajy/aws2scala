@@ -3,10 +3,10 @@ package com.monsanto.arch.awsutil.rds
 import akka.NotUsed
 import akka.stream.scaladsl.Flow
 import com.amazonaws.services.rds.AmazonRDSAsync
-import com.amazonaws.services.rds.model.{Option ⇒ _, _}
+import com.amazonaws.services.rds.model.{Option => _, _}
 import com.monsanto.arch.awsutil._
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class DefaultStreamingRDSClient(client: AmazonRDSAsync) extends StreamingRDSClient {
   override val dbInstanceCreator =
@@ -15,7 +15,7 @@ class DefaultStreamingRDSClient(client: AmazonRDSAsync) extends StreamingRDSClie
 
   override val dbInstanceDeleter =
     Flow[(String, Option[String])]
-      .map { args ⇒
+      .map { args =>
         val request = new DeleteDBInstanceRequest(args._1)
         request.setSkipFinalSnapshot(args._2.isEmpty)
         args._2.foreach(request.setFinalDBSnapshotIdentifier)
@@ -32,7 +32,7 @@ class DefaultStreamingRDSClient(client: AmazonRDSAsync) extends StreamingRDSClie
 
   override val identifiedDbInstanceDescriber =
     Flow[String]
-      .map(id ⇒ new DescribeDBInstancesRequest().withDBInstanceIdentifier(id))
+      .map(id => new DescribeDBInstancesRequest().withDBInstanceIdentifier(id))
       .via(rawDbInstanceDescriber)
       .named("RDS.identifiedDbInstanceCreator")
 }

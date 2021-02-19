@@ -2,7 +2,7 @@ package com.monsanto.arch.awsutil.impl
 
 import java.util.concurrent.{Future => JFuture}
 import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
+import akka.stream.{ActorMaterializer, Materializer}
 import akka.stream.scaladsl.Keep
 import akka.stream.testkit.scaladsl.{TestSink, TestSource}
 import akka.stream.testkit.{TestPublisher, TestSubscriber}
@@ -27,8 +27,9 @@ class AWSGraphStageSpec extends AnyFreeSpec with BeforeAndAfterAll with MockFact
                                  sink: TestSubscriber.Probe[Either[AmazonClientException,TestResult]],
                                  asyncCall: AWSAsyncCall[TestRequest,TestResult])
 
-  private def withIdleFixture(test: IdleFixture ⇒ Any): Unit = {
-    implicit val m = ActorMaterializer()
+  private def withIdleFixture(test: IdleFixture => Any): Unit = {
+    implicit val m = Materializer.createMaterializer(actorSystem)
+
     val asyncCall = mock[AWSAsyncCall[TestRequest,TestResult]]
     val (source, sink) = TestSource.probe[TestRequest]
       .via(AWSFlow.pagedByNextTokenEither(asyncCall))
@@ -39,8 +40,8 @@ class AWSGraphStageSpec extends AnyFreeSpec with BeforeAndAfterAll with MockFact
     source.expectRequest() shouldBe 1
     try {
       test(IdleFixture(source, sink, asyncCall))
-      sink.expectNoMsg()
-      source.expectNoMsg()
+      sink.expectNoMessage()
+      source.expectNoMessage()
     } finally {
       m.shutdown()
     }
@@ -53,16 +54,16 @@ class AWSGraphStageSpec extends AnyFreeSpec with BeforeAndAfterAll with MockFact
                                         promise: Promise[TestResult],
                                         jFuture: JFuture[TestResult])
 
-  private def withAwaitingAwsFixture(test: AwaitingAwsFixture ⇒ Any): Unit = {
-    withIdleFixture { f ⇒
+  private def withAwaitingAwsFixture(test: AwaitingAwsFixture => Any): Unit = {
+    withIdleFixture { f =>
       val request = TestRequest(1, None)
       val jFuture = mock[JFuture[TestResult]]
-      val promise = Promise[TestResult]
-      (f.asyncCall.apply _).expects(request, *).onCall { (_, handler) ⇒
+      val promise = Promise[TestResult]()
+      (f.asyncCall.apply _).expects(request, *).onCall { (_, handler) =>
         promise.future.onComplete {
-          case Success(result) ⇒ handler.onSuccess(request, result)
-          case Failure(cause: Exception) ⇒ handler.onError(cause)
-          case Failure(cause) ⇒ handler.onError(new RuntimeException("Got a non-exception", cause))
+          case Success(result) => handler.onSuccess(request, result)
+          case Failure(cause: Exception) => handler.onError(cause)
+          case Failure(cause) => handler.onError(new RuntimeException("Got a non-exception", cause))
         }(actorSystem.dispatcher)
         jFuture
       }.noMoreThanOnce()
@@ -72,8 +73,8 @@ class AWSGraphStageSpec extends AnyFreeSpec with BeforeAndAfterAll with MockFact
     }
   }
 
-  private def withAwaitingAwsFixtureWithDemand(test: AwaitingAwsFixture ⇒ Any) = {
-    withAwaitingAwsFixture { f ⇒
+  private def withAwaitingAwsFixtureWithDemand(test: AwaitingAwsFixture => Any) = {
+    withAwaitingAwsFixture { f =>
       f.sink.request(1)
       test(f)
     }
@@ -85,25 +86,25 @@ class AWSGraphStageSpec extends AnyFreeSpec with BeforeAndAfterAll with MockFact
                                  cachedResult: Either[AmazonClientException,TestResult],
                                  nextRequest: Option[TestRequest])
 
-  private def withCachedResultFixture(test: CachedResultFixture ⇒ Any): Unit = {
-    withAwaitingAwsFixture { f ⇒
+  private def withCachedResultFixture(test: CachedResultFixture => Any): Unit = {
+    withAwaitingAwsFixture { f =>
       val result = TestResult(1, 1, None)
       f.promise.success(result)
       // allow things to settle
-      f.source.expectNoMsg()
-      f.sink.expectNoMsg()
+      f.source.expectNoMessage()
+      f.sink.expectNoMessage()
       test(CachedResultFixture(f.source, f.sink, f.asyncCall, Right(result), None))
     }
   }
 
-  private def withCachedResultWithNextRequestFixture(test: CachedResultFixture ⇒ Any): Unit = {
-    withAwaitingAwsFixture { f ⇒
+  private def withCachedResultWithNextRequestFixture(test: CachedResultFixture => Any): Unit = {
+    withAwaitingAwsFixture { f =>
       val token = Some("a token")
       val result = TestResult(1, 1, token)
       f.promise.success(result)
       // allow things to settle
-      f.source.expectNoMsg()
-      f.sink.expectNoMsg()
+      f.source.expectNoMessage()
+      f.sink.expectNoMessage()
       test(CachedResultFixture(f.source, f.sink, f.asyncCall, Right(result), Some(TestRequest(1, token))))
     }
   }
@@ -112,16 +113,16 @@ class AWSGraphStageSpec extends AnyFreeSpec with BeforeAndAfterAll with MockFact
 
   "an AWSGraphStage," - {
     "when idle, it" - {
-      "does nothing on its own" in withIdleFixture { f ⇒
-        f.source.expectNoMsg()
-        f.sink.expectNoMsg()
+      "does nothing on its own" in withIdleFixture { f =>
+        f.source.expectNoMessage()
+        f.sink.expectNoMessage()
       }
 
-      "does nothing with downstream demand" in withIdleFixture { f ⇒
+      "does nothing with downstream demand" in withIdleFixture { f =>
         f.sink.request(1)
       }
 
-      "starts processing with upstream supply" in withIdleFixture { f ⇒
+      "starts processing with upstream supply" in withIdleFixture { f =>
         val request: TestRequest = TestRequest(1)
         (f.asyncCall.apply _).expects(request, *)
         // be unsafe here because we requested in the fixture
@@ -130,44 +131,44 @@ class AWSGraphStageSpec extends AnyFreeSpec with BeforeAndAfterAll with MockFact
         f.source.expectRequest() shouldBe 1
       }
 
-      "finishes when downstream completes" in withIdleFixture { f ⇒
+      "finishes when downstream completes" in withIdleFixture { f =>
         f.sink.cancel()
         f.source.expectCancellation()
       }
 
-      "finishes when upstream completes" in withIdleFixture { f ⇒
+      "finishes when upstream completes" in withIdleFixture { f =>
         f.source.sendComplete()
         f.sink.expectComplete()
       }
 
-      "fails when upstream fails" in withIdleFixture { f ⇒
+      "fails when upstream fails" in withIdleFixture { f =>
         f.source.sendError(dynamite)
         f.sink.expectError(dynamite)
       }
     }
 
     "when awaiting AWS, it" - {
-      "does nothing with downstream demand" in withAwaitingAwsFixture { f ⇒
+      "does nothing with downstream demand" in withAwaitingAwsFixture { f =>
         f.sink.request(1)
       }
 
-      "fails with a non-AWS exception" in withAwaitingAwsFixture { f ⇒
+      "fails with a non-AWS exception" in withAwaitingAwsFixture { f =>
         f.promise.failure(dynamite)
         f.sink.expectError(dynamite)
         f.source.expectCancellation()
       }
 
-      "absorbs upstream termination" in withAwaitingAwsFixture { f ⇒
+      "absorbs upstream termination" in withAwaitingAwsFixture { f =>
         f.source.sendComplete()
       }
 
-      "fails with upstream failure (and AWS future is cancelled)" in withAwaitingAwsFixture { f ⇒
+      "fails with upstream failure (and AWS future is cancelled)" in withAwaitingAwsFixture { f =>
         (f.jFuture.cancel _).expects(true)
         f.source.sendError(dynamite)
         f.sink.expectError(dynamite)
       }
 
-      "cancels with downstream cancellation (and AWS future is cancelled" in withAwaitingAwsFixture { f ⇒
+      "cancels with downstream cancellation (and AWS future is cancelled" in withAwaitingAwsFixture { f =>
         (f.jFuture.cancel _).expects(true)
         f.sink.cancel()
         f.source.expectCancellation()
@@ -178,17 +179,17 @@ class AWSGraphStageSpec extends AnyFreeSpec with BeforeAndAfterAll with MockFact
       "with no more pages and downstream is" - {
         val result = TestResult(1, 1, None)
 
-        "idle, it caches the result" in withAwaitingAwsFixture { f ⇒
+        "idle, it caches the result" in withAwaitingAwsFixture { f =>
           f.promise.success(result)
         }
 
         "waiting, and upstream is" - {
-          "not closed, it delivers the result" in withAwaitingAwsFixtureWithDemand { f ⇒
+          "not closed, it delivers the result" in withAwaitingAwsFixtureWithDemand { f =>
             f.promise.success(result)
             f.sink.expectNext(Right(result))
           }
 
-          "closed, it delivers the result and finishes" in withAwaitingAwsFixtureWithDemand { f ⇒
+          "closed, it delivers the result and finishes" in withAwaitingAwsFixtureWithDemand { f =>
             f.source.sendComplete()
             f.promise.success(result)
             f.sink.expectNext(Right(result))
@@ -200,11 +201,11 @@ class AWSGraphStageSpec extends AnyFreeSpec with BeforeAndAfterAll with MockFact
       "with a next page and downstream is" - {
         val result = TestResult(1, 1, Some("a token"))
 
-        "idle, it caches the result" in withAwaitingAwsFixture { f ⇒
+        "idle, it caches the result" in withAwaitingAwsFixture { f =>
           f.promise.success(result)
         }
 
-        "waiting, it sends the result and gets the next page" in withAwaitingAwsFixture { f ⇒
+        "waiting, it sends the result and gets the next page" in withAwaitingAwsFixture { f =>
           (f.asyncCall.apply _).expects(TestRequest(1, Some("a token")), *)
           f.sink.request(1)
           f.promise.success(result)
@@ -215,17 +216,17 @@ class AWSGraphStageSpec extends AnyFreeSpec with BeforeAndAfterAll with MockFact
       "indicating an AWS exception and downstream is" - {
         val awsException = new AmazonClientException("AWS set up us the bomb!")
 
-        "idle, it caches the result" in withAwaitingAwsFixture { f ⇒
+        "idle, it caches the result" in withAwaitingAwsFixture { f =>
           f.promise.failure(awsException)
         }
 
         "waiting, and upstream is" - {
-          "not closed, it delivers the exception" in withAwaitingAwsFixtureWithDemand { f ⇒
+          "not closed, it delivers the exception" in withAwaitingAwsFixtureWithDemand { f =>
             f.promise.failure(awsException)
             f.sink.expectNext(Left(awsException))
           }
 
-          "closed, it delivers the result and finishes" in withAwaitingAwsFixtureWithDemand { f ⇒
+          "closed, it delivers the result and finishes" in withAwaitingAwsFixtureWithDemand { f =>
             f.source.sendComplete()
             f.promise.failure(awsException)
             f.sink.expectNext(Left(awsException))
@@ -237,48 +238,48 @@ class AWSGraphStageSpec extends AnyFreeSpec with BeforeAndAfterAll with MockFact
 
     "when it has cached result with no pending page, it" - {
       "delivers the result on downstream demand when upstream is" - {
-        "idle" in withCachedResultFixture { f ⇒
+        "idle" in withCachedResultFixture { f =>
           f.sink.requestNext(f.cachedResult)
         }
 
-        "closed (completing the stream)" in withCachedResultFixture { f ⇒
+        "closed (completing the stream)" in withCachedResultFixture { f =>
           f.source.sendComplete()
           f.sink.requestNext(f.cachedResult)
           f.sink.expectComplete()
         }
       }
 
-      "does nothing when upstream completes" in withCachedResultFixture { f ⇒
+      "does nothing when upstream completes" in withCachedResultFixture { f =>
         f.source.sendComplete()
       }
 
-      "fails when upstream fails" in withCachedResultFixture { f ⇒
+      "fails when upstream fails" in withCachedResultFixture { f =>
         f.source.sendError(dynamite)
         f.sink.expectError(dynamite)
       }
 
-      "cancels when downstream closes" in withCachedResultFixture { f ⇒
+      "cancels when downstream closes" in withCachedResultFixture { f =>
         f.sink.cancel()
         f.source.expectCancellation()
       }
     }
 
     "when it has cached result with a pending page, it" - {
-      "delivers the result on downstream demand requests the next page" in withCachedResultWithNextRequestFixture { f ⇒
+      "delivers the result on downstream demand requests the next page" in withCachedResultWithNextRequestFixture { f =>
         (f.asyncCall.apply _).expects(f.nextRequest.get, *)
         f.sink.requestNext(f.cachedResult)
       }
 
-      "does nothing when upstream completes" in withCachedResultWithNextRequestFixture { f ⇒
+      "does nothing when upstream completes" in withCachedResultWithNextRequestFixture { f =>
         f.source.sendComplete()
       }
 
-      "fails when upstream fails" in withCachedResultWithNextRequestFixture { f ⇒
+      "fails when upstream fails" in withCachedResultWithNextRequestFixture { f =>
         f.source.sendError(dynamite)
         f.sink.expectError(dynamite)
       }
 
-      "cancels when downstream closes" in withCachedResultWithNextRequestFixture { f ⇒
+      "cancels when downstream closes" in withCachedResultWithNextRequestFixture { f =>
         f.sink.cancel()
         f.source.expectCancellation()
       }

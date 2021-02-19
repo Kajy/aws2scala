@@ -2,7 +2,7 @@ package com.monsanto.arch.awsutil.auth.policy
 
 import java.io.StringWriter
 
-import com.amazonaws.auth.{policy ⇒ aws}
+import com.amazonaws.auth.{policy => aws}
 import com.fasterxml.jackson.core.{JsonFactory, JsonGenerator, JsonParseException}
 import com.monsanto.arch.awsutil.auth.policy.PolicyJsonSupport._
 import com.monsanto.arch.awsutil.converters.CoreConverters._
@@ -20,7 +20,7 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
 
   private val factory = new JsonFactory()
 
-  private def withGenerator(f: JsonGenerator ⇒ Unit): String = {
+  private def withGenerator(f: JsonGenerator => Unit): String = {
     val out = new StringWriter()
     val generator = factory.createGenerator(out)
     f(generator)
@@ -42,8 +42,8 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
         }
 
         "contains a single principal" in {
-          forAll { principal: Principal ⇒
-            val expected = JsObject(principal.provider → JsString(principal.id))
+          forAll { principal: Principal =>
+            val expected = JsObject(principal.provider ->JsString(principal.id))
             val result = withGenerator(principalsToJson(_, Set(principal)))
             result.parseJson shouldBe expected
           }
@@ -53,12 +53,12 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
           val sameProviderPrincipals =
             (
               for {
-                principal1 ← arbitrary[Principal]
-                principal2 ← arbitrary[Principal].retryUntil(_.provider == principal1.provider)
+                principal1 <- arbitrary[Principal]
+                principal2 <- arbitrary[Principal].retryUntil(_.provider == principal1.provider)
               } yield Set(principal1, principal2)
               ).suchThat(_.size == 2)
-          forAll(sameProviderPrincipals) { principals ⇒
-            val expected = JsObject(principals.head.provider → JsArray(principals.toSeq.map(p ⇒ JsString(p.id)): _*))
+          forAll(sameProviderPrincipals) { principals =>
+            val expected = JsObject(principals.head.provider ->JsArray(principals.toSeq.map(p => JsString(p.id)): _*))
 
             val result = withGenerator(principalsToJson(_, principals))
 
@@ -69,11 +69,11 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
         "contains multiple principals from different providers" in {
           val twoPrincipals =
             for {
-              principal1 ← arbitrary[Principal]
-              principal2 ← arbitrary[Principal].retryUntil(_.provider != principal1.provider)
+              principal1 <- arbitrary[Principal]
+              principal2 <- arbitrary[Principal].retryUntil(_.provider != principal1.provider)
             } yield Set(principal1, principal2)
-          forAll(twoPrincipals) { principals ⇒
-            val expected = JsObject(principals.map(p ⇒ p.provider → JsString(p.id)).toMap)
+          forAll(twoPrincipals) { principals =>
+            val expected = JsObject(principals.map(p => p.provider ->JsString(p.id)).toMap)
             val result = withGenerator(principalsToJson(_, principals))
 
             result.parseJson shouldBe expected
@@ -93,7 +93,7 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
         }
 
         "contains a single action" in {
-          forAll { action: Action ⇒
+          forAll { action: Action =>
             val result = withGenerator(actionsToJson(_, Seq(action)))
             result.parseJson shouldBe JsString(action.name)
           }
@@ -102,13 +102,13 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
         "contains multiple actions" in {
           val genActions =
             for {
-              first ← arbitrary[Action]
-              rest ← UtilGen.nonEmptyListOfSqrtN(arbitrary[Action])
+              first <- arbitrary[Action]
+              rest <- UtilGen.nonEmptyListOfSqrtN(arbitrary[Action])
             } yield first :: rest
 
-          forAll(genActions) { actions ⇒
+          forAll(genActions) { actions =>
             val result = withGenerator(actionsToJson(_, actions))
-            val expected = JsArray(actions.map(a ⇒ JsString(a.name)): _*)
+            val expected = JsArray(actions.map(a => JsString(a.name)): _*)
             result.parseJson shouldBe expected
           }
         }
@@ -126,7 +126,7 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
         }
 
         "contains a single resource" in {
-          forAll { resource: Resource ⇒
+          forAll { resource: Resource =>
             val result = withGenerator(resourcesToJson(_, Seq(resource)))
             result.parseJson shouldBe JsString(resource.id)
           }
@@ -135,13 +135,13 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
         "contains more than one resource" in {
           val genResources =
             for {
-              first ← arbitrary[Resource]
-              rest ← UtilGen.nonEmptyListOfSqrtN(arbitrary[Resource])
+              first <- arbitrary[Resource]
+              rest <- UtilGen.nonEmptyListOfSqrtN(arbitrary[Resource])
             } yield first :: rest
 
-          forAll(genResources) { resources ⇒
+          forAll(genResources) { resources =>
             val result = withGenerator(resourcesToJson(_, resources))
-            val expected = JsArray(resources.map(r ⇒ JsString(r.id)): _*)
+            val expected = JsArray(resources.map(r => JsString(r.id)): _*)
             result.parseJson shouldBe expected
           }
         }
@@ -156,15 +156,15 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
         "contains a single condition with a single value" in {
           val singleValueCondition =
             for {
-              condition ← arbitrary[Condition]
+              condition <- arbitrary[Condition]
             } yield {
               Condition.fromParts(condition.key, condition.comparisonType, Seq(condition.comparisonValues.head))
             }
-          forAll(singleValueCondition) { condition ⇒
+          forAll(singleValueCondition) { condition =>
             val expected =
               JsObject(
-                condition.comparisonType → JsObject(
-                  condition.key → JsString(condition.comparisonValues.head)
+                condition.comparisonType ->JsObject(
+                  condition.key ->JsString(condition.comparisonValues.head)
                 )
               )
 
@@ -177,15 +177,15 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
         "contains a single condition with multiple comparison values" in {
           val multiValueCondition =
             for {
-              condition ← Gen.sized { n ⇒
+              condition <- Gen.sized { n =>
                 Gen.resize(n.min(10), arbitrary[Condition]).suchThat(_.comparisonValues.distinct.size > 1)
               }
             } yield condition
-          forAll(multiValueCondition) { condition ⇒
+          forAll(multiValueCondition) { condition =>
             val expected =
               JsObject(
-                condition.comparisonType → JsObject(
-                  condition.key → JsArray(condition.comparisonValues.distinct.map(JsString.apply): _*)
+                condition.comparisonType ->JsObject(
+                  condition.key ->JsArray(condition.comparisonValues.distinct.map(JsString.apply): _*)
                 )
               )
 
@@ -199,30 +199,30 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
           val sameTypeConditions =
             (
               for {
-                condition1 ← arbitrary[Condition.NumericCondition]
-                condition2 ← arbitrary[Condition.NumericCondition]
-                  .suchThat(c ⇒ c.key != condition1.key)
-                  .map(c ⇒ c.copy(
+                condition1 <- arbitrary[Condition.NumericCondition]
+                condition2 <- arbitrary[Condition.NumericCondition]
+                  .suchThat(c => c.key != condition1.key)
+                  .map(c => c.copy(
                     numericComparisonType = condition1.numericComparisonType,
                     ignoreMissing = condition1.ignoreMissing))
               } yield Set[Condition](condition1, condition2)
-              ).suchThat(s ⇒ s.size == 2 && s.forall(_.comparisonValues.nonEmpty))
+              ).suchThat(s => s.size == 2 && s.forall(_.comparisonValues.nonEmpty))
 
-          forAll(sameTypeConditions) { conditions ⇒
+          forAll(sameTypeConditions) { conditions =>
             val c1 :: c2 :: Nil = conditions.toList
             def valuesToJson(values: Seq[String]): JsValue = {
               values.map(JsString(_)).toList match {
-                case Nil ⇒ JsNull
-                case v :: Nil ⇒ v
-                case vs ⇒ JsArray(vs.toVector)
+                case Nil => JsNull
+                case v :: Nil => v
+                case vs => JsArray(vs.toVector)
               }
             }
 
             val expected =
               JsObject(
-                c1.comparisonType → JsObject(
-                  c1.key → valuesToJson(c1.comparisonValues),
-                  c2.key → valuesToJson(c2.comparisonValues)
+                c1.comparisonType ->JsObject(
+                  c1.key ->valuesToJson(c1.comparisonValues),
+                  c2.key ->valuesToJson(c2.comparisonValues)
                 )
               )
 
@@ -236,24 +236,24 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
           val mergeableConditions =
             (
               for {
-                condition1 ← arbitrary[Condition.NumericCondition]
-                condition2 ← arbitrary[Condition.NumericCondition]
-                  .suchThat(c ⇒ c.comparisonValues != condition1.comparisonValues)
-                  .map(c ⇒ c.copy(
+                condition1 <- arbitrary[Condition.NumericCondition]
+                condition2 <- arbitrary[Condition.NumericCondition]
+                  .suchThat(c => c.comparisonValues != condition1.comparisonValues)
+                  .map(c => c.copy(
                     numericComparisonType = condition1.numericComparisonType,
                     ignoreMissing = condition1.ignoreMissing,
                     key = condition1.key))
               } yield Set[Condition](condition1, condition2)
               )
-              .suchThat(s ⇒ s.size == 2 && s.forall(_.comparisonValues.nonEmpty))
+              .suchThat(s => s.size == 2 && s.forall(_.comparisonValues.nonEmpty))
 
-          forAll(mergeableConditions) { conditions ⇒
+          forAll(mergeableConditions) { conditions =>
             val c1 :: c2 :: Nil = conditions.toList
 
             val expected =
               JsObject(
-                c1.comparisonType → JsObject(
-                  c1.key → JsArray((c1.comparisonValues ++ c2.comparisonValues).distinct.map(JsString(_)).toVector)
+                c1.comparisonType ->JsObject(
+                  c1.key ->JsArray((c1.comparisonValues ++ c2.comparisonValues).distinct.map(JsString(_)).toVector)
                 )
               )
 
@@ -267,26 +267,26 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
           val twoDifferentConditionTypes =
             (
               for {
-                condition1 ← arbitrary[Condition.ArnCondition]
-                condition2 ← arbitrary[Condition.DateCondition]
+                condition1 <- arbitrary[Condition.ArnCondition]
+                condition2 <- arbitrary[Condition.DateCondition]
               } yield Set[Condition](condition1, condition2)
-              ).suchThat(s ⇒ s.size == 2)
+              ).suchThat(s => s.size == 2)
 
-          forAll(twoDifferentConditionTypes) { conditions ⇒
+          forAll(twoDifferentConditionTypes) { conditions =>
             val fwdConditions = conditions.toList
             val revConditions = fwdConditions.reverse
             def toJson(conditions: List[Condition]): JsObject = {
               JsObject(
                 conditions
                   .groupBy(_.comparisonType)
-                  .mapValues { c ⇒
+                  .view.mapValues { c =>
                     assert(c.size == 1)
                     val values = c.head.comparisonValues.map(JsString(_)).toList match {
-                      case v :: Nil ⇒ v
-                      case vs ⇒ JsArray(vs.toVector)
+                      case v :: Nil => v
+                      case vs => JsArray(vs.toVector)
                     }
-                    JsObject(c.head.key → values)
-                  }
+                    JsObject(c.head.key ->values)
+                  }.toList: _*
               )
             }
 
@@ -298,10 +298,10 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
       }
 
       "a mostly empty Statement" in {
-        forAll { effect: Statement.Effect ⇒
+        forAll { effect: Statement.Effect =>
           val statement = Statement(None, Set.empty, effect, Seq.empty, Seq.empty, Set.empty)
 
-          val expected = JsObject("Effect" → JsString(effect.name))
+          val expected = JsObject("Effect" ->JsString(effect.name))
           val result = withGenerator(statementToJson(_, statement))
 
           result.parseJson shouldBe expected
@@ -309,12 +309,12 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
       }
 
       "a mostly empty Policy" in {
-        forAll(minSuccessful(10)) { effect: Statement.Effect ⇒
+        forAll(minSuccessful(10)) { effect: Statement.Effect =>
           val policy = Policy(None, None, Seq(Statement(None, Set.empty, effect, Seq.empty, Seq.empty, Set.empty)))
 
           val expected =
             JsObject(
-              "Statement" → JsArray(JsObject("Effect" → JsString(effect.name)))
+              "Statement" ->JsArray(JsObject("Effect" ->JsString(effect.name)))
             )
 
           val result = policyToJson(policy)
@@ -331,9 +331,9 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
       }
 
       "a list containing an unknown action" in {
-        forAll { actions: Seq[Action] ⇒
+        forAll { actions: Seq[Action] =>
           whenever(actions != Statement.allActions) {
-            val json = JsArray((actions.map(a ⇒ JsString(a.name)) :+ JsString("foo")).toVector).compactPrint
+            val json = JsArray((actions.map(a => JsString(a.name)) :+ JsString("foo")).toVector).compactPrint
             val parser = factory.createParser(json)
 
             jsonToActions(parser) shouldBe actions :+ Action.NamedAction("foo")
@@ -344,7 +344,7 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
 
     "round-trip" - {
       "principal sets" in {
-        forAll { principals: Set[Principal] ⇒
+        forAll { principals: Set[Principal] =>
           val json = withGenerator(principalsToJson(_, principals))
           val result = jsonToPrincipals(factory.createParser(json))
           result shouldBe principals
@@ -352,7 +352,7 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
       }
 
       "action lists" in {
-        forAll { actions: Seq[Action] ⇒
+        forAll { actions: Seq[Action] =>
           val json = withGenerator(actionsToJson(_, actions))
           val result = jsonToActions(factory.createParser(json))
           result shouldBe actions
@@ -360,7 +360,7 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
       }
 
       "resource lists" in {
-        forAll { resources: Seq[Resource] ⇒
+        forAll { resources: Seq[Resource] =>
           val json = withGenerator(resourcesToJson(_, resources))
           val result = jsonToResources(factory.createParser(json))
           result shouldBe resources
@@ -368,7 +368,7 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
       }
 
       "condition sets" in {
-        forAll { conditions: Set[Condition] ⇒
+        forAll { conditions: Set[Condition] =>
           val json = withGenerator(conditionsToJson(_, conditions))
           val result = jsonToConditions(factory.createParser(json))
           result shouldBe conditions
@@ -376,7 +376,7 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
       }
 
       "arbitrary statements" in {
-        forAll { statement: Statement ⇒
+        forAll { statement: Statement =>
           val json = withGenerator(statementToJson(_, statement))
           val result = jsonToStatement(factory.createParser(json))
           result shouldBe statement
@@ -384,32 +384,32 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
       }
 
       "arbitrary policies" in {
-        forAll { policy: Policy ⇒
+        forAll { policy: Policy =>
           jsonToPolicy(policyToJson(policy)) shouldBe policy
         }
       }
     }
 
     "be equivalent to the AWS serialisation" - {
-      val nonBrokenPrincipal = arbitrary[Principal].retryUntil(p ⇒ !p.id.contains("-"))
+      val nonBrokenPrincipal = arbitrary[Principal].retryUntil(p => !p.id.contains("-"))
       val nonBrokenPolicy =
         for {
-          policy ← arbitrary[Policy]
+          policy <- arbitrary[Policy]
           // generate a set of principles that will round-trip
-          okPrincipals ← Gen.listOfN(policy.statements.size, UtilGen.listOfSqrtN(nonBrokenPrincipal).map(_.toSet))
+          okPrincipals <- Gen.listOfN(policy.statements.size, UtilGen.listOfSqrtN(nonBrokenPrincipal).map(_.toSet))
           // generate a list of IDs for each statement
-          statementIds ← Gen.listOfN(policy.statements.size, Gen.identifier)
+          statementIds <- Gen.listOfN(policy.statements.size, Gen.identifier)
         } yield {
           // replace all statement principals with round-trippable ones
           val okStatements = policy.statements.zip(okPrincipals).zip(statementIds).map {
-            case ((s, p), i) ⇒ s.copy(principals = p, id = Some(i))
+            case ((s, p), i) => s.copy(principals = p, id = Some(i))
           }
           // create a policy that with the OK statements and with the latest policy version
           policy.copy(statements = okStatements, version = Some(Policy.Version.`2012-10-17`))
         }
 
       "when serialising" in {
-        forAll(nonBrokenPolicy) { policy ⇒
+        forAll(nonBrokenPolicy) { policy =>
           val json = policyToJson(policy)
           val awsPolicy = aws.Policy.fromJson(json)
 
@@ -418,7 +418,7 @@ class PolicyJsonSupportSpec extends AnyFreeSpec {
       }
 
       "when deserialising" in {
-        forAll(nonBrokenPolicy) { policy ⇒
+        forAll(nonBrokenPolicy) { policy =>
           val json = policy.asAws.toJson
           val fromJson = jsonToPolicy(json)
 

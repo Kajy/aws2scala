@@ -21,48 +21,48 @@ object Ec2ScalaCheckImplicits {
   implicit lazy val arbDescribeInstancesRequest: Arbitrary[DescribeInstancesRequest] =
     Arbitrary {
       for {
-        ids ← UtilGen.listOfSqrtN(Ec2Gen.instanceId)
-        filters ← Ec2Gen.filterSeq
+        ids <- UtilGen.listOfSqrtN(Ec2Gen.instanceId)
+        filters <- Ec2Gen.filterSeq
       } yield  DescribeInstancesRequest(ids, filters)
     }
 
   implicit lazy val shrinkDescribeInstancesRequest: Shrink[DescribeInstancesRequest] =
-    Shrink { request ⇒
-      Shrink.shrink(request.instanceIds).filter(_.forall(validId("i"))).map(i ⇒ request.copy(instanceIds = i)) append
-        Shrink.shrink(request.filters).map(f ⇒ request.copy(filters = f))
+    Shrink { request =>
+      Shrink.shrink(request.instanceIds).filter(_.forall(validId("i"))).map(i => request.copy(instanceIds = i)) lazyAppendedAll
+        Shrink.shrink(request.filters).map(f => request.copy(filters = f))
     }
 
   implicit lazy val arbDescribeKeyPairsRequest: Arbitrary[DescribeKeyPairsRequest] =
     Arbitrary {
       for {
-        keyNames ← UtilGen.listOfSqrtN(Ec2Gen.keyName)
-        filters ← Ec2Gen.filterSeq
+        keyNames <- UtilGen.listOfSqrtN(Ec2Gen.keyName)
+        filters <- Ec2Gen.filterSeq
       } yield  DescribeKeyPairsRequest(keyNames, filters)
     }
 
   implicit lazy val shrinkDescribeKeyPairsRequest: Shrink[DescribeKeyPairsRequest] =
-    Shrink { request ⇒
-      Shrink.shrink(request.keyNames).filter(_.forall(_.nonEmpty)).map(kn ⇒ request.copy(keyNames = kn)) append
-      Shrink.shrink(request.filters).map(f ⇒ request.copy(filters = f))
+    Shrink { request =>
+      Shrink.shrink(request.keyNames).filter(_.forall(_.nonEmpty)).map(kn => request.copy(keyNames = kn)) lazyAppendedAll
+      Shrink.shrink(request.filters).map(f => request.copy(filters = f))
     }
 
   implicit lazy val arbFilter: Arbitrary[Filter] = {
     val filterValue = UtilGen.stringOf(UtilGen.extendedWordChar, 1, 64)
-    val filterValues = UtilGen.nonEmptyListOfSqrtN(filterValue).retryUntil(x ⇒ x.distinct == x)
+    val filterValues = UtilGen.nonEmptyListOfSqrtN(filterValue).retryUntil(x => x.distinct == x)
     Arbitrary {
       for {
-        name ← UtilGen.stringOf(UtilGen.extendedWordChar, 1, 32)
-        values ← filterValues
+        name <- UtilGen.stringOf(UtilGen.extendedWordChar, 1, 32)
+        values <- filterValues
       } yield Filter(name, values)
     }
   }
 
  implicit lazy val shrinkFilter: Shrink[Filter] =
-   Shrink { filter ⇒
-     Shrink.shrink(filter.name).filter(_.nonEmpty).map(n ⇒ filter.copy(name = n)) append
+   Shrink { filter =>
+     Shrink.shrink(filter.name).filter(_.nonEmpty).map(n => filter.copy(name = n)) lazyAppendedAll
      Shrink.shrink(filter.values)
-       .filter(x ⇒ x.nonEmpty && x.forall(_.nonEmpty) && (x.distinct == x))
-       .map(v ⇒ filter.copy(values = v))
+       .filter(x => x.nonEmpty && x.forall(_.nonEmpty) && (x.distinct == x))
+       .map(v => filter.copy(values = v))
    }
 
   implicit lazy val arbFilterSeq: Arbitrary[Seq[Filter]] = Arbitrary(Ec2Gen.filterSeq)
@@ -71,99 +71,99 @@ object Ec2ScalaCheckImplicits {
     val nameChar = Gen.oneOf(('a' to 'z') ++ ('A' to 'Z') ++ ('0' to '9') ++ "._-:/()#,@[]+=&;{}!$*".toList)
     Arbitrary {
       for  {
-        id ← Ec2Gen.groupIdentifierId
-        name ← UtilGen.stringOf(nameChar, 1, 255).suchThat(_.nonEmpty)
+        id <- Ec2Gen.groupIdentifierId
+        name <- UtilGen.stringOf(nameChar, 1, 255).suchThat(_.nonEmpty)
       } yield GroupIdentifier(id, name)
     }
   }
 
   implicit lazy val shrinkGroupIdentifier: Shrink[GroupIdentifier] =
-    Shrink(groupId ⇒ Shrink.shrink(groupId.name).filter(_.nonEmpty).map(n ⇒ groupId.copy(name = n)))
+    Shrink(groupId => Shrink.shrink(groupId.name).filter(_.nonEmpty).map(n => groupId.copy(name = n)))
 
   implicit lazy val arbHypervisorType: Arbitrary[HypervisorType] = Arbitrary(Gen.oneOf(HypervisorType.values))
 
   implicit lazy val arbIamInstanceProfile: Arbitrary[IamInstanceProfile] =
     Arbitrary {
       for {
-        id ← IamGen.instanceProfileId
-        arn ← arbitrary[InstanceProfileArn].map(_.arnString)
+        id <- IamGen.instanceProfileId
+        arn <- arbitrary[InstanceProfileArn].map(_.arnString)
       } yield IamInstanceProfile(id, arn)
     }
 
   implicit lazy val shrinkIamInstanceProfile: Shrink[IamInstanceProfile] =
-    Shrink { profile ⇒
-      Shrink.shrink(InstanceProfileArn.fromArnString(profile.arn)).map(arn ⇒ profile.copy(arn = arn.arnString))
+    Shrink { profile =>
+      Shrink.shrink(InstanceProfileArn.fromArnString(profile.arn)).map(arn => profile.copy(arn = arn.arnString))
     }
 
   implicit lazy val arbInstance: Arbitrary[Instance] = {
     val rootDeviceGen = {
-      val instanceStore: Gen[(DeviceType, Option[String])] = Gen.const(DeviceType.InstanceStore → None)
-      val ebs = Gen.oneOf("/dev/sda1", "/dev/xvda").map(name ⇒ DeviceType.Ebs → Some(name))
+      val instanceStore: Gen[(DeviceType, Option[String])] = Gen.const(DeviceType.InstanceStore ->None)
+      val ebs = Gen.oneOf("/dev/sda1", "/dev/xvda").map(name => DeviceType.Ebs ->Some(name))
       Gen.oneOf(instanceStore, ebs)
     }
     val blockDeviceMappingGen = {
       val deviceName: Gen[String] = {
-        val xvdX = Gen.alphaLowerChar.map(c ⇒ s"/dev/xvd$c")
+        val xvdX = Gen.alphaLowerChar.map(c => s"/dev/xvd$c")
         val xvdXY =
           for {
-            x ← Gen.oneOf('b', 'c')
-            y ← Gen.alphaLowerChar
+            x <- Gen.oneOf('b', 'c')
+            y <- Gen.alphaLowerChar
           } yield s"/dev/xvd$x$y"
         val sda1 = Gen.const("/dev/sda1")
-        val sdX = Gen.alphaLowerChar.map(x ⇒ s"/dev/sd$x")
+        val sdX = Gen.alphaLowerChar.map(x => s"/dev/sd$x")
         val XdYN =
           for {
-            x ← Gen.oneOf('s', 'h')
-            y ← Gen.alphaLowerChar
-            n ← Gen.choose(1,15)
+            x <- Gen.oneOf('s', 'h')
+            y <- Gen.alphaLowerChar
+            n <- Gen.choose(1,15)
           } yield s"/dev/${x}d$y$n"
         Gen.oneOf(xvdX, xvdXY, sda1, sdX, XdYN)
       }
-      UtilGen.Sizer(0, 5).sized(n ⇒ Gen.mapOfN(n, Gen.zip(deviceName, arbitrary[Instance.BlockDevice])))
+      UtilGen.Sizer(0, 5).sized(n => Gen.mapOfN(n, Gen.zip(deviceName, arbitrary[Instance.BlockDevice])))
     }
     val tagMap = {
       val key = UtilGen.stringOf(UtilGen.asciiChar, 1, 127)
       val value = UtilGen.stringOf(UtilGen.asciiChar, 1, 255)
       val entry = Gen.zip(key, value)
-      UtilGen.Sizer(0,10).sized(n ⇒ Gen.mapOfN(n, entry))
+      UtilGen.Sizer(0,10).sized(n => Gen.mapOfN(n, entry))
     }
 
     Arbitrary {
       for {
-        id ← Ec2Gen.instanceId
-        imageId ← Ec2Gen.imageId
-        state ← arbitrary[InstanceState]
-        privateIp ← privateIpAddress
-        publicIp ← Gen.option(publicIpAddress)
-        stateReason ← arbitrary[Option[StateReason]]
-        keyName ← Gen.option(Ec2Gen.keyName)
-        amiLaunchIndex ← Gen.posNum[Int]
-        productCodes ← arbitrary[Seq[ProductCode]]
-        instanceType ← arbitrary[InstanceType]
-        launchTime ← arbitrary[Date]
-        placement ← arbitrary[Placement]
-        kernelId ← Gen.option(Ec2Gen.kernelId)
-        ramdiskId ← Gen.option(Ec2Gen.ramdiskId)
-        platform ← arbitrary[Option[Platform]]
-        monitoring ← arbitrary[Monitoring]
-        subnetId ← Gen.option(Ec2Gen.subnetId)
-        vpcId ← Gen.option(Ec2Gen.vpcId)
-        stateReason ← Gen.option(arbitrary[StateReason])
-        architecture ← arbitrary[Architecture]
-        rootDevice ← rootDeviceGen
-        blockDeviceMapping ← blockDeviceMappingGen
-        virtualizationType ← arbitrary[VirtualizationType]
-        lifecycleType ← Gen.option(arbitrary[Instance.LifecycleType])
-        spotInstanceRequestId ← Gen.option(Ec2Gen.spotInstanceRequestId)
-        clientToken ← Gen.option(UtilGen.stringOf(UtilGen.asciiChar, 1, 64))
-        tags ← tagMap
-        securityGroups ← UtilGen.nonEmptyListOfSqrtN(arbitrary[GroupIdentifier])
-        sourceDestCheck ← arbitrary[Option[Boolean]]
-        hypervisorType ← arbitrary[HypervisorType]
-        networkInterfaces ← UtilGen.listOfSqrtN(arbitrary[Instance.NetworkInterface])
-        profile ← arbitrary[Option[IamInstanceProfile]]
-        ebsOptimized ← arbitrary[Boolean]
-        sriovNetSupport ← Gen.option(Gen.const("simple"))
+        id <- Ec2Gen.instanceId
+        imageId <- Ec2Gen.imageId
+        state <- arbitrary[InstanceState]
+        privateIp <- privateIpAddress
+        publicIp <- Gen.option(publicIpAddress)
+        stateReason <- arbitrary[Option[StateReason]]
+        keyName <- Gen.option(Ec2Gen.keyName)
+        amiLaunchIndex <- Gen.posNum[Int]
+        productCodes <- arbitrary[Seq[ProductCode]]
+        instanceType <- arbitrary[InstanceType]
+        launchTime <- arbitrary[Date]
+        placement <- arbitrary[Placement]
+        kernelId <- Gen.option(Ec2Gen.kernelId)
+        ramdiskId <- Gen.option(Ec2Gen.ramdiskId)
+        platform <- arbitrary[Option[Platform]]
+        monitoring <- arbitrary[Monitoring]
+        subnetId <- Gen.option(Ec2Gen.subnetId)
+        vpcId <- Gen.option(Ec2Gen.vpcId)
+        stateReason <- Gen.option(arbitrary[StateReason])
+        architecture <- arbitrary[Architecture]
+        rootDevice <- rootDeviceGen
+        blockDeviceMapping <- blockDeviceMappingGen
+        virtualizationType <- arbitrary[VirtualizationType]
+        lifecycleType <- Gen.option(arbitrary[Instance.LifecycleType])
+        spotInstanceRequestId <- Gen.option(Ec2Gen.spotInstanceRequestId)
+        clientToken <- Gen.option(UtilGen.stringOf(UtilGen.asciiChar, 1, 64))
+        tags <- tagMap
+        securityGroups <- UtilGen.nonEmptyListOfSqrtN(arbitrary[GroupIdentifier])
+        sourceDestCheck <- arbitrary[Option[Boolean]]
+        hypervisorType <- arbitrary[HypervisorType]
+        networkInterfaces <- UtilGen.listOfSqrtN(arbitrary[Instance.NetworkInterface])
+        profile <- arbitrary[Option[IamInstanceProfile]]
+        ebsOptimized <- arbitrary[Boolean]
+        sriovNetSupport <- Gen.option(Gen.const("simple"))
       } yield Instance(id, imageId, state, privateIp.name, publicIp.map(_.name), stateReason.map(_.message), keyName, amiLaunchIndex,
         productCodes, instanceType, launchTime, placement, kernelId, ramdiskId, platform, monitoring, subnetId, vpcId,
         privateIp.address, publicIp.map(_.address), stateReason, architecture, rootDevice._1, rootDevice._2,
@@ -178,34 +178,34 @@ object Ec2ScalaCheckImplicits {
     def nonEmptyStringOption(o: Option[String]): Boolean = o.forall(_.nonEmpty)
 
 
-    Shrink { instance ⇒
-      noRecurShrinkOption(instance.publicDnsName).map(x ⇒ instance.copy(publicDnsName = x)) append
-        Shrink.shrink(instance.stateReason).map(x ⇒ instance.copy(stateReason = x)) append
-        Shrink.shrink(instance.keyName).filter(nonEmptyStringOption).map(x ⇒ instance.copy(keyName = x)) append
-        Shrink.shrink(instance.productCodes).map(x ⇒ instance.copy(productCodes = x)) append
-        Shrink.shrink(instance.placement).map(x ⇒ instance.copy(placement = x)) append
-        noRecurShrinkOption(instance.kernelId).map(x ⇒ instance.copy(kernelId = x)) append
-        noRecurShrinkOption(instance.ramdiskId).map(x ⇒ instance.copy(ramdiskId = x)) append
-        Shrink.shrink(instance.platform).map(x ⇒ instance.copy(platform = x)) append
-        noRecurShrinkOption(instance.subnetId).map(x ⇒ instance.copy(subnetId = x)) append
-        noRecurShrinkOption(instance.vpcId).map(x ⇒ instance.copy(vpcId = x)) append
-        Shrink.shrink(instance.blockDeviceMapping).filter(validBlockDeviceKeys).map(x ⇒ instance.copy(blockDeviceMapping = x)) append
-        noRecurShrinkOption(instance.spotInstanceRequestId).map(x ⇒ instance.copy(spotInstanceRequestId = x)) append
-        Shrink.shrink(instance.clientToken).filter(nonEmptyStringOption).map(x ⇒ instance.copy(clientToken = x)) append
-        Shrink.shrink(instance.tags).filter(m ⇒ m.keySet.size == m.size).map(x ⇒ instance.copy(tags = x)) append
-        Shrink.shrink(instance.securityGroups).filter(_.nonEmpty).map(x ⇒ instance.copy(securityGroups = x)) append
-        Shrink.shrink(instance.sourceDestCheck).map(x ⇒ instance.copy(sourceDestCheck = x)) append
-        Shrink.shrink(instance.networkInterfaces).map(x ⇒ instance.copy(networkInterfaces = x)) append
-        Shrink.shrink(instance.iamInstanceProfile).map(x ⇒ instance.copy(iamInstanceProfile = x)) append
-        noRecurShrinkOption(instance.sriovNetSupport).map(x ⇒ instance.copy(sriovNetSupport = x))
+    Shrink { instance =>
+      noRecurShrinkOption(instance.publicDnsName).map(x => instance.copy(publicDnsName = x)).toStream lazyAppendedAll
+        Shrink.shrink(instance.stateReason).map(x => instance.copy(stateReason = x)) lazyAppendedAll
+        Shrink.shrink(instance.keyName).filter(nonEmptyStringOption).map(x => instance.copy(keyName = x)) lazyAppendedAll
+        Shrink.shrink(instance.productCodes).map(x => instance.copy(productCodes = x)) lazyAppendedAll
+        Shrink.shrink(instance.placement).map(x => instance.copy(placement = x)) lazyAppendedAll
+        noRecurShrinkOption(instance.kernelId).map(x => instance.copy(kernelId = x)) lazyAppendedAll
+        noRecurShrinkOption(instance.ramdiskId).map(x => instance.copy(ramdiskId = x)) lazyAppendedAll
+        Shrink.shrink(instance.platform).map(x => instance.copy(platform = x)) lazyAppendedAll
+        noRecurShrinkOption(instance.subnetId).map(x => instance.copy(subnetId = x)) lazyAppendedAll
+        noRecurShrinkOption(instance.vpcId).map(x => instance.copy(vpcId = x)) lazyAppendedAll
+        Shrink.shrink(instance.blockDeviceMapping).filter(validBlockDeviceKeys).map(x => instance.copy(blockDeviceMapping = x)) lazyAppendedAll
+        noRecurShrinkOption(instance.spotInstanceRequestId).map(x => instance.copy(spotInstanceRequestId = x)) lazyAppendedAll
+        Shrink.shrink(instance.clientToken).filter(nonEmptyStringOption).map(x => instance.copy(clientToken = x)) lazyAppendedAll
+        Shrink.shrink(instance.tags).filter(m => m.keySet.size == m.size).map(x => instance.copy(tags = x)) lazyAppendedAll
+        Shrink.shrink(instance.securityGroups).filter(_.nonEmpty).map(x => instance.copy(securityGroups = x)) lazyAppendedAll
+        Shrink.shrink(instance.sourceDestCheck).map(x => instance.copy(sourceDestCheck = x)) lazyAppendedAll
+        Shrink.shrink(instance.networkInterfaces).map(x => instance.copy(networkInterfaces = x)) lazyAppendedAll
+        Shrink.shrink(instance.iamInstanceProfile).map(x => instance.copy(iamInstanceProfile = x)) lazyAppendedAll
+        noRecurShrinkOption(instance.sriovNetSupport).map(x => instance.copy(sriovNetSupport = x))
     }
   }
 
   implicit lazy val arbInstanceBlockDevice: Arbitrary[Instance.BlockDevice] =
     Arbitrary {
       for {
-        volumeId ← Ec2Gen.volumeId
-        blockDevice ← Gen.resultOf(Instance.BlockDevice(volumeId, _: AttachmentStatus, _: Boolean, _: Date))
+        volumeId <- Ec2Gen.volumeId
+        blockDevice <- Gen.resultOf(Instance.BlockDevice(volumeId, _: AttachmentStatus, _: Boolean, _: Date))
       } yield blockDevice
     }
 
@@ -215,87 +215,87 @@ object Ec2ScalaCheckImplicits {
   implicit lazy val arbInstanceNetworkInterface: Arbitrary[Instance.NetworkInterface] =
     Arbitrary {
       for {
-        id ← Ec2Gen.instanceNetworkInterfaceId
-        subnetId ← Ec2Gen.subnetId
-        vpcId ← Ec2Gen.vpcId
-        description ← Gen.option(UtilGen.stringOf(UtilGen.asciiChar, 1, 255))
-        owner ← arbitrary[Account].map(_.id)
-        status ← arbitrary[NetworkInterfaceStatus]
-        macAddress ← Gen.listOfN(12, UtilGen.lowerHexChar).map(chars ⇒ chars.grouped(2).map(_.mkString).mkString(":"))
-        ip ← privateIpAddress
-        hostname ← Gen.option(Gen.const(ip.name))
-        sourceDestCheck ← arbitrary[Boolean]
-        groups ← UtilGen.nonEmptyListOfSqrtN(arbitrary[GroupIdentifier])
-        attachment ← arbitrary[Instance.NetworkInterface.Attachment]
-        association ← arbitrary[Option[Instance.NetworkInterface.Association]]
-        privateIps ← UtilGen.Sizer(0, 5).sized(n ⇒ Gen.listOfN(n, arbitrary[Instance.NetworkInterface.PrivateIpAddress]))
+        id <- Ec2Gen.instanceNetworkInterfaceId
+        subnetId <- Ec2Gen.subnetId
+        vpcId <- Ec2Gen.vpcId
+        description <- Gen.option(UtilGen.stringOf(UtilGen.asciiChar, 1, 255))
+        owner <- arbitrary[Account].map(_.id)
+        status <- arbitrary[NetworkInterfaceStatus]
+        macAddress <- Gen.listOfN(12, UtilGen.lowerHexChar).map(chars => chars.grouped(2).map(_.mkString).mkString(":"))
+        ip <- privateIpAddress
+        hostname <- Gen.option(Gen.const(ip.name))
+        sourceDestCheck <- arbitrary[Boolean]
+        groups <- UtilGen.nonEmptyListOfSqrtN(arbitrary[GroupIdentifier])
+        attachment <- arbitrary[Instance.NetworkInterface.Attachment]
+        association <- arbitrary[Option[Instance.NetworkInterface.Association]]
+        privateIps <- UtilGen.Sizer(0, 5).sized(n => Gen.listOfN(n, arbitrary[Instance.NetworkInterface.PrivateIpAddress]))
       } yield Instance.NetworkInterface(id, subnetId, vpcId, description, owner, status, macAddress, ip.address,
         hostname, sourceDestCheck, groups, attachment, association, privateIps)
     }
 
   implicit lazy val shrinkInstanceNetworkInterface: Shrink[Instance.NetworkInterface] =
-    Shrink { networkInterface ⇒
-      Shrink.shrink(networkInterface.description).filter(_.forall(_.nonEmpty)).map(x ⇒ networkInterface.copy(description = x)) append
-      noRecurShrinkOption(networkInterface.privateDnsName).map(x ⇒ networkInterface.copy(privateDnsName = x)) append
-      Shrink.shrink(networkInterface.groups).filter(_.nonEmpty).map(x ⇒ networkInterface.copy(groups = x)) append
-      Shrink.shrink(networkInterface.association).map(x ⇒ networkInterface.copy(association = x)) append
-      Shrink.shrink(networkInterface.privateIpAddresses).map(x ⇒ networkInterface.copy(privateIpAddresses = x))
+    Shrink { networkInterface =>
+      Shrink.shrink(networkInterface.description).filter(_.forall(_.nonEmpty)).map(x => networkInterface.copy(description = x)) lazyAppendedAll
+      noRecurShrinkOption(networkInterface.privateDnsName).map(x => networkInterface.copy(privateDnsName = x)) lazyAppendedAll
+      Shrink.shrink(networkInterface.groups).filter(_.nonEmpty).map(x => networkInterface.copy(groups = x)) lazyAppendedAll
+      Shrink.shrink(networkInterface.association).map(x => networkInterface.copy(association = x)) lazyAppendedAll
+      Shrink.shrink(networkInterface.privateIpAddresses).map(x => networkInterface.copy(privateIpAddresses = x))
     }
 
   implicit lazy val arbInstanceNetworkInterfaceAssociation: Arbitrary[Instance.NetworkInterface.Association] =
     Arbitrary {
       for {
-        owner ← Gen.frequency(1 → Gen.const("AWS"), 9 → arbitrary[Account].map(_.id))
-        ip ← publicIpAddress
-        name ← Gen.option(Gen.const(ip.name))
+        owner <- Gen.frequency(1 ->Gen.const("AWS"), 9 ->arbitrary[Account].map(_.id))
+        ip <- publicIpAddress
+        name <- Gen.option(Gen.const(ip.name))
       } yield Instance.NetworkInterface.Association(owner, name, ip.address)
     }
 
   implicit lazy val shrinkInstanceNetworkInterfaceAssociation: Shrink[Instance.NetworkInterface.Association] =
-    Shrink { association ⇒
-      noRecurShrinkOption(association.publicDnsName).map(n ⇒ association.copy(publicDnsName = n))
+    Shrink { association =>
+      noRecurShrinkOption(association.publicDnsName).toStream.map(n => association.copy(publicDnsName = n))
     }
 
   implicit lazy val arbInstanceNetworkInterfaceAttachment: Arbitrary[Instance.NetworkInterface.Attachment] =
     Arbitrary {
       for {
-        id ← Ec2Gen.instanceNetworkInterfaceAttachmentId
-        attachDate ← arbitrary[Date]
-        deleteOnTermination ← arbitrary[Boolean]
-        deviceIndex ← Gen.posNum[Int]
-        status ← arbitrary[AttachmentStatus]
+        id <- Ec2Gen.instanceNetworkInterfaceAttachmentId
+        attachDate <- arbitrary[Date]
+        deleteOnTermination <- arbitrary[Boolean]
+        deviceIndex <- Gen.posNum[Int]
+        status <- arbitrary[AttachmentStatus]
       } yield Instance.NetworkInterface.Attachment(id, attachDate, deleteOnTermination, deviceIndex, status)
     }
 
   implicit lazy val arbInstanceNetworkInterfacePrivateIpAddress: Arbitrary[Instance.NetworkInterface.PrivateIpAddress] =
     Arbitrary {
       for {
-        ip ← privateIpAddress
-        name ← Gen.option(Gen.const(ip.name))
-        primary ← arbitrary[Boolean]
-        association ← arbitrary[Option[Instance.NetworkInterface.Association]]
+        ip <- privateIpAddress
+        name <- Gen.option(Gen.const(ip.name))
+        primary <- arbitrary[Boolean]
+        association <- arbitrary[Option[Instance.NetworkInterface.Association]]
       } yield Instance.NetworkInterface.PrivateIpAddress(ip.address, name, primary, association)
     }
 
   implicit lazy val shrinkInstanceNetworkInterfacePrivateIpAddress: Shrink[Instance.NetworkInterface.PrivateIpAddress] =
-    Shrink { address ⇒
-      noRecurShrinkOption(address.privateDnsName).map(n ⇒ address.copy(privateDnsName = n)) append
-      Shrink.shrink(address.association).map(a ⇒ address.copy(association = a))
+    Shrink { address =>
+      noRecurShrinkOption(address.privateDnsName).toStream.map(n => address.copy(privateDnsName = n)) lazyAppendedAll
+      Shrink.shrink(address.association).map(a => address.copy(association = a))
     }
 
   implicit lazy val arbInstanceState: Arbitrary[InstanceState] =
     Arbitrary {
       for {
-        name ← Gen.oneOf(InstanceState.Name.values)
+        name <- Gen.oneOf(InstanceState.Name.values)
       } yield {
         val code = {
           name match {
-            case InstanceState.Name.Pending      ⇒  0
-            case InstanceState.Name.Running      ⇒ 16
-            case InstanceState.Name.ShuttingDown ⇒ 32
-            case InstanceState.Name.Terminated   ⇒ 48
-            case InstanceState.Name.Stopping     ⇒ 64
-            case InstanceState.Name.Stopped      ⇒ 80
+            case InstanceState.Name.Pending      =>  0
+            case InstanceState.Name.Running      => 16
+            case InstanceState.Name.ShuttingDown => 32
+            case InstanceState.Name.Terminated   => 48
+            case InstanceState.Name.Stopping     => 64
+            case InstanceState.Name.Stopped      => 80
           }
         }
         InstanceState(name, code)
@@ -307,28 +307,28 @@ object Ec2ScalaCheckImplicits {
   implicit lazy val arbKeyPair: Arbitrary[KeyPair] =
     Arbitrary {
       for {
-        keyName ← Ec2Gen.keyName
-        fingerprint ← Ec2Gen.keyFingerprint
-        material ← Ec2Gen.privateKey
+        keyName <- Ec2Gen.keyName
+        fingerprint <- Ec2Gen.keyFingerprint
+        material <- Ec2Gen.privateKey
       } yield KeyPair(keyName, fingerprint, material)
     }
 
   implicit lazy val shrinkKeyPair: Shrink[KeyPair] =
-    Shrink { kp ⇒
-      Shrink.shrink(kp.name).filter(_.nonEmpty).map(n ⇒ kp.copy(name = n))
+    Shrink { kp =>
+      Shrink.shrink(kp.name).filter(_.nonEmpty).map(n => kp.copy(name = n))
     }
 
   implicit lazy val arbKeyPairInfo: Arbitrary[KeyPairInfo] =
     Arbitrary {
       for {
-        keyName ← Ec2Gen.keyName
-        fingerprint ← Ec2Gen.keyFingerprint
+        keyName <- Ec2Gen.keyName
+        fingerprint <- Ec2Gen.keyFingerprint
       } yield KeyPairInfo(keyName, fingerprint)
     }
 
   implicit lazy val shrinkKeyPairInfo: Shrink[KeyPairInfo] =
-    Shrink { kp ⇒
-      Shrink.shrink(kp.name).filter(_.nonEmpty).map(n ⇒ kp.copy(name = n))
+    Shrink { kp =>
+      Shrink.shrink(kp.name).filter(_.nonEmpty).map(n => kp.copy(name = n))
     }
 
   implicit lazy val arbMonitoring: Arbitrary[Monitoring] =
@@ -344,30 +344,30 @@ object Ec2ScalaCheckImplicits {
     Arbitrary {
       val availabilityZoneGen =
         for {
-          region ← arbitrary[Region].map(_.name)
-          zone ← Gen.oneOf('a' to 'e')
+          region <- arbitrary[Region].map(_.name)
+          zone <- Gen.oneOf('a' to 'e')
         } yield s"$region$zone"
       val groupNameGen = UtilGen.stringOf(UtilGen.asciiChar, 1, 255)
 
       for {
-        availabilityZone ← availabilityZoneGen
-        groupName ← Gen.option(groupNameGen)
-        tenancy ← arbitrary[Option[Tenancy]]
-        hostId ← Gen.option(Ec2Gen.hostId)
-        affinity ← arbitrary[Option[Affinity]]
+        availabilityZone <- availabilityZoneGen
+        groupName <- Gen.option(groupNameGen)
+        tenancy <- arbitrary[Option[Tenancy]]
+        hostId <- Gen.option(Ec2Gen.hostId)
+        affinity <- arbitrary[Option[Affinity]]
       } yield Placement(availabilityZone, groupName, tenancy, hostId, affinity)
     }
 
   implicit lazy val shrinkPlacement: Shrink[Placement] =
-    Shrink { placement ⇒
+    Shrink { placement =>
       Shrink.shrink(placement.groupName)
         .filter(_.forall(_.nonEmpty))
-        .map(gn ⇒ placement.copy(groupName = gn)) append
-      Shrink.shrink(placement.tenancy).map(t ⇒ placement.copy(tenancy = t)) append
+        .map(gn => placement.copy(groupName = gn)) lazyAppendedAll
+      Shrink.shrink(placement.tenancy).map(t => placement.copy(tenancy = t)) lazyAppendedAll
       Shrink.shrink(placement.hostId)
         .filter(_.forall(validId("h")))
-        .map(h ⇒ placement.copy(hostId = h)) append
-      Shrink.shrink(placement.affinity).map(a ⇒ placement.copy(affinity = a))
+        .map(h => placement.copy(hostId = h)) lazyAppendedAll
+      Shrink.shrink(placement.affinity).map(a => placement.copy(affinity = a))
     }
 
   implicit lazy val arbPlatform: Arbitrary[Platform] = Arbitrary(Gen.oneOf(Platform.values))
@@ -376,8 +376,8 @@ object Ec2ScalaCheckImplicits {
     val idGen = UtilGen.stringOf(Gen.alphaNumChar, 24, 32)
     Arbitrary {
       for {
-        id ← idGen
-        aType ← arbitrary[ProductCode.Type]
+        id <- idGen
+        aType <- arbitrary[ProductCode.Type]
       } yield ProductCode(id, aType)
     }
   }
@@ -387,19 +387,19 @@ object Ec2ScalaCheckImplicits {
   implicit lazy val arbReservation: Arbitrary[Reservation] =
     Arbitrary {
       for {
-        reservationId ← Ec2Gen.instanceId
-        owner ← arbitrary[Account]
-        requester ← Gen.option(CoreGen.account(owner.partition))
-        securityGroups ← UtilGen.listOfSqrtN(arbitrary[GroupIdentifier])
-        instances ← UtilGen.nonEmptyListOfSqrtN(arbitrary[Instance])
+        reservationId <- Ec2Gen.instanceId
+        owner <- arbitrary[Account]
+        requester <- Gen.option(CoreGen.account(owner.partition))
+        securityGroups <- UtilGen.listOfSqrtN(arbitrary[GroupIdentifier])
+        instances <- UtilGen.nonEmptyListOfSqrtN(arbitrary[Instance])
       } yield Reservation(reservationId, owner.id, requester.map(_.id), securityGroups, instances)
     }
 
   implicit lazy val shrinkReservation: Shrink[Reservation] =
-    Shrink { reservation ⇒
-      noRecurShrinkOption(reservation.requester).map(x ⇒ reservation.copy(requester = x)) append
-        Shrink.shrink(reservation.groups).map(x ⇒ reservation.copy(groups = x)) append
-        Shrink.shrink(reservation.instances).filter(_.nonEmpty).map(x ⇒ reservation.copy(instances = x))
+    Shrink { reservation =>
+      noRecurShrinkOption(reservation.requester).toStream.map(x => reservation.copy(requester = x)) lazyAppendedAll
+        Shrink.shrink(reservation.groups).map(x => reservation.copy(groups = x)) lazyAppendedAll
+        Shrink.shrink(reservation.instances).filter(_.nonEmpty).map(x => reservation.copy(instances = x))
     }
 
   implicit lazy val arbStateReason: Arbitrary[StateReason] =
@@ -430,22 +430,22 @@ object Ec2ScalaCheckImplicits {
   implicit lazy val arbTag: Arbitrary[Tag] =
     Arbitrary {
       for {
-        key ← UtilGen.stringOf(UtilGen.asciiChar, 1, 127)
-        value ← UtilGen.stringOf(UtilGen.asciiChar, 1, 255)
+        key <- UtilGen.stringOf(UtilGen.asciiChar, 1, 127)
+        value <- UtilGen.stringOf(UtilGen.asciiChar, 1, 255)
       } yield Tag(key, value)
     }
 
   implicit lazy val shrinkTag: Shrink[Tag] =
-    Shrink { tag ⇒
-      Shrink.shrink(tag.key).filter(_.nonEmpty).map(k ⇒ tag.copy(key = k)) append
-      Shrink.shrink(tag.value).filter(_.nonEmpty).map(v ⇒ tag.copy(value = v))
+    Shrink { tag =>
+      Shrink.shrink(tag.key).filter(_.nonEmpty).map(k => tag.copy(key = k)) lazyAppendedAll
+      Shrink.shrink(tag.value).filter(_.nonEmpty).map(v => tag.copy(value = v))
     }
 
   implicit lazy val arbTagSeq: Arbitrary[Seq[Tag]] =
     Arbitrary(UtilGen.listOfSqrtN(arbitrary[Tag]).suchThat(uniqueKeys))
 
   implicit lazy val shrinkTagSeq: Shrink[Seq[Tag]] =
-    Shrink { tags ⇒
+    Shrink { tags =>
       Shrink.shrinkContainer[Seq, Tag].shrink(tags).filter(uniqueKeys)
     }
 
@@ -465,17 +465,17 @@ object Ec2ScalaCheckImplicits {
   private val publicIpAddress: Gen[IpAddress] = ipAddress("ec2-", ".compute-1.amazonaws.com")
 
   private def ipAddress(prefix: String, suffix: String): Gen[IpAddress] =
-    for (octets ← Gen.listOfN(4, Gen.choose(1, 254))) yield {
+    for (octets <- Gen.listOfN(4, Gen.choose(1, 254))) yield {
       val address = octets.mkString(".")
       val name = octets.mkString(prefix, "-", suffix)
       IpAddress(address, name)
     }
 
-  private def noRecurShrinkOption[T](t: Option[T]): Stream[Option[T]] = {
+  private def noRecurShrinkOption[T](t: Option[T]): LazyList[Option[T]] = {
     if (t.isDefined) {
-      None #:: Stream.empty
+      None #:: LazyList.empty
     } else {
-      Stream.empty
+      LazyList.empty
     }
   }
 
@@ -487,14 +487,14 @@ object Ec2ScalaCheckImplicits {
 //  object DescribeInstanceRequestArgs {
 //    implicit lazy val arbDescribeInstanceRequestArgs: Arbitrary[DescribeInstanceRequestArgs] =
 //      Arbitrary {
-//        Gen.sized { size ⇒
+//        Gen.sized { size =>
 //          val namesSizedMax = Math.sqrt(size).toInt
 //          val filtersSizedMax = Math.pow(size, 0.2).toInt
 //          for {
-//            nIds ← Gen.choose(0, namesSizedMax)
-//            ids ← Gen.listOfN(nIds, arbitrary[InstanceId])
-//            nFilters ← Gen.choose(0, filtersSizedMax)
-//            filters ← Gen.listOfN(nFilters, arbitrary[FilterArgs])
+//            nIds <- Gen.choose(0, namesSizedMax)
+//            ids <- Gen.listOfN(nIds, arbitrary[InstanceId])
+//            nFilters <- Gen.choose(0, filtersSizedMax)
+//            filters <- Gen.listOfN(nFilters, arbitrary[FilterArgs])
 //          } yield DescribeInstanceRequestArgs(ids, filters)
 //        }
 //      }
@@ -509,14 +509,14 @@ object Ec2ScalaCheckImplicits {
 //  object DescribeKeyPairRequestArgs {
 //    implicit lazy val arbDescribeKeyPairRequestArgs: Arbitrary[DescribeKeyPairRequestArgs] =
 //      Arbitrary {
-//        Gen.sized { size ⇒
+//        Gen.sized { size =>
 //          val namesSizedMax = Math.sqrt(size).toInt
 //          val filtersSizedMax = Math.pow(size, 0.2).toInt
 //          for {
-//            nNames ← Gen.choose(0, namesSizedMax)
-//            names ← Gen.listOfN(nNames, arbitrary[KeyName])
-//            nFilters ← Gen.choose(0, filtersSizedMax)
-//            filters ← Gen.listOfN(nFilters, arbitrary[FilterArgs])
+//            nNames <- Gen.choose(0, namesSizedMax)
+//            names <- Gen.listOfN(nNames, arbitrary[KeyName])
+//            nFilters <- Gen.choose(0, filtersSizedMax)
+//            filters <- Gen.listOfN(nFilters, arbitrary[FilterArgs])
 //          } yield DescribeKeyPairRequestArgs(names, filters)
 //        }
 //      }

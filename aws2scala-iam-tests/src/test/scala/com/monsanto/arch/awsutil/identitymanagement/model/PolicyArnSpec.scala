@@ -11,13 +11,13 @@ class PolicyArnSpec extends AnyFreeSpec {
 
   "a PolicyArn should" - {
     "provide the correct resource" in {
-      forAll { arn: PolicyArn ⇒
+      forAll { arn: PolicyArn =>
         arn.resource shouldBe s"policy${arn.path.pathString}${arn.name}"
       }
     }
 
     "produce the correct ARN" in {
-      forAll { arn: PolicyArn ⇒
+      forAll { arn: PolicyArn =>
         val partition = arn.account.partition.id
         val accountId = arn.account.id
         val path = arn.path.pathString
@@ -28,7 +28,7 @@ class PolicyArnSpec extends AnyFreeSpec {
     }
 
     "can round-trip via an ARN" in {
-      forAll { arn: PolicyArn ⇒
+      forAll { arn: PolicyArn =>
         PolicyArn.fromArnString(arn.arnString) shouldBe arn
       }
     }

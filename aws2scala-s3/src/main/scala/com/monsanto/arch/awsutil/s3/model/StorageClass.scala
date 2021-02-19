@@ -1,6 +1,6 @@
 package com.monsanto.arch.awsutil.s3.model
 
-import com.amazonaws.services.s3.{model ⇒ aws}
+import com.amazonaws.services.s3.{model => aws}
 
 /** Represents an S3 storage class. */
 sealed trait StorageClass {

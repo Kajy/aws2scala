@@ -5,7 +5,7 @@ import java.util.UUID
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers._
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class EncryptRequestSpec extends AnyFreeSpec {
 
@@ -24,7 +24,7 @@ class EncryptRequestSpec extends AnyFreeSpec {
       }
 
       "with a context" in {
-        val context = Map("some" → "context")
+        val context = Map("some" ->"context")
         val request = EncryptRequest(keyId, plaintext, context).toAws
 
         request.getKeyId shouldBe keyId

@@ -1,8 +1,8 @@
 package com.monsanto.arch.awsutil.cloudformation.model
 
-import com.amazonaws.services.cloudformation.{model ⇒ aws}
+import com.amazonaws.services.cloudformation.{model => aws}
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object AwsConverters {
   implicit class ScalaDeleteStackRequest(val request: DeleteStackRequest) extends AnyVal {
